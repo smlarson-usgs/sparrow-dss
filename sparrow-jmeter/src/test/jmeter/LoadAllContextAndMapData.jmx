@@ -1644,59 +1644,9 @@ vars.put(&quot;contextIndex&quot;, contextIndex);
 vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                     </BSFSampler>
                     <hashTree/>
-                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Calibration Tile (NOT COMPLETE)" enabled="true">
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Reach Tile" enabled="true">
                       <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                         <collectionProp name="Arguments.arguments">
-                          <elementProp name="thdNum" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">${thdnum}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">thdNum</stringProp>
-                          </elementProp>
-                          <elementProp name="modelId" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">${modelId}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">modelId</stringProp>
-                          </elementProp>
-                          <elementProp name="contextId" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">${contextId}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">contextId</stringProp>
-                          </elementProp>
-                          <elementProp name="contextIdx" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">${contextIndex}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">contextIdx</stringProp>
-                          </elementProp>
-                          <elementProp name="tileIdx" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">${tileIndex}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">tileIdx</stringProp>
-                          </elementProp>
-                          <elementProp name="rowcol" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">${rowcol}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">rowcol</stringProp>
-                            <stringProp name="Argument.desc">false</stringProp>
-                          </elementProp>
-                          <elementProp name="threadLoopIndex" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">${threadLoopIndex}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">threadLoopIndex</stringProp>
-                          </elementProp>
                           <elementProp name="request" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
                             <stringProp name="Argument.value">GetMap</stringProp>
@@ -1720,7 +1670,7 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                           </elementProp>
                           <elementProp name="layers" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">${flowLayerName}</stringProp>
+                            <stringProp name="Argument.value">reach-overlay:mrb02_mrbe2rf1</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">layers</stringProp>
@@ -1767,19 +1717,189 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">styles</stringProp>
                           </elementProp>
-                          <elementProp name="format_options" elementType="HTTPArgument">
+                        </collectionProp>
+                      </elementProp>
+                      <stringProp name="HTTPSampler.domain">${GeoserverHost}</stringProp>
+                      <stringProp name="HTTPSampler.port">${GeoserverPort}</stringProp>
+                      <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                      <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                      <stringProp name="HTTPSampler.protocol"></stringProp>
+                      <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                      <stringProp name="HTTPSampler.path">/${GeoserverContextPath}/wms</stringProp>
+                      <stringProp name="HTTPSampler.method">GET</stringProp>
+                      <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+                      <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
+                      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                      <stringProp name="HTTPSampler.implementation">Java</stringProp>
+                      <boolProp name="HTTPSampler.monitor">false</boolProp>
+                      <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                    </HTTPSamplerProxy>
+                    <hashTree/>
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out HUC Tile" enabled="true">
+                      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                        <collectionProp name="Arguments.arguments">
+                          <elementProp name="request" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">antialiasing:none;quantizer:octree;</stringProp>
+                            <stringProp name="Argument.value">GetMap</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">format_options</stringProp>
+                            <stringProp name="Argument.name">request</stringProp>
                           </elementProp>
-                          <elementProp name="sld" elementType="HTTPArgument">
+                          <elementProp name="srs" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">http://${GeoserverHost}:${GeoserverPort}/${GeoserverContextPath}/rest/sld/workspace/sparrow-flowline/layer/${localLayerName}/catch.sld?binLowList=0,25000,58000,141000,676000&amp;binHighList=25000,58000,141000,676000,500000000&amp;binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&amp;bounded=false</stringProp>
+                            <stringProp name="Argument.value">EPSG:4326</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">sld</stringProp>
+                            <stringProp name="Argument.name">srs</stringProp>
+                          </elementProp>
+                          <elementProp name="version" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">1.1.1</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">version</stringProp>
+                          </elementProp>
+                          <elementProp name="layers" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">huc8-overlay:mrb02_mrbe2rf1</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">layers</stringProp>
+                          </elementProp>
+                          <elementProp name="BBOX" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">${west},${south},${east},${north}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">BBOX</stringProp>
+                          </elementProp>
+                          <elementProp name="width" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">256</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">width</stringProp>
+                          </elementProp>
+                          <elementProp name="height" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">256</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">height</stringProp>
+                          </elementProp>
+                          <elementProp name="transparent" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">transparent</stringProp>
+                          </elementProp>
+                          <elementProp name="format" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">image/png8</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">format</stringProp>
+                          </elementProp>
+                          <elementProp name="styles" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value"></stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">styles</stringProp>
+                          </elementProp>
+                        </collectionProp>
+                      </elementProp>
+                      <stringProp name="HTTPSampler.domain">${GeoserverHost}</stringProp>
+                      <stringProp name="HTTPSampler.port">${GeoserverPort}</stringProp>
+                      <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                      <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                      <stringProp name="HTTPSampler.protocol"></stringProp>
+                      <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                      <stringProp name="HTTPSampler.path">/${GeoserverContextPath}/wms</stringProp>
+                      <stringProp name="HTTPSampler.method">GET</stringProp>
+                      <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+                      <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
+                      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                      <stringProp name="HTTPSampler.implementation">Java</stringProp>
+                      <boolProp name="HTTPSampler.monitor">false</boolProp>
+                      <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                    </HTTPSamplerProxy>
+                    <hashTree/>
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Calibration Tile" enabled="true">
+                      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                        <collectionProp name="Arguments.arguments">
+                          <elementProp name="request" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">GetMap</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">request</stringProp>
+                          </elementProp>
+                          <elementProp name="srs" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">EPSG:4326</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">srs</stringProp>
+                          </elementProp>
+                          <elementProp name="version" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">1.1.1</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">version</stringProp>
+                          </elementProp>
+                          <elementProp name="layers" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">sparrow-calibration:50</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">layers</stringProp>
+                          </elementProp>
+                          <elementProp name="BBOX" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">${west},${south},${east},${north}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">BBOX</stringProp>
+                          </elementProp>
+                          <elementProp name="width" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">256</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">width</stringProp>
+                          </elementProp>
+                          <elementProp name="height" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">256</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">height</stringProp>
+                          </elementProp>
+                          <elementProp name="transparent" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">transparent</stringProp>
+                          </elementProp>
+                          <elementProp name="format" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">image/png8</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">format</stringProp>
+                          </elementProp>
+                          <elementProp name="styles" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value"></stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">styles</stringProp>
                           </elementProp>
                         </collectionProp>
                       </elementProp>
