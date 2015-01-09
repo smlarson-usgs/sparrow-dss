@@ -1338,6 +1338,13 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">sld</stringProp>
                           </elementProp>
+                          <elementProp name="tiled" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">tiled</stringProp>
+                          </elementProp>
                         </collectionProp>
                       </elementProp>
                       <stringProp name="HTTPSampler.domain">${GeoserverHost}</stringProp>
@@ -1570,6 +1577,13 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">sld</stringProp>
+                          </elementProp>
+                          <elementProp name="tiled" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">tiled</stringProp>
                           </elementProp>
                         </collectionProp>
                       </elementProp>
@@ -2171,6 +2185,13 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">sld</stringProp>
                           </elementProp>
+                          <elementProp name="tiled" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">tiled</stringProp>
+                          </elementProp>
                         </collectionProp>
                       </elementProp>
                       <stringProp name="HTTPSampler.domain">${GeoserverHost}</stringProp>
@@ -2403,6 +2424,13 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">sld</stringProp>
+                          </elementProp>
+                          <elementProp name="tiled" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">tiled</stringProp>
                           </elementProp>
                         </collectionProp>
                       </elementProp>
