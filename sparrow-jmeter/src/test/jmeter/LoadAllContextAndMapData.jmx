@@ -649,6 +649,18 @@ var zoom1West = alignedLongCenter - (zoomSizes[zoomIndex].size * tilesWide / 4);
 var zoom1South = alignedLatCenter - (zoomSizes[zoomIndex].size * tilesTall / 4);
 var zoom1East = alignedLongCenter + (zoomSizes[zoomIndex].size * tilesWide / 4);
 
+//Map edges - two levels zoomed in
+var zoom2North = alignedLatCenter + (zoomSizes[zoomIndex].size * tilesTall / 8);
+var zoom2West = alignedLongCenter - (zoomSizes[zoomIndex].size * tilesWide / 8);
+var zoom2South = alignedLatCenter - (zoomSizes[zoomIndex].size * tilesTall / 8);
+var zoom2East = alignedLongCenter + (zoomSizes[zoomIndex].size * tilesWide / 8);
+
+//Map edges - three levels zoomed in
+var zoom3North = alignedLatCenter + (zoomSizes[zoomIndex].size * tilesTall / 16);
+var zoom3West = alignedLongCenter - (zoomSizes[zoomIndex].size * tilesWide / 16);
+var zoom3South = alignedLatCenter - (zoomSizes[zoomIndex].size * tilesTall / 16);
+var zoom3East = alignedLongCenter + (zoomSizes[zoomIndex].size * tilesWide / 16);
+
 log.info(&quot;Created these adjusted map bounds for model &quot; + modelId + &quot;:   &quot; + alignedWest + &quot;,&quot; + alignedSouth + &quot;,&quot; + alignedEast + &quot;,&quot; + alignedNorth);
 log.debug(&quot;alignedLongCenter:&quot; + alignedLongCenter + &quot; alignedLatCenter:&quot; + alignedLatCenter);
 
