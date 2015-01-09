@@ -80,7 +80,7 @@
           </elementProp>
           <elementProp name="MapStaticLayers" elementType="Argument">
             <stringProp name="Argument.name">MapStaticLayers</stringProp>
-            <stringProp name="Argument.value">${__P(MapStaticLayers, false)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapStaticLayers, true)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, the reference only layers are requested, such as reach overlay, calibration sites and catchment overlay.  False by default.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -186,7 +186,7 @@
           </elementProp>
           <elementProp name="MapStaticLayers" elementType="Argument">
             <stringProp name="Argument.name">MapStaticLayers</stringProp>
-            <stringProp name="Argument.value">${__P(MapStaticLayers, false)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapStaticLayers, true)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, the reference only layers are requested, such as reach overlay, calibration sites and catchment overlay.  False by default.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -1630,9 +1630,11 @@ threadLoopIndex = Number(threadLoopIndex) + 1;
 var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the tile to render based on the thread number &amp; how many times this thread has looped
 var tile = model[&quot;initViewTiles&quot;][tileIndex];
 
+
 if (isDebug == &quot;true&quot;) {
-	log.info(&quot;Running tests on static layers!!!&quot;);
+	log.info(&quot;Testing static layers for model ID: &quot; + modelId);
 }
+
 
 /*
 if (isDebug == &quot;true&quot;) {
@@ -1651,7 +1653,7 @@ vars.put(&quot;flowLayerName&quot;, model[&quot;flowLayerNames&quot;][contextInd
 vars.put(&quot;catchLayerName&quot;, model[&quot;catchLayerNames&quot;][contextIndex]);
 vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextIndex]);
 
-vars.put(&quot;staticReachOverlay&quot;, model[&quot;staticReach&quot;]);
+vars.put(&quot;staticReachOverlay&quot;, model[&quot;staticHuc&quot;]);
 vars.put(&quot;staticCalOverlay&quot;, model[&quot;staticCal&quot;]);
 vars.put(&quot;staticHucOverlay&quot;, model[&quot;staticHuc&quot;]);
 
