@@ -201,6 +201,13 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	 */
 	abstract public Analysis getNoSourceClone() throws CloneNotSupportedException;
 
-
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients (Advanced analysis never is,
+	 * Basic Analysis may be).
+	 * 
+	 * @return 
+	 */
+	abstract public boolean isLikelyReusable();
 
 }

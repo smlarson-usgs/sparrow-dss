@@ -203,5 +203,16 @@ public class AdvancedAnalysis extends Analysis {
 	public Integer getSource() {
 		return select.getSource();
 	}
+	
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients (Advanced analysis never is).
+	 * 
+	 * @return 
+	 */
+	@Override
+	public boolean isLikelyReusable() {
+		return false;
+	}
 
 }

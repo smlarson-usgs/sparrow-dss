@@ -199,5 +199,20 @@ public class BasicAnalysis extends Analysis {
 	public Integer getSource() {
 		return source;
 	}
+	
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients.
+	 * 
+	 * @return 
+	 */
+	@Override
+	public boolean isLikelyReusable() {
+		return (
+				this.groupBy == null &&
+				this.aggFunction == null &&
+				this.source == null &&
+				(! this.dataSeries.isDeliveryRequired()));
+	}
 
 }

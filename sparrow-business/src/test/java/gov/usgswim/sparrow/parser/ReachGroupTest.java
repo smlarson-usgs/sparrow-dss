@@ -21,19 +21,6 @@ import junit.framework.TestCase;
  */
 public class ReachGroupTest extends TestCase {
 
-    /** Valid xml string represention of a reach group. */
-    public static final String VALID_FRAGMENT = ""
-        + "<reachGroup enabled=\"true\" name=\"Northern Indiana Plants\">"
-        + "  <desc>description</desc>"
-        + "  <notes>notes</notes>"
-        + "  <adjustment src=\"5\" coef=\"0.9\" />"
-        + "  <reach id=\"12345\" />"
-        + "  <logicalSet>"
-        + "    <criteria attrib=\"huc2\">10</criteria>"
-        + "  </logicalSet>"
-        + "</reachGroup>";
-        ;
-
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 

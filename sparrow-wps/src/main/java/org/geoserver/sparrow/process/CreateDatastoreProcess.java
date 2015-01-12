@@ -133,7 +133,9 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			@DescribeParameter(name="coverageName", description="The name of the coverage,assumed to be a directory in the filesystem GeoServer is running on.", min = 1) String coverageName,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile (NO LONGER USED - ALWAYS IDENTIFIER)", min = 1) String idFieldInDbf,
-			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 0) String projectedSrs
+			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 0) String projectedSrs,
+			@DescribeParameter(name="isReusable", description="If true, the layers created are considered highly likely to be reused, which will put them in a different workspace and enable tile caching.", min = 1) boolean isReusable,
+			@DescribeParameter(name="description", description="Text description of the context to help ID the layers in GeoServer.  Used as the abstract. Optional.", min = 0, max = 1) String description
 		) throws Exception {
 				
 				
@@ -141,8 +143,8 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		projectedSrs = StringUtils.trimToNull(projectedSrs);
 		if (projectedSrs == null) projectedSrs = "EPSG:4326";
 		
-		String fullFlowlineLayerName = NamingConventions.getFullFlowlineLayerName(contextId);
-		String fullCatchmentLayerName = NamingConventions.getFullCatchmentLayerName(contextId);
+		String fullFlowlineLayerName = NamingConventions.getFullFlowlineLayerName(contextId, isReusable);
+		String fullCatchmentLayerName = NamingConventions.getFullCatchmentLayerName(contextId, isReusable);
 		
 		//Ensure the flowline layer exists
 		LayerInfo flowLayer = catalog.getLayerByName(fullFlowlineLayerName);
@@ -156,7 +158,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		
 		if (flowLayer == null) {
 			File flowlineShapefile = this.getFlowlineShapefile(coverageName);
-			createLayer(NamingConventions.FLOWLINE_NAMESPACE, NamingConventions.FLOWLINE_WORKSPACE_NAME, contextId, flowlineShapefile, dbfFilePath, JOIN_COLUMN, projectedSrs);
+			createLayer(NamingConventions.getFlowlineNamespace(isReusable), NamingConventions.getFlowlineWorkspaceName(isReusable), contextId, flowlineShapefile, dbfFilePath, JOIN_COLUMN, projectedSrs, description);
 			log.debug("Request for flowline layer for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullFlowlineLayerName});
 			message+= "Flowline layer did not exist and was created.  ";
 		} else {
@@ -165,7 +167,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		
 		if (catchLayer == null) {
 			File catchmentShapefile = this.getCatchmentShapefile(coverageName);
-			createLayer(NamingConventions.CATCHMENT_NAMESPACE, NamingConventions.CATCHMENT_WORKSPACE_NAME, contextId, catchmentShapefile, dbfFilePath, JOIN_COLUMN, projectedSrs);
+			createLayer(NamingConventions.getCatchmentNamespace(isReusable), NamingConventions.getCatchmentWorkspaceName(isReusable), contextId, catchmentShapefile, dbfFilePath, JOIN_COLUMN, projectedSrs, description);
 			log.debug("Request for catchment layer for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullCatchmentLayerName});
 			message+= "Catchment layer did not exist and was created.  ";
 		} else {
@@ -204,10 +206,14 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	 * @throws Exception 
 	 */
 	protected boolean createLayer(String namespace, String workspaceName, Integer contextId, File shapeFile,
-			String dbfFilePath, String idFieldInDbf, String projectedSrs) throws Exception {
+			String dbfFilePath, String idFieldInDbf, String projectedSrs, String description) throws Exception {
 
 		
 		String layerName = NamingConventions.convertContextIdToXMLSafeName(contextId);
+		
+		if (description == null) {
+			description = "A datalayer constructed for a single SPARROW DSS Prediction Context.  Context ID: " + contextId;
+		}
 		
 		File dbfFile = new File(dbfFilePath);
 		
@@ -242,7 +248,8 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			fti.setSRS(projectedSrs);
 			fti.setName(layerName);
 			fti.setTitle(layerName);
-			fti.setDescription("A datalayer constructed for a single SPARROW DSS Prediction Context");
+			fti.setDescription(description);
+			fti.setAbstract(description);
 			fti.setProjectionPolicy(srsHandling);
 			cb.setupBounds(fti);
 			LayerInfo li = cb.buildLayer(fti);
