@@ -363,6 +363,82 @@ public class ReachGroup implements XMLStreamParserComponent {
 		
 		return containedReachIDs;
 	}
+	
+	/**
+	 * Return true if this ReachGroup is enabled and there are any reaches or
+	 * logical sets of reaches contained within it.
+	 * 
+	 * This will also check to see if there are individual contained reaches that
+	 * have adjustments.
+	 * 
+	 * Note:  If using a ReachGroup as the <i>DefaultGroup</i>, there are no
+	 * reaches or logical sets contained within it - it is assumed to apply to
+	 * the entire model.  In that case, use the hasEnabledAdjustments method
+	 * instead.
+	 */
+	public boolean hasEnabledAdjustments() {
+		if (isEnabled) {
+
+			if(getAdjustments().size() > 0) {
+				//There is some type of bulk adjustment specified for the reaches
+				//in this group (but we don't check to see if there are reaches)
+				return true;
+			} else if (reaches != null && reaches.size() > 0) {
+				//There is no bulk adjustment, however, if this group is being
+				//used as a 'individual' group (that is, it is used as a container
+				//for reaches with individual adjustments), its possible that the
+				//individual reaches contained within it have adjustments
+				
+				for(ReachElement r : getExplicitReaches()){
+					if(r.getAdjustments().size() > 0) {
+						return true;
+					}
+				}
+			}
+		}
+			
+		return false;
+	}
+	
+	/**
+	 * Return true if this ReachGroup is enabled, has adjustments and there are
+	 * any reaches or logical sets of reaches contained within it.
+	 * 
+	 * This will also check to see if there are individual contained reaches that
+	 * have adjustments.
+	 * 
+	 * Note:  If using a ReachGroup as the <i>DefaultGroup</i>, there are no
+	 * reaches or logical sets contained within it - it is assumed to apply to
+	 * the entire model.  In that case, use the hasEnabledAdjustments method
+	 * instead.
+	 * 
+	 */
+	public boolean hasEnabledAdjustmentsAppliedToReaches() {
+		if (isEnabled) {
+
+			if(getAdjustments().size() > 0) {
+				//There is some type of bulk adjustment specified for the reaches in this group
+				if (logicalSets != null && logicalSets.size() > 0) {
+					return true;
+				} else if (reaches != null && reaches.size() > 0) {
+					return true;
+				}
+			} else if (reaches != null && reaches.size() > 0) {
+				//There is no bulk adjustment, however, if this group is being
+				//used as a 'individual' group (that is, it is used as a container
+				//for reaches with individual adjustments), its possible that the
+				//individual reaches contained within it have adjustments
+				
+				for(ReachElement r : getExplicitReaches()){
+					if(r.getAdjustments().size() > 0) {
+						return true;
+					}
+				}
+			}
+		}
+			
+		return false;
+	}
 
 
 	/**

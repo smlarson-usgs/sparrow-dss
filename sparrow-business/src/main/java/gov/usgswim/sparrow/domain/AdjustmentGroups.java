@@ -115,7 +115,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	// INSTANCE METHODS
 	// ================
 	public AdjustmentGroups parse(XMLStreamReader in)
-	throws XMLStreamException, XMLParseValidationException {
+			throws XMLStreamException, XMLParseValidationException {
 
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
@@ -219,17 +219,19 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 			hash.append(modelID);
 			hash.append(conflicts);
 
-			if (defaultGroup != null) {
+			if (defaultGroup != null && defaultGroup.hasEnabledAdjustments()) {
 				hash.append(defaultGroup.getStateHash());
 			}
 
 			if (reachGroups != null && reachGroups.size() > 0) {
 				for (ReachGroup rg: reachGroups) {
-					hash.append(rg.getStateHash());
+					if (rg.hasEnabledAdjustmentsAppliedToReaches()) {
+						hash.append(rg.getStateHash());
+					}
 				}
 			}
 
-			if (individualGroup != null) {
+			if (individualGroup != null && individualGroup.hasEnabledAdjustmentsAppliedToReaches()) {
 			    hash.append(individualGroup.getStateHash());
 			}
 
@@ -285,30 +287,33 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	
 	/**
 	 * 
-	 * @return true if any groups or individual reaches contained in those groups has adjustments made to it.
+	 * @return true if any groups or individual reaches contained in those
+	 * groups has enabled adjustments made to it.
 	 */
-	public boolean hasAdjustments() {
+	public boolean hasEnabledAdjustmentsAppliedToReaches() {
 		if(defaultGroup != null) {
-			if(defaultGroup.getAdjustments().size()>0) return true;
+			if(defaultGroup.hasEnabledAdjustments()) return true;
 		}
 		
 		if(individualGroup != null) {
-			for(ReachElement r : individualGroup.getExplicitReaches()){
-				if(r.getAdjustments().size() > 0) {
-					return true;
-				}
-			}
+			if (individualGroup.hasEnabledAdjustmentsAppliedToReaches()) return true;
 		}
 		
 		for(ReachGroup g : reachGroups){
-			if(g.getAdjustments().size()>0) return true;
-			for(ReachElement r : g.getExplicitReaches()){
-				if(r.getAdjustments().size() > 0) {
-					return true;
-				}
-			}
+			if(g.hasEnabledAdjustmentsAppliedToReaches()) return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients.
+	 * 
+	 * Currently this returns true if there are no adjustments.
+	 * @return 
+	 */
+	public boolean isLikelyReusable() {
+		return !hasEnabledAdjustmentsAppliedToReaches();
 	}
 }

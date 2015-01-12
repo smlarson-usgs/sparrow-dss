@@ -25,16 +25,11 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
                 dataSeries : {
                     "#text" : "total",
                     "@source": null
-                },
-                groupBy : {
-                    "#text" : "",
-                    "@aggFunction" : "avg"
                 }
             },
             terminalReaches : {
                 reach: []
             },
-            areaOfInterest : "",
             nominalComparison : {
             	"@type":"none"
             },
@@ -1030,20 +1025,6 @@ Sparrow.ux.Session.prototype = {
 		//Null out old properties
 		this.PermanentMapState.autoBin = undefined;
 		this.PermanentMapState.binning = undefined;
-	},
-
-	// Doesn't seem to be used?? [IK]
-	setAggFunction: function(val) {
-		this.PredictionContext.analysis.groupBy["@aggFunction"] = val;
-		this.changed();
-	},
-	// Doesn't seem to be used?? [IK]
-	setGroupBy: function(val) {
-		this.PredictionContext.analysis.groupBy["#text"] = val;
-		this.changed();
-	},
-	getGroupBy:	function() {
-		return this.PredictionContext.analysis.groupBy["#text"];
 	},
 
 	// Doesn't seem to be used?? [IK]

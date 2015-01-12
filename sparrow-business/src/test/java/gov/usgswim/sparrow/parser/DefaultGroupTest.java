@@ -16,15 +16,6 @@ import junit.framework.TestCase;
  * @author eeverman
  */
 public class DefaultGroupTest extends TestCase {
-    
-    /** Valid xml string represention of the default group. */
-    public static final String VALID_FRAGMENT = ""
-        + "<default-group enabled=\"true\">"
-        + "  <desc>description</desc>"
-        + "  <notes>notes</notes>"
-        + "  <adjustment src=\"5\" coef=\"0.9\" />"
-        + "</default-group>";
-        ;
 
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
