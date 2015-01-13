@@ -10,6 +10,8 @@ import org.geoserver.wps.ppio.XStreamPPIO;
  * This class will cause the type declared in the super() invocation to be
  * serialized and deserialized by XStream when it is passed into or out of a
  * GeoServer WPS process.
+ * 
+ * I don't think this is actually used.
  * @author eeverman
  */
 public class ServiceResponseWrapperPPIO  extends XStreamPPIO {

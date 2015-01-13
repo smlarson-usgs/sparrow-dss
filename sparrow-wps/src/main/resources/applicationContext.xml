@@ -16,13 +16,18 @@
 		
 	<!-- Need to register WPS PPIOs as content handlers for response types --> 
 	<bean id="serviceResponseWrapperPPIO" class="gov.usgs.cida.sparrow.service.util.ServiceResponseWrapperPPIO"></bean>
+	<bean id="sparrowDataLayerReponsePPIO" class="org.geoserver.sparrow.process.SparrowDataLayerReponsePPIO"></bean>
+	<bean id="sparrowStyleResponsePPIO" class="org.geoserver.sparrow.process.SparrowStyleResponsePPIO"></bean>
 	
-    <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory">
-    </bean>
+    <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory"></bean>
 	
     <bean id="createDatastoreProcess" class="org.geoserver.sparrow.process.CreateDatastoreProcess">
 		<constructor-arg index="0" ref="catalog"/>
 		<constructor-arg index="1" ref="jndiTemplate"/>
+    </bean>
+	
+    <bean id="createStyleProcess" class="org.geoserver.sparrow.process.CreateStyleProcess">
+		<constructor-arg index="0" ref="catalog"/>
     </bean>
     
     <bean id="sweeper" class="org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper">

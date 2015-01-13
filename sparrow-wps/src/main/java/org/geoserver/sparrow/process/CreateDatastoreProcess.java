@@ -37,6 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jndi.JndiTemplate;
 
+import org.geoserver.config.GeoServerDataDirectory;
+import org.geoserver.platform.GeoServerExtensions;
+		
 /**
  * WPS to add a layer to GeoServer based on an export dbf file from the user's
  * prediction context and a shapefile.
@@ -99,6 +102,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	
 	private Catalog catalog;
 	private JndiTemplate jndiTemplate;
+	private GeoServerDataDirectory gsDataDirectory;
 	
 	//Self initiated
 	private File baseShapefileDir;
@@ -111,6 +115,9 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		try {
 			getBaseShapefileDirectory();
 			getWmsPath();
+			
+			gsDataDirectory = ((GeoServerDataDirectory) GeoServerExtensions.bean("dataDirectory"));
+			gsDataDirectory.findDataRoot();
 		} catch (Exception e) {
 			log.error("Configuration Error.", e);
 		}
@@ -205,7 +212,6 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	 */
 	protected boolean createLayer(String namespace, String workspaceName, Integer contextId, File shapeFile,
 			String dbfFilePath, String idFieldInDbf, String projectedSrs) throws Exception {
-
 		
 		String layerName = NamingConventions.convertContextIdToXMLSafeName(contextId);
 		
