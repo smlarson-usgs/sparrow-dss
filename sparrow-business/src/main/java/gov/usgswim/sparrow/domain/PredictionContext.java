@@ -372,6 +372,43 @@ public class PredictionContext implements XMLStreamParserComponent {
 		}
 	}
 	
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients.
+	 * 
+	 * Currently this returns true if there are no adjustments.
+	 * @return 
+	 */
+	public boolean isLikelyReusable() {
+		
+		//These are roughly in order from the fastest checks to the slowest.
+		
+		if (analysis != null) {
+			if (! analysis.isLikelyReusable()) return false;
+		}
+		
+		if (comparison != null) {
+			if (! comparison.isLikelyReusable()) return false;
+		}
+		
+		if (areaOfInterest != null) {
+			if (! areaOfInterest.isLikelyReusable()) return false;
+		}
+		
+		if (terminalReaches != null) {
+			if (! terminalReaches.isLikelyReusable()) return false;
+		}
+			
+		//This last one is potentially the slowest to check b/c it may have
+		//to spin through a list of reaches to determine if any of them have
+		//adjustments.
+		if (adjustmentGroups != null) {
+			if (! adjustmentGroups.isLikelyReusable()) return false;
+		}
+
+		return true;
+	}
+	
 
 	// ===========
 	// Subset creation methods

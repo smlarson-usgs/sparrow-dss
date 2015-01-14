@@ -992,7 +992,8 @@ function addDataLayer() {
     		opacity: Sparrow.SESSION.getDataLayerOpacity(),
 			customParams: {
 				format_options: 'antialiasing:none;quantizer:octree;',
-				sld: sldUrl
+				sld: sldUrl,
+				tiled: (workspace.indexOf("reusable") > -1)?"true":"false"
 			}
     	})
     );

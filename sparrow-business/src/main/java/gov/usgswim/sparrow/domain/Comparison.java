@@ -113,5 +113,17 @@ public abstract class Comparison implements XMLStreamParserComponent {
 	public Integer getId() {
 		return hashCode();
 	}
+	
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients.
+	 * 
+	 * Currently this returns false always, b/c AoI is not currently used by
+	 * the application.  If we wire it up to do something, add logic appropriately.
+	 * @return 
+	 */
+	public boolean isLikelyReusable() {
+		return this.getComparisonType().isNone();
+	}
 
 }

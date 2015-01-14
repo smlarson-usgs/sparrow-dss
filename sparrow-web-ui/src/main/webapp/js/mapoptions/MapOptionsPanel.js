@@ -31,14 +31,6 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		displayReachOverlay: 'When mapping catchments, this option show an overlay of the stream reaches in grey.'
 	},
 
-	displayTypeAggregationMap: {
-		'reach': 'non-aggregate',
-		'catch': 'non-aggregate',
-		'huc8' : 'aggregate',
-		'huc6' : 'aggregate',
-		'huc4' : 'aggregate',
-		'huc2' :'aggregate'
-	},
 	constructor : function(config) {
 		var fieldsAnchor = '97%';
 		var fieldsetAnchor = '92%';
@@ -193,12 +185,6 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 			        	'change': function(grp, radio) {
 			        		this.setWhatToMapCtl(radio.value);
 			        		Sparrow.SESSION.setWhatToMap(radio.value);
-			        		var type = this.displayTypeAggregationMap[radio.value];
-			        		if ('non-aggregate' == type) {
-			        			Sparrow.SESSION.setGroupBy('');
-			        		} else {
-			        			Sparrow.SESSION.setGroupBy(radio.value);
-			        		}
 			        	},
 			        	'afterrender': function(grp) {
 			        		this.setWhatToMapCtl("catch");
@@ -369,37 +355,6 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
     			}
     		}
     	});
-		
-		this.aggFunctionCombo = new Ext.form.ComboBox({
-			hideLabel: false,
-			fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.Aggregate Function\')">Aggregate Function</a>',
-			store: new Ext.data.SimpleStore({
-				fields: ['name', 'value'],
-				data: [
-				       ['Average within each HUC', 'avg'],
-				       ['Maximum', 'max'],
-				       ['Minimum', 'min'],
-				       ['Total within each HUC', 'sum'],
-				       ['Outflow Yield for each HUC', 'outflow']
-				       ]
-			}),
-			mode: 'local',
-			triggerAction: 'all',
-			editable: false,
-			displayField: 'name',
-			valueField: 'value',
-			anchor: fieldsAnchor,
-			disabled: false,
-			value: 'avg',
-			listeners: {    
-				'select': function(combo, record, index) {
-					var value = record.get('value');
-					this.setAggFunctionCtl(value);
-					Sparrow.SESSION.setAggFunction(value);
-				},
-				scope: this
-			}
-		});
 
 		//actual LAYOUT portion starts here
 		var dataSeriesSection = new Ext.form.FieldSet({
@@ -645,18 +600,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		for(var i = 0; i < rad.items.items.length; i++) {
 			rad.items.items[i].setValue(value == rad.items.items[i].value);
 		}
-		//set the checkbox to the correct value
-		this.toggleAggFunctionCombo(value);
 	},
-
-	/*
-	 * Sets the 'Aggregate Function' dropdown value.  This method does not fire
-	 * the 'select' event for the dropdown.
-	 */
-	setAggFunctionCtl: function(value) {
-		this.aggFunctionCombo.setValue(value);
-	},
-
 	
 	syncDataOverlayControlsToSession: function() {
 		//Calibration site overlay
@@ -754,22 +698,6 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 			data: data
 		});
 		return n;
-	},
-
-	/*
-	 * Filters the 'Aggregate Function' dropdown based on the value of the
-	 * 'Map' dropdown.
-	 */
-	toggleAggFunctionCombo: function(mapDisplayType) {
-		var functionCombo = this.aggFunctionCombo;
-
-		var type = this.displayTypeAggregationMap[mapDisplayType];
-		if ('non-aggregate' == type) {
-			functionCombo.setDisabled(true);
-		} else {
-			functionCombo.setDisabled(false);
-			functionCombo.getEl().frame();
-		}
 	}
 });
 

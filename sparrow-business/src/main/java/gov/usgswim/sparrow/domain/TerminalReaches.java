@@ -230,6 +230,15 @@ public class TerminalReaches implements XMLStreamParserComponent {
 		return hashCode();
 	}
 
-
+	/**
+	 * Returns true if the state represented by this object
+	 * is likely to be reused by multiple clients.
+	 * 
+	 * Currently this returns true if there are no terminal reaches listed.
+	 * @return 
+	 */
+	public boolean isLikelyReusable() {
+		return isEmpty();
+	}
 
 }

@@ -82,7 +82,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 		AdjustmentGroups adjGroups = adjPredictContext.getAdjustmentGroups();
 
 		if (req.isIncludeAdjSource()) {
-	        if (adjGroups != null && adjGroups.hasAdjustments()) {
+	        if (adjGroups != null && adjGroups.hasEnabledAdjustmentsAppliedToReaches()) {
 
 	    		DataTable adjustedSources =
 	    			sharedApp.getAdjustedSource(adjGroups);
@@ -110,7 +110,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         }
 
         if (req.isIncludeAdjPredict()) {
-        	if (adjGroups != null && adjGroups.hasAdjustments()) {
+        	if (adjGroups != null && adjGroups.hasEnabledAdjustmentsAppliedToReaches()) {
         		adjPredictResult = sharedApp.getPredictResult(adjPredictContext.getAdjustmentGroups());
         	} else {
         		adjPredictResult = sharedApp.getPredictResult(adjPredictContext.getNoAdjustmentVersion().getAdjustmentGroups());

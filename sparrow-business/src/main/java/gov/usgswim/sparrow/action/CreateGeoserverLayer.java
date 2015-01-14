@@ -44,6 +44,8 @@ public class CreateGeoserverLayer extends Action<String> {
 	private String geoserverPath;
 	private String shapefileFileName;
 	private String idFieldInShapeFileAndDbfFile;
+	private boolean isReusable;
+	private String description;
 	
 	/**
 	 * Constructs the action w/ all needed parameters
@@ -65,6 +67,18 @@ public class CreateGeoserverLayer extends Action<String> {
 		SparrowModel model = SharedApplication.getInstance().getModelMetadata(mrk).get(0);
 		shapefileFileName = model.getThemeName();
 		idFieldInShapeFileAndDbfFile = model.getEnhNetworkIdColumn();
+		isReusable = context.isLikelyReusable();
+		
+		if (isReusable) {
+			description = "Layer created for model " + context.getModelID() + " and considered a cachable (it has no adjustments or funky analysis)";
+		} else {
+			description = "Layer created for model " + context.getModelID() + " and considered a non-cachable for one of these reasons: " +
+					"Reusable Comparison? " + ((context.getComparison() == null)?"true":context.getComparison().isLikelyReusable()) + " " +
+					"Reusable Analysis? " + ((context.getAnalysis() == null)?"true":context.getAnalysis().isLikelyReusable()) + " " +
+					"Reusable Terminal Reaches? " + ((context.getTerminalReaches() == null)?"true":context.getTerminalReaches().isLikelyReusable()) + " " +
+					"Reusable Adjustment Groups? " + ((context.getAdjustmentGroups() == null)?"true":context.getAdjustmentGroups().isLikelyReusable()) + " " +
+					"Reusable Area Of Interest? " + ((context.getAreaOfInterest() == null)?"true":context.getAreaOfInterest().isLikelyReusable());
+		}
 	}
 
 	@Override
@@ -108,13 +122,14 @@ public class CreateGeoserverLayer extends Action<String> {
 	@Override
 	public String doAction() throws Exception {
 
-		String xmlReq = this.getTextWithParamSubstitution(
-				"template",
+		String xmlReq = this.getTextWithParamSubstitution("template",
 				"contextId", context.getId().toString(), 
 				"themeName", shapefileFileName, 
 				"dbfFilePath", dbfFile.getAbsolutePath(), 
 				"idField", idFieldInShapeFileAndDbfFile,
-				"projectedSrs", (projectedSrs == null)?"":projectedSrs);
+				"projectedSrs", (projectedSrs == null)?"":projectedSrs,
+				"isReusable", Boolean.toString(isReusable),
+				"description", description);
 		
 		
 		String response = getQueryResponse(xmlReq);
