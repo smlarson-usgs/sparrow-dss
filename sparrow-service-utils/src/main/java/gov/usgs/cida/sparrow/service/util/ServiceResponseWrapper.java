@@ -35,6 +35,7 @@ public class ServiceResponseWrapper {
 	private String errorType;
 	private String errorMessage;
 	private String errorTrace;
+	private transient Throwable error;
 	
 	
 	private String entityClass;
@@ -157,6 +158,16 @@ public class ServiceResponseWrapper {
 	public ServiceResponseStatus getStatus() {
 		return status;
 	}
+	
+	/**
+	 * If an error was recorded, this retrieves it.
+	 * 
+	 * Note that this is based on a transient field, so will not be serialized.
+	 * @return 
+	 */
+	public Throwable getError() {
+		return error;
+	}
 
 	/**
 	 * @param status the status to set
@@ -246,6 +257,9 @@ public class ServiceResponseWrapper {
 	 * @param error the errorDetail to set
 	 */
 	public void setError(Throwable error) {
+		
+		this.error = error;
+		
 		errorMessage = error.getLocalizedMessage();
 		
 		if (error.getCause() != null) {
@@ -260,6 +274,56 @@ public class ServiceResponseWrapper {
 		error.printStackTrace(ps);
 		
 		errorTrace = sw.toString();
+	}
+	
+	/**
+	 * Returns true ONLY if the status has been set to one of the OK statuses.
+	 * 
+	 * If the status has not been set (null) this will return false;
+	 * @return 
+	 */
+	public boolean isOK() {
+		if (status != null) {
+			return (status.toString().startsWith("OK"));
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * In cases where one action invokes another, each returning wrappers, this
+	 * method makes it easy to let the parent wrapper inherit the appropriate fields
+	 * from the chained response if the chainedWrapper failed.
+	 * 
+	 * These fields are copied from the chainedWrapper to this, only if the
+	 * chained instance is not OK (isOK() returns false):
+	 * 
+	 * * status
+	 * * error
+	 * * message (prepended with prependToMessage).
+	 * 
+	 * Copy on failure only ensures that a single delegation operation's success
+	 * does not flip the parent operation to success if it has already failed.
+	 * 
+	 * If the prepend is specified by the chained wrapper has no message, a
+	 * [no message from chained operation] note is added.
+	 * 
+	 * @param prependToMessage
+	 * @param chainedWrapper 
+	 */
+	public void inheritChainedFailure(String prependToMessage, ServiceResponseWrapper chainedWrapper) {
+		if (! chainedWrapper.isOK()) {
+			this.status = chainedWrapper.getStatus();
+			this.error = chainedWrapper.getError();
+			
+			if (prependToMessage != null) prependToMessage+=": ";
+			
+			if (chainedWrapper.getMessage() != null) {
+				this.message = prependToMessage + chainedWrapper.getMessage();
+			} else {
+				this.message = prependToMessage + "[No messaged from chained action]";
+			}
+		}
 	}
 	
 	

@@ -1,12 +1,16 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 import javax.naming.NamingException;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -45,6 +49,8 @@ public class CreateGeoserverLayer extends Action<String> {
 	private String shapefileFileName;
 	private String idFieldInShapeFileAndDbfFile;
 	private boolean isReusable;
+	private String catchSldRelativeUrl;
+	private String reachSldRelativeUrl;
 	private String description;
 	
 	/**
@@ -71,6 +77,15 @@ public class CreateGeoserverLayer extends Action<String> {
 		
 		if (isReusable) {
 			description = "Layer created for model " + context.getModelID() + " and considered a cachable (it has no adjustments or funky analysis)";
+			
+			BinningRequest bsr = new BinningRequest(context.getId(), 5, BinType.EQUAL_COUNT);
+			BinSet bs = SharedApplication.getInstance().getDataBinning(bsr);
+			CalcStyleUrlParams calcParamsAct = new CalcStyleUrlParams(bs);
+			String params = calcParamsAct.run();
+			
+			catchSldRelativeUrl = params;
+			reachSldRelativeUrl = params;
+		
 		} else {
 			description = "Layer created for model " + context.getModelID() + " and considered a non-cachable for one of these reasons: " +
 					"Reusable Comparison? " + ((context.getComparison() == null)?"true":context.getComparison().isLikelyReusable()) + " " +
@@ -118,18 +133,25 @@ public class CreateGeoserverLayer extends Action<String> {
 		
 	}
 
-	
+//	private static String catchUrl = "http://localhost:8080/sparrowgeoserver/rest/sld/workspace/sparrow-catchment/layer/P1238842937/catch.sld?binLowList=0,25000,58000,141000,676000&binHighList=25000,58000,141000,676000,50000000&binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&bounded=false";
+//	private static String reachUrl = "http://localhost:8080/sparrowgeoserver/rest/sld/workspace/sparrow-flowline/layer/P1238842937/reach.sld?binLowList=0,25000,58000,141000,676000&binHighList=25000,58000,141000,676000,50000000&binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&bounded=false";
+//	
+//	
+//	
 	@Override
 	public String doAction() throws Exception {
 
 		String xmlReq = this.getTextWithParamSubstitution("template",
 				"contextId", context.getId().toString(), 
-				"themeName", shapefileFileName, 
+				"coverageName", shapefileFileName, 
 				"dbfFilePath", dbfFile.getAbsolutePath(), 
-				"idField", idFieldInShapeFileAndDbfFile,
+				"idFieldInDbf", idFieldInShapeFileAndDbfFile,
 				"projectedSrs", (projectedSrs == null)?"":projectedSrs,
 				"isReusable", Boolean.toString(isReusable),
-				"description", description);
+				"flowlineStyleUrl", StringEscapeUtils.escapeXml(reachSldRelativeUrl),
+				"catchStyleUrl", StringEscapeUtils.escapeXml(catchSldRelativeUrl),
+				"description", description,
+				"overwrite", "false");
 		
 		
 		String response = getQueryResponse(xmlReq);
@@ -149,7 +171,7 @@ public class CreateGeoserverLayer extends Action<String> {
 		uriBuild.addParameter("service", "wps");
 		uriBuild.addParameter("version", "1.0.0");
 		uriBuild.addParameter("request", "execute");
-		uriBuild.addParameter("identifier", "dss:CreateDatastore");
+		uriBuild.addParameter("identifier", "dss:CreateSparrowDynamicDatastoreAndLayerProcess");
 		
 
 		

@@ -5,11 +5,9 @@ import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.wps.gs.GeoServerProcess;
-import org.geotools.process.ProcessException;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -17,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Resources;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -75,16 +74,6 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 	//Self init
 	private GeoServerDataDirectory gsDataDirectory;
 	
-	//Set per request
-	private String styleName;
-	private String workspaceName;
-	private String sldText;
-	private String sldUrl;
-	private Boolean overwrite;
-	
-	//Self init per request
-	private WorkspaceInfo workspace;
-	
 	public CreateStyleProcess(Catalog catalog) {
 		this.catalog = catalog;
 		
@@ -114,54 +103,57 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 			@DescribeParameter(name="workspaceName", description="Name of the workspace to use for the style, which must exist.  Null OK to put in the default namespace", min = 0, max = 1) String workspaceName,
 			@DescribeParameter(name="sldText", description="Actual Text of the SLD, which must be valid SLD XML.  If not specified, the sldUrl is required.", min = 0, max = 1) String sldText,
 			@DescribeParameter(name="sldUrl", description="URL that should return a valid SLD XML document encoded w/ UTF-8.  If not specified, the sldText is required.", min = 0, max = 1) String sldUrl,
-			@DescribeParameter(name="overwrite", description="If true and there is an existing style of the same name/workspace, the new style will replace the old.", min = 0, max = 1) Boolean overwrite
+			@DescribeParameter(name="overwrite", description="If true and there is an existing style of the same name/workspace, the existing one will be replaced by the new.", min = 0, max = 1) Boolean overwrite
 		) throws Exception {
 
+		UserState state = new UserState();
 		
-		
-		this.styleName = styleName;
-		this.workspaceName = workspaceName;
-		this.sldText = sldText;
-		this.sldUrl = sldUrl;
-		this.overwrite = overwrite;
-		
-		if (this.overwrite == null) this.overwrite = Boolean.FALSE;
+		state.styleName = styleName;
+		state.workspaceName = workspaceName;
+		state.sldText = sldText;
+		state.sldUrl = sldUrl;
+		state.overwrite = overwrite;
 		
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper();
-		wrap.setEntityClass(SparrowStyleResponse.class);
+		wrap.setEntityClass(StyleResponse.class);
+		wrap.setMimeType(ServiceResponseMimeType.XML);
 		wrap.setOperation(ServiceResponseOperation.CREATE);
 		wrap.setStatus(ServiceResponseStatus.OK);
 		
-		init(wrap);	//Will set wrap status to something other than OK if there is an issue
+		init(state, wrap);	//Will set wrap status to something other than OK if there is an issue
 
-		if (ServiceResponseStatus.OK.equals(wrap.getStatus())) {
-			
-			Exception e = null;
-			
-			try {
-				createStyle(wrap);
-			} catch (Exception ee) {
-				e = ee;
-			}
-			
-			if (! wrap.getStatus().toString().startsWith("OK")) {
-				
-				//This is a failure handled during creation
-				log.error("FAILED to create the new style {} in workspace {}.  Message: {}", new Object[] {styleName, workspaceName, wrap.getMessage()});
-				
-			} else if (e != null) {
-				
-				//This is an unhandled error during create
-				wrap.setStatus(ServiceResponseStatus.FAIL);
-				wrap.setError(e);
-				
-				String msg = "FAILED:  An unexpected error happened during the creation of create style " + styleName + " in workspace " + workspaceName;
-				wrap.setMessage(msg);
-				log.error(msg);
-			}
-		} else {
-			log.error("The validation failed with this message: {}", new Object[] {wrap.getMessage()});
+		log.debug("Request to create style {} in workspace {}", new Object[]{state.styleName, state.workspaceName});
+		
+		if (! wrap.isOK()) {
+			log.error("Unable to create the style {} b/c the validation failed with this message: {}",
+					new Object[] {state.styleName, wrap.getMessage()});
+			return wrap;
 		}
+		
+		
+
+		try {
+			createStyle(state, wrap);
+		} catch (Exception e) {
+			//This is an unhandled error during create
+			wrap.setStatus(ServiceResponseStatus.FAIL);
+			wrap.setError(e);
+
+			String msg = "FAILED:  An unexpected error happened during the creation of create style " + styleName + " in workspace " + workspaceName;
+			wrap.setMessage(msg);
+			log.error(msg, e);
+			return wrap;
+		}
+
+		if (wrap.isOK()) {
+			log.debug("Request COMPLETE OK to create style {} in workspace {}", new Object[]{state.styleName, state.workspaceName});
+		} else {
+			log.error("FAILED to create the new style {} in workspace {}.  Message: {}", new Object[] {styleName, workspaceName, wrap.getMessage()});
+			return wrap;
+		}
+
+			
+
 		
 		return wrap;
 	}
@@ -169,42 +161,44 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 	/**
 	 * Initiate the self-initialized params from the user params and does validation.
 	 */
-	protected void init(ServiceResponseWrapper wrap) {
+	private void init(UserState state, ServiceResponseWrapper wrap) {
 		
-		if (sldText == null && sldUrl == null) {
+		if (state.overwrite == null) state.overwrite = Boolean.FALSE;
+		
+		if (state.sldText == null && state.sldUrl == null) {
 			wrap.setMessage("Both the sldText and the sldUrl are set to null.  Exactly one must be specified.");
 			wrap.setStatus(ServiceResponseStatus.FAIL);
 			return;
 			
-		} else if (sldText != null && sldUrl != null) {
+		} else if (state.sldText != null && state.sldUrl != null) {
 			wrap.setMessage("Both the sldText and the sldUrl are specified.  Only one may be specified.");
 			wrap.setStatus(ServiceResponseStatus.FAIL);
 			return;
 			
-		} else if (sldUrl != null) {
+		} else if (state.sldUrl != null) {
 			try {
-				URL url = new URL(sldUrl);
-				sldText = Resources.toString(url, Charset.forName("UTF-8"));
+				URL url = new URL(state.sldUrl);
+				state.sldText = Resources.toString(url, Charset.forName("UTF-8"));
 				
 			} catch (Exception e) {
-				wrap.setMessage("Unable to load or read the SLD from the url: " + sldUrl);
+				wrap.setMessage("Unable to load or read the SLD from the url: " + state.sldUrl);
 				wrap.setStatus(ServiceResponseStatus.FAIL);
 				return;
 			}
 		}
 		
-		if (workspaceName != null) {
+		if (state.workspaceName != null) {
 			
-			workspace = catalog.getWorkspaceByName(workspaceName);
-			if (workspace == null) {
-				wrap.setMessage("The workspace " + workspaceName + " does not exist.");
+			state.workspace = catalog.getWorkspaceByName(state.workspaceName);
+			if (state.workspace == null) {
+				wrap.setMessage("The workspace " + state.workspaceName + " does not exist.");
 				wrap.setStatus(ServiceResponseStatus.FAIL);
 				return;
 			}
 		}
 		
 		//Validate the sld text
-		InputStream stream = new ByteArrayInputStream(sldText.getBytes());
+		InputStream stream = new ByteArrayInputStream(state.sldText.getBytes());
 		SLDValidator sldValidator = new SLDValidator();
 		List errors = sldValidator.validateSLD(stream);
 
@@ -216,15 +210,16 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 	
 	
 	
-	protected void createStyle(ServiceResponseWrapper wrap) throws Exception {
+	protected void createStyle(UserState state, ServiceResponseWrapper wrap) throws Exception {
 		
-		SparrowStyleResponse resp = new SparrowStyleResponse();
+		StyleResponse resp = new StyleResponse();
 		
-		StyleInfo existingStyle = catalog.getStyleByName(workspaceName, styleName);
+		StyleInfo existingStyle = catalog.getStyleByName(state.workspaceName, state.styleName);
 		
-		if (existingStyle != null && !overwrite) {
+		if (existingStyle != null && !state.overwrite) {
 			
-			log.debug("Request to create style {} in workspace {} OK.  Style already existed and the overwrite flag is false, so no action taken.", new Object[] {styleName, workspaceName});
+			log.debug("Request to create style {} in workspace {} OK.  Style already existed and the overwrite flag is false, so no action taken.",
+					new Object[] {state.styleName, state.workspaceName});
 			
 			resp.setStyleName(existingStyle.getName());
 			resp.setWorkspaceName((existingStyle.getWorkspace() != null)?existingStyle.getWorkspace().getName():null);
@@ -245,12 +240,12 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 		
 		
 		StyleInfoImpl newStyleInfo = new StyleInfoImpl(catalog);
-		newStyleInfo.setFilename(styleName + ".sld");
-		newStyleInfo.setName(styleName);
-		newStyleInfo.setWorkspace(workspace);
+		newStyleInfo.setFilename(state.styleName + ".sld");
+		newStyleInfo.setName(state.styleName);
+		newStyleInfo.setWorkspace(state.workspace);
 		newStyleInfo.setSLDVersion(new org.geotools.util.Version("1.0.0"));
 		
-		InputStream stream = new ByteArrayInputStream(sldText.getBytes());
+		InputStream stream = new ByteArrayInputStream(state.sldText.getBytes());
 		
 		File styleSldFile = gsDataDirectory.findOrCreateStyleSldFile(newStyleInfo);
 		
@@ -269,10 +264,10 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 		if (errors.size() > 0) {
 			
 			if (existingStyle != null) {
-				String msg = "Request to create style " + styleName + " in workspace " + workspaceName + " FAILED.  Unfortunately, there was an existing style of the same name, which was deleted and the new one could not be created.";
+				String msg = "Request to create style " + state.styleName + " in workspace " + state.workspaceName + " FAILED.  Unfortunately, there was an existing style of the same name, which was deleted and the new one could not be created.";
 				wrap.setMessage(msg);
 			} else {
-				String msg = "Request to create style " + styleName + " in workspace " + workspaceName + " FAILED.";
+				String msg = "Request to create style " + state.styleName + " in workspace " + state.workspaceName + " FAILED.";
 				wrap.setMessage(msg);
 			}
 			
@@ -284,9 +279,25 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 		catalog.add(newStyleInfo);
 		
 		resp.setStyleName(newStyleInfo.getName());
-		resp.setWorkspaceName(workspaceName);
+		resp.setWorkspaceName(state.workspaceName);
 		wrap.addEntity(resp);
 
+	}
+	
+	/**
+	 * The WPS is single instance, so a state class for each user request holds
+	 * all info for a single execution.
+	 */
+	private class UserState {
+		//Set per request
+		private String styleName;
+		private String workspaceName;
+		private String sldText;
+		private String sldUrl;
+		private Boolean overwrite;
+
+		//Self init per request
+		private WorkspaceInfo workspace;
 	}
 	
 }

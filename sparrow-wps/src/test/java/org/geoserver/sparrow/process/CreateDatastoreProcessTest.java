@@ -50,13 +50,13 @@ public class CreateDatastoreProcessTest {
 	 @Test
 	 public void testGetFileReference() {
 		 
-		 assertEquals(TEST_HOME + "/sample", CreateDatastoreProcess.getFileReference("~/sample").getAbsolutePath());
-		 assertEquals(TEST_HOME + "/sample", CreateDatastoreProcess.getFileReference("sample").getAbsolutePath());
-		 assertEquals("/sample", CreateDatastoreProcess.getFileReference("/sample").getAbsolutePath());
+		 assertEquals(TEST_HOME + "/sample", CreateSparrowDynamicDatastoreAndLayerProcess.getFileReference("~/sample").getAbsolutePath());
+		 assertEquals(TEST_HOME + "/sample", CreateSparrowDynamicDatastoreAndLayerProcess.getFileReference("sample").getAbsolutePath());
+		 assertEquals("/sample", CreateSparrowDynamicDatastoreAndLayerProcess.getFileReference("/sample").getAbsolutePath());
 	 }
 	
 	
-//	static class Wps extends CreateDatastoreProcess {
+//	static class Wps extends CreateDbfShapefileJoiningDatastoreAndLayerProcess {
 //		Wps() {
 //			super(null, null);
 //		}

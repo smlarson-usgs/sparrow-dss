@@ -940,6 +940,7 @@ function addDataLayer() {
         //get parameters to create base url for sparrow data layer
         what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"],
         bins = Sparrow.SESSION.getBinData()["functionalBins"],
+		binsAreDefault = Sparrow.SESSION.isBinAuto(),
         boundedFlag = !Sparrow.SESSION.getBinData()["boundUnlimited"][0].low,
         colors = Sparrow.SESSION.getBinData()["binColors"],
         binParams,
@@ -950,6 +951,7 @@ function addDataLayer() {
         workspace,
         layerName,
         wsAndLayerName,
+		isReusableLayers,
         splitWsAndLayerName;
 
 	
@@ -967,35 +969,49 @@ function addDataLayer() {
     splitWsAndLayerName = wsAndLayerName.split(':');
     workspace = splitWsAndLayerName[0];
     layerName = splitWsAndLayerName[1];
+	isReusableLayers = (workspace.indexOf("reusable") > -1);
     sldUrl = gsUrl + 'rest/sld/workspace/';
     sldUrl += workspace;
     sldUrl += '/layer/';
     sldUrl += layerName;
     sldUrl += '/' + what_to_map + '.sld?' + binParams;
+	
+	var layerParams = {
+			
+		format: "image/png8",
+		zDepth: Sparrow.config.layers.mainDataLayer.zDepth,
+		id: mappedValueLayerID,
+		scaleMin: Sparrow.config.layers.mainDataLayer.scaleMin,
+		scaleMax: Sparrow.config.layers.mainDataLayer.scaleMax,
+		baseUrl: dataLayerWmsUrl + "?",
+		legendUrl: 'getLegend?' + binParams,
+		title: wsAndLayerName,
+		name: wsAndLayerName,
+		layersUrlParam: wsAndLayerName,
+		isHiddenFromUser: true,
+		description: Sparrow.config.layers.mainDataLayer.title,
+		opacity: Sparrow.SESSION.getDataLayerOpacity()
+	};
+	
+	if (isReusableLayers) {
+		if (binsAreDefault) {
+			layerParams['customParams'] = { tiled: "true" };
+		} else {
+			layerParams['customParams'] = {
+				sld: sldUrl,
+				format_options: 'antialiasing:none;quantizer:octree;'
+			};
+		}
+	} else {
+		layerParams['customParams'] = {
+			sld: sldUrl,
+			format_options: 'antialiasing:none;quantizer:octree;'
+		};
+	}
 
     map1.layerManager.unloadMapLayer(mappedValueLayerID);
     map1.appendLayer(
-    	new JMap.web.mapLayer.WMSLayer({
-			
-			format: "image/png8",
-    		zDepth: Sparrow.config.layers.mainDataLayer.zDepth,
-    		id: mappedValueLayerID,
-    		scaleMin: Sparrow.config.layers.mainDataLayer.scaleMin,
-    		scaleMax: Sparrow.config.layers.mainDataLayer.scaleMax,
-    		baseUrl: dataLayerWmsUrl + "?",
-    		legendUrl: 'getLegend?' + binParams,
-    		title: wsAndLayerName,
-    		name: wsAndLayerName,
-			layersUrlParam: wsAndLayerName,
-    		isHiddenFromUser: true,
-    		description: Sparrow.config.layers.mainDataLayer.title,
-    		opacity: Sparrow.SESSION.getDataLayerOpacity(),
-			customParams: {
-				format_options: 'antialiasing:none;quantizer:octree;',
-				sld: sldUrl,
-				tiled: (workspace.indexOf("reusable") > -1)?"true":"false"
-			}
-    	})
+    	new JMap.web.mapLayer.WMSLayer(layerParams)
     );
 
 	Sparrow.SESSION.markMappedState(Sparrow.SESSION.getLastValidContextId(), Sparrow.SESSION.getLastValidSeriesData());
