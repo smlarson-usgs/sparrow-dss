@@ -69,7 +69,12 @@ function loadExternalResourceInfo() {
 		method: 'GET',
 		url: 'GeoServerWMSEndPointService',
 		success: function(r,o) {
-			var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'status');
+			
+			var ok = "fail";
+
+			if (r.responseXML) {
+				ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
+			}
 
 			if (ok == 'OK') {
 				var urlStr = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'entity');
@@ -774,8 +779,12 @@ function registerDataLayer(options) {
 			method: 'GET',
 			url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
 			success: function(r,o) {
-				var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
-
+				var ok = "fail";
+				
+				if (r.responseXML) {
+					ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
+				}
+				
 				if (ok == 'OK') {
 
 					options.dataLayer = new Object();
