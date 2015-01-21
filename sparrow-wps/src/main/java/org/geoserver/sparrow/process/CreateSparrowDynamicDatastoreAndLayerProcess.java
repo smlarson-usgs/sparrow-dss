@@ -236,6 +236,9 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		//Create style urls if this is a reusable layer
 		if (state.isReusable) {
 			
+			state.flowlineStyleUrlStr = StringUtils.trimToNull(state.flowlineStyleUrlStr);
+			state.catchStyleUrlStr = StringUtils.trimToNull(state.catchStyleUrlStr);
+			
 			if (state.flowlineStyleUrlStr == null || state.catchStyleUrlStr == null) {
 				wrap.setStatus(ServiceResponseStatus.FAIL);
 				wrap.setMessage("The flowlineStyleUrlStr and the catchStyleUrlStr must be set if the layer is reusable.");
