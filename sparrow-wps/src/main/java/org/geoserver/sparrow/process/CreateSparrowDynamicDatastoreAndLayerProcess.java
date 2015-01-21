@@ -310,6 +310,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		String flowStyleName = null;
 		String catchStyleName = null;
 		
+		String[] tileCacheFilters = null;
+		
 		//Build styles if this is a reusable layer
 		//TODO:  Using global workspace for styles instead of workspace-specific.
 		//This is do to a bug described here:
@@ -345,6 +347,15 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 				wrap.inheritChainedFailure("Unable to create datastore or layers because the creation of a style failed", flowStyleWrap);
 				return;
 			}
+			
+			//Tile cache filter parameter that forces some rendering options
+			//we need for layers to use solid colors even when zoomed out.
+			tileCacheFilters = new String[] {
+				"format_options",
+				"regex",
+				"antialiasing:none;quantizer:octree;",
+				".*"
+			};
 		}
 		
 		ServiceResponseWrapper flowLayerWrap = createDbfShapefileJoiningDatastoreAndLayerProcess.execute(
@@ -355,6 +366,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 				JOIN_COLUMN,
 				state.projectedSrs,
 				flowStyleName,
+				tileCacheFilters,
 				state.description,
 				state.overwrite);
 		
@@ -371,6 +383,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 				JOIN_COLUMN,
 				state.projectedSrs,
 				catchStyleName,
+				tileCacheFilters,
 				state.description,
 				state.overwrite);
 
@@ -378,6 +391,9 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 			wrap.inheritChainedFailure("Unable to create the catchment datastore or layer (flowline already created)", flowLayerWrap);
 			return;
 		}
+		
+		//Set webcaching properties on these newly added layers
+		
 		
 		
 		SparrowDataLayerResponse resp = new SparrowDataLayerResponse();

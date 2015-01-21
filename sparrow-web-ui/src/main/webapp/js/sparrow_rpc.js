@@ -993,17 +993,16 @@ function addDataLayer() {
 		opacity: Sparrow.SESSION.getDataLayerOpacity()
 	};
 	
-	if (isReusableLayers) {
-		if (binsAreDefault) {
-			layerParams['customParams'] = { tiled: "true" };
-		} else {
-			layerParams['customParams'] = {
-				sld: sldUrl,
-				format_options: 'antialiasing:none;quantizer:octree;'
-			};
-		}
+	if (isReusableLayers && binsAreDefault) {
+		//options for a tile-cache layer (format_options ignored, but the server
+		//is config'ed to use the ones listed here for ref)
+		layerParams['customParams'] = {
+			tiled: "true"
+			//format_options: 'antialiasing:none;quantizer:octree;'
+		};
 	} else {
 		layerParams['customParams'] = {
+			//A non-tile-cache layer, which must spec style and format options
 			sld: sldUrl,
 			format_options: 'antialiasing:none;quantizer:octree;'
 		};
