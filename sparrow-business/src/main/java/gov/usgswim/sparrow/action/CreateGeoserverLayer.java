@@ -148,8 +148,8 @@ public class CreateGeoserverLayer extends Action<String> {
 				"idFieldInDbf", idFieldInShapeFileAndDbfFile,
 				"projectedSrs", (projectedSrs == null)?"":projectedSrs,
 				"isReusable", Boolean.toString(isReusable),
-				"flowlineStyleUrl", StringEscapeUtils.escapeXml(reachSldRelativeUrl),
-				"catchStyleUrl", StringEscapeUtils.escapeXml(catchSldRelativeUrl),
+				"flowlineStyleUrl", StringUtils.trimToEmpty(StringEscapeUtils.escapeXml(reachSldRelativeUrl)),
+				"catchStyleUrl", StringUtils.trimToEmpty(StringEscapeUtils.escapeXml(catchSldRelativeUrl)),
 				"description", description,
 				"overwrite", "false");
 		
