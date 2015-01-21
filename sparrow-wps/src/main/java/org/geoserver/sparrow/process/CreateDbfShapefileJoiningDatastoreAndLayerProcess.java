@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,9 @@ import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
+import org.geoserver.gwc.GWC;
+import org.geoserver.gwc.layer.GeoServerTileLayer;
+import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
 import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataAccess;
@@ -36,6 +41,9 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.geowebcache.filter.parameters.ParameterFilter;
+import org.geowebcache.filter.parameters.RegexParameterFilter;
+import org.geowebcache.filter.parameters.StringParameterFilter;
 
 		
 /**
@@ -79,13 +87,21 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 	Logger log = LoggerFactory.getLogger(CreateDbfShapefileJoiningDatastoreAndLayerProcess.class);
 	
 	public static String DBASE_SHAPEFILE_JOIN_DATASTORE_NAME = "Dbase Shapefile Joining Data Store";
-	private Catalog catalog;
 	
-	public CreateDbfShapefileJoiningDatastoreAndLayerProcess(Catalog catalog) throws Exception {
+	//Set at construction
+	private Catalog catalog;
+	private GWC gwc;
+	
+	public CreateDbfShapefileJoiningDatastoreAndLayerProcess(Catalog catalog, GWC gwc) throws Exception {
 		this.catalog = catalog;
+		this.gwc = gwc;
 		
 		if (catalog == null) {
-			throw new Exception("Configuration Error - Catalog is null");
+			throw new Exception("Configuration Error - The 1st constructor arg org.geoserver.catalog.Catalog is null");
+		}
+		
+		if (gwc == null) {
+			throw new Exception("Configuration Error - The 2nd constructor arg org.geoserver.gwc.GWC is null");
 		}
 	}
 	
@@ -113,6 +129,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile (NO LONGER USED - ALWAYS IDENTIFIER)", min = 1) String idFieldInDbf,
 			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 0) String projectedSrs,
 			@DescribeParameter(name="defaultStyleName", description="The name of an existing style to use as the default style w/o the workspace designation  The style must exist in the global workspace or the workspace of the layer..", min = 0) String defaultStyleName,
+			@DescribeParameter(name="gwcParamFilters", description="Optional array of GeoWebCache parameter filters, passed in sets of four: 1) Key (what the filter is on, like format_options) 2) type - string or regex 3) default value 4) matched string or regex.", min = 0) String[] gwcParamFilters,
 			@DescribeParameter(name="description", description="Text description of the context to help ID the layers in GeoServer.  Used as the abstract. Optional.", min = 0, max = 1) String description,
 			@DescribeParameter(name="overwrite", description="If true and there is an existing datastore or layer of the same name/workspace, the existing ones will be replaced by the new. (not implemented)", min = 0, max = 1) Boolean overwrite
 	) throws Exception {
@@ -126,6 +143,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		state.idFieldInDbf = idFieldInDbf;
 		state.projectedSrs = projectedSrs;
 		state.defaultStyleName = defaultStyleName;
+		state.gwcParamFilters = gwcParamFilters;
 		state.description = description;
 		state.overwrite = overwrite;
 	
@@ -258,6 +276,60 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			wrap.setError(e);
 			wrap.setStatus(ServiceResponseStatus.FAIL);
 		}
+		
+		if (state.gwcParamFilters != null && state.gwcParamFilters.length > 0) {
+			if (state.gwcParamFilters.length % 4 != 0) {
+				wrap.setMessage("The gwcParamFilters must be set in groups of 4");
+				wrap.setStatus(ServiceResponseStatus.FAIL);
+			} else {
+				ArrayList<ParameterFilter> paramFilters = new ArrayList();
+				
+				for (int i=0; i<state.gwcParamFilters.length; i+=4) {
+					String key = state.gwcParamFilters[i];
+					String type = state.gwcParamFilters[i + 1];
+					String defaultVal = StringUtils.trimToNull(state.gwcParamFilters[i + 2]);
+					String value = state.gwcParamFilters[i + 3];
+					
+					
+					if (key == null) {
+						wrap.setMessage("The gwcParamFilters key cannot be null");
+						wrap.setStatus(ServiceResponseStatus.FAIL);
+					}
+					
+					if (value == null) {
+						wrap.setMessage("The gwcParamFilters value cannot be null");
+						wrap.setStatus(ServiceResponseStatus.FAIL);
+					}
+					
+					if ("string".equalsIgnoreCase(type)) {
+						
+						ArrayList<String> vals = new ArrayList();
+						vals.add(value);
+						
+						StringParameterFilter filter = new StringParameterFilter();
+						filter.setKey(key);
+						filter.setValues(vals);
+						if (defaultVal != null)	filter.setDefaultValue(defaultVal);
+						
+						paramFilters.add(filter);
+					} else if ("regex".equalsIgnoreCase(type)) {
+						RegexParameterFilter filter = new RegexParameterFilter();
+						filter.setKey(key);
+						filter.setRegex(value);
+						if (defaultVal != null)	filter.setDefaultValue(defaultVal);
+						
+						paramFilters.add(filter);
+					} else {
+						wrap.setMessage("The gwcParamFilters type '" + type + "' is not recgonized.  Must be 'string' or 'regex'");
+						wrap.setStatus(ServiceResponseStatus.FAIL);
+					}
+				}
+				
+				state.parameterFilters = paramFilters;
+			}
+		} else {
+			state.parameterFilters = Collections.emptyList();
+		}
 	}
 	
 	/**
@@ -314,6 +386,16 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			catalog.add(fti);
 			catalog.add(li);
 			
+			//Set tile cache options
+			if (state.parameterFilters.size() > 0) {
+				GeoServerTileLayer tileLayer = gwc.getTileLayer(li);
+				GeoServerTileLayerInfo tileLayerInfo = tileLayer.getInfo();
+				
+				for (ParameterFilter filter : state.parameterFilters) {
+					tileLayerInfo.addParameterFilter(filter);
+				}
+			}
+			
 			//The response object and its wrapper
 			resp.setlayerName(state.fullLayerName);
 			wrap.addEntity(resp);
@@ -354,6 +436,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		private String idFieldInDbf;
 		private String projectedSrs;
 		private String defaultStyleName;
+		private String[] gwcParamFilters;
 		private String description;
 		private Boolean overwrite;
 
@@ -364,6 +447,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		private File dbfFile;
 		private NamespaceInfo namespace;
 		private StyleInfo defaultStyle;
+		private List<ParameterFilter> parameterFilters;
 	}
 	
 }

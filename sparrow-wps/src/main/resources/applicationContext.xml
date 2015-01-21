@@ -28,7 +28,12 @@
     </bean>
 	
     <bean id="createDbfShapefileJoiningDatastoreAndLayerProcess" class="org.geoserver.sparrow.process.CreateDbfShapefileJoiningDatastoreAndLayerProcess">
+		<!-- Needed to add the new layer to the catalog -->
 		<constructor-arg index="0" ref="catalog"/>
+		
+		<!-- Needed to set tile-caching properties on the layer -->
+		<constructor-arg index="1" ref="gwcFacade"/>
+		
 	</bean>
 	
 
