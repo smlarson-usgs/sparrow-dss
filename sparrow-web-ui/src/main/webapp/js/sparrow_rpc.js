@@ -73,7 +73,7 @@ function loadExternalResourceInfo() {
 			var ok = "fail";
 
 			if (r.responseXML) {
-				ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
+				ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'status');
 			}
 
 			if (ok == 'OK') {
