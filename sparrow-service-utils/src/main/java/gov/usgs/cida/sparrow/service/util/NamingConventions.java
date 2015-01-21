@@ -12,6 +12,12 @@ public class NamingConventions {
 	
 	private static final String REUSABLE_SUFFIX = "reusable";
 	
+	private static final String DEFAULT_STYLE_SUFFIX = "default";
+	
+	public static final String FLOWLINE_DEFAULT_STYLE_SUFFIX = "flowline-" + DEFAULT_STYLE_SUFFIX;
+	
+	public static final String CATCHMENT_DEFAULT_STYLE_SUFFIX = "catchment-" + DEFAULT_STYLE_SUFFIX;
+	
 	/** Base namespace for the entire app, as used on GeoServer */
 	public static final String APP_SPATIAL_NAMESPACE = "http://water.usgs.gov/nawqa/sparrow/dss/spatial";
 	
@@ -158,6 +164,34 @@ public class NamingConventions {
 		} else {
 			return "N" + Integer.toString(Math.abs(contextId));
 		}
+	}
+	
+	/**
+	 * Returns the default style name for the flowline layer of a given context.
+	 * 
+	 * Note that only 'reusable' contexts should be given named default styles -
+	 * These are context that have no adjustments and will be tile cached, which
+	 * requires a named style.
+	 * 
+	 * @param contextId
+	 * @return 
+	 */
+	public static String buildDefaultFlowlineStyleName(int contextId) {
+		return convertContextIdToXMLSafeName(contextId) + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX;
+	}
+	
+	/**
+	 * Returns the default style name for the catchment layer of a given context.
+	 * 
+	 * Note that only 'reusable' contexts should be given named default styles -
+	 * These are context that have no adjustments and will be tile cached, which
+	 * requires a named style.
+	 * 
+	 * @param contextId
+	 * @return 
+	 */
+	public static String buildDefaultCatchmentStyleName(int contextId) {
+		return convertContextIdToXMLSafeName(contextId) + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX;
 	}
 	
 	/**

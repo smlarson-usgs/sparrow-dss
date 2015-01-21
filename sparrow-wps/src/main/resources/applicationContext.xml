@@ -15,15 +15,32 @@
 		
 		
 	<!-- Need to register WPS PPIOs as content handlers for response types --> 
+	<bean id="styleResponsePPIO" class="org.geoserver.sparrow.process.StyleResponsePPIO"></bean>
+	<bean id="layerReponsePPIO" class="org.geoserver.sparrow.process.LayerReponsePPIO"></bean>
 	<bean id="serviceResponseWrapperPPIO" class="gov.usgs.cida.sparrow.service.util.ServiceResponseWrapperPPIO"></bean>
+	<bean id="sparrowDataLayerReponsePPIO" class="org.geoserver.sparrow.process.SparrowDataLayerReponsePPIO"></bean>
 	
-    <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory">
+	
+    <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory"></bean>
+	
+	<bean id="createStyleProcess" class="org.geoserver.sparrow.process.CreateStyleProcess">
+		<constructor-arg index="0" ref="catalog"/>
     </bean>
 	
-    <bean id="createDatastoreProcess" class="org.geoserver.sparrow.process.CreateDatastoreProcess">
+    <bean id="createDbfShapefileJoiningDatastoreAndLayerProcess" class="org.geoserver.sparrow.process.CreateDbfShapefileJoiningDatastoreAndLayerProcess">
+		<constructor-arg index="0" ref="catalog"/>
+	</bean>
+	
+
+
+    <bean id="createSparrowDynamicDatastoreAndLayerProcess" class="org.geoserver.sparrow.process.CreateSparrowDynamicDatastoreAndLayerProcess">
 		<constructor-arg index="0" ref="catalog"/>
 		<constructor-arg index="1" ref="jndiTemplate"/>
+		<constructor-arg index="2" ref="createStyleProcess"/>
+		<constructor-arg index="3" ref="createDbfShapefileJoiningDatastoreAndLayerProcess"/>
     </bean>
+	
+
     
     <bean id="sweeper" class="org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper">
 		<constructor-arg index="0" ref="catalog"/>

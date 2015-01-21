@@ -15,6 +15,8 @@ public class SparrowDataLayerResponse {
 	private String endpointUrl;
 	private String flowLayerName;
 	private String catchLayerName;
+	private String flowLayerDefaultStyleName;
+	private String catchLayerDefaultStyleName;
 	
 	SparrowDataLayerResponse() {
 
@@ -62,4 +64,19 @@ public class SparrowDataLayerResponse {
 		this.catchLayerName = catchLayerName;
 	}
 	
+	public String getFlowLayerDefaultStyleName() {
+		return flowLayerDefaultStyleName;
+	}
+
+	public void setFlowLayerDefaultStyleName(String flowLayerDefaultStyleName) {
+		this.flowLayerDefaultStyleName = flowLayerDefaultStyleName;
+	}
+
+	public String getCatchLayerDefaultStyleName() {
+		return catchLayerDefaultStyleName;
+	}
+
+	public void setCatchLayerDefaultStyleName(String catchLayerDefaultStyleName) {
+		this.catchLayerDefaultStyleName = catchLayerDefaultStyleName;
+	}
 }
