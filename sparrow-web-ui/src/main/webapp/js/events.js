@@ -615,7 +615,8 @@ Sparrow.handlers.MapComponents = function(){
 				map1.layerManager.unloadMapLayer(layerId);
 				map1.appendLayer(
 					new JMap.web.mapLayer.WMSLayer({
-						id: Sparrow.config.layers.calibrationSiteLayer.id,  
+						id: Sparrow.config.layers.calibrationSiteLayer.id,
+						format: "image/png8",
 						zDepth: Sparrow.config.layers.calibrationSiteLayer.zDepth, 
 						opacity: opacity,
 						scaleMin: Sparrow.config.layers.calibrationSiteLayer.scaleMin, 
@@ -625,7 +626,8 @@ Sparrow.handlers.MapComponents = function(){
 						name: Sparrow.config.layers.calibrationSiteLayer.title,
 						isHiddenFromUser: true,
 						description: Sparrow.config.layers.calibrationSiteLayer.title,
-						layersUrlParam: wsAndLayerName
+						layersUrlParam: wsAndLayerName,
+						customParams: { tiled: "true" }
 					})
 				);
 			}
@@ -677,6 +679,7 @@ Sparrow.handlers.MapComponents = function(){
 				map1.appendLayer(
 					new JMap.web.mapLayer.WMSLayer({
 						id: layerId,
+						format: "image/png8",
 						zDepth: Sparrow.config.layers.reachOverlayLayer.zDepth,
 						opacity: opacity,
 						scaleMin: Sparrow.config.layers.reachOverlayLayer.scaleMin,
@@ -686,7 +689,8 @@ Sparrow.handlers.MapComponents = function(){
 						name: Sparrow.config.layers.reachOverlayLayer.title,
 						isHiddenFromUser: true,
 						description: Sparrow.config.layers.reachOverlayLayer.title,
-						layersUrlParam: wsAndLayerName
+						layersUrlParam: wsAndLayerName,
+						customParams: { tiled: "true" }
 					})
 				);
 			}
@@ -774,17 +778,19 @@ Sparrow.handlers.MapComponents = function(){
 				map1.layerManager.unloadMapLayer(layerId);
 				map1.appendLayer(
 					new JMap.web.mapLayer.WMSLayer({
-						id: layerId,  
-						zDepth: Sparrow.config.layers.huc8Layer.zDepth, 
+						id: layerId,
+						format: "image/png8",
+						zDepth: Sparrow.config.layers.huc8Layer.zDepth,
 						opacity: opacity,
-						scaleMin: Sparrow.config.layers.huc8Layer.scaleMin, 
+						scaleMin: Sparrow.config.layers.huc8Layer.scaleMin,
 						scaleMax: Sparrow.config.layers.huc8Layer.scaleMax,
 						baseUrl: baseUrl,
 						title: Sparrow.config.layers.huc8Layer.title,
 						name: Sparrow.config.layers.huc8Layer.title,
 						isHiddenFromUser: true,
 						description: Sparrow.config.layers.huc8Layer.title,
-						layersUrlParam: wsAndLayerName
+						layersUrlParam: wsAndLayerName,
+						customParams: { tiled: "true" }
 					})
 				);
 			}
