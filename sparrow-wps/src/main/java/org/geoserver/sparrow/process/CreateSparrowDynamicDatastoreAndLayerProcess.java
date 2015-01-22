@@ -1,14 +1,12 @@
 package org.geoserver.sparrow.process;
 
 import gov.usgs.cida.sparrow.service.util.NamingConventions;
-import static gov.usgs.cida.sparrow.service.util.NamingConventions.convertContextIdToXMLSafeName;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.naming.NamingException;
@@ -124,6 +122,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 	 * Requests that the layer be created if it does not already exist.
 	 * 
 	 * @param contextId
+	 * @param modelId
 	 * @param coverageName
 	 * @param dbfFilePath
 	 * @param idFieldInDbf
@@ -139,6 +138,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 	@DescribeResult(name="response", description="Registers a Sparrow context for mapping.", type=ServiceResponseWrapper.class)
 	public ServiceResponseWrapper execute(
 			@DescribeParameter(name="contextId", description="The ID of the context to create a store for", min = 1) Integer contextId,
+			@DescribeParameter(name="modelId", description="The ID of the model associated w/ the context.  Allows the layers to have more meaningful names.", min = 1) Integer modelId,
 			@DescribeParameter(name="coverageName", description="The name of the coverage,assumed to be a directory in the filesystem GeoServer is running on.", min = 1) String coverageName,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf,
@@ -153,6 +153,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		UserState state = new UserState();
 		
 		state.contextId = contextId;
+		state.modelId = modelId;
 		state.coverageName = coverageName;
 		state.dbfFilePath = dbfFilePath;
 		state.idFieldInDbf = idFieldInDbf;
@@ -225,8 +226,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		if (state.isReusable == null) state.isReusable = Boolean.FALSE;
 		
 		//Build complete names
-		state.fullFlowlineLayerName = NamingConventions.getFullFlowlineLayerName(state.contextId, state.isReusable);
-		state.fullCatchmentLayerName = NamingConventions.getFullCatchmentLayerName(state.contextId, state.isReusable);
+		state.fullFlowlineLayerName = NamingConventions.getFullFlowlineLayerName(state.modelId, state.contextId, state.isReusable);
+		state.fullCatchmentLayerName = NamingConventions.getFullCatchmentLayerName(state.modelId, state.contextId, state.isReusable);
 		
 		
 		//Cleanup the SRS
@@ -254,7 +255,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 					//Assume we just have the sld params params
 					String url = getServerPath() + "/rest/sld"
 							+ "/workspace/" + NamingConventions.getFlowlineWorkspaceName(true) +
-							"/layer/" + NamingConventions.convertContextIdToXMLSafeName(state.contextId)+
+							"/layer/" + NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId)+
 							"/reach.sld?" + state.flowlineStyleUrlStr;
 					state.flowlineStyleUrl = new URL(url);
 					state.flowlineStyleUrlStr = state.flowlineStyleUrl.toExternalForm();	//normalize
@@ -276,7 +277,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 					//Assume we just have the sld params params
 					String url = getServerPath() + "/rest/sld"
 							+ "/workspace/" + NamingConventions.getCatchmentWorkspaceName(true) +
-							"/layer/" + NamingConventions.convertContextIdToXMLSafeName(state.contextId) +
+							"/layer/" + NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId) +
 							"/catch.sld?" + state.catchStyleUrlStr;
 					state.catchStyleUrl = new URL(url);
 					state.catchStyleUrlStr = state.catchStyleUrl.toExternalForm();	//normalize
@@ -322,7 +323,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		//IE, The web cache does not work when the layer style is in a workspace.
 		if (state.isReusable) {
 			ServiceResponseWrapper flowStyleWrap = createStyleProcess.execute(
-					NamingConventions.buildDefaultFlowlineStyleName(state.contextId),
+					NamingConventions.buildDefaultFlowlineStyleName(state.modelId, state.contextId),
 					null, //NamingConventions.getFlowlineWorkspaceName(true),
 					null,
 					state.flowlineStyleUrlStr,
@@ -337,7 +338,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 			}
 			
 			ServiceResponseWrapper catchStyleWrap = createStyleProcess.execute(
-					NamingConventions.buildDefaultCatchmentStyleName(state.contextId),
+					NamingConventions.buildDefaultCatchmentStyleName(state.modelId, state.contextId),
 					null, //NamingConventions.getCatchmentWorkspaceName(true),
 					null,
 					state.catchStyleUrlStr,
@@ -362,7 +363,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 		
 		ServiceResponseWrapper flowLayerWrap = createDbfShapefileJoiningDatastoreAndLayerProcess.execute(
-				NamingConventions.convertContextIdToXMLSafeName(state.contextId),
+				NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId),
 				NamingConventions.getFlowlineWorkspaceName(state.isReusable),
 				state.flowlineShapefile.getAbsolutePath(),
 				state.dbfFilePath,
@@ -379,7 +380,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 		
 		ServiceResponseWrapper catchLayerWrap = createDbfShapefileJoiningDatastoreAndLayerProcess.execute(
-				NamingConventions.convertContextIdToXMLSafeName(state.contextId),
+				NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId),
 				NamingConventions.getCatchmentWorkspaceName(state.isReusable),
 				state.catchmentShapefile.getAbsolutePath(),
 				state.dbfFilePath,
@@ -550,6 +551,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 	private class UserState {
 		//User params, set for each invocation
 		Integer contextId;
+		Integer modelId;
 		String coverageName;
 		String dbfFilePath;
 		String idFieldInDbf;

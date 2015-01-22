@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
