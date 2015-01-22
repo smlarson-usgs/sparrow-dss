@@ -185,7 +185,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 
 			String msg = "FAILED:  An unexpected error happened during the creation of create DataStore or the Layer '" + state.fullLayerName + "' in workspace " + workspaceName;
 			wrap.setMessage(msg);
-			log.error(msg);
+			log.error(msg, e);
 			return wrap;
 		}
 			
