@@ -31,6 +31,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>gwc</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>gov.usgs.cida.glri</groupId>
 			<artifactId>multi-dbf-datastore</artifactId>
 		</dependency>
@@ -60,12 +65,7 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>gwc</artifactId>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
