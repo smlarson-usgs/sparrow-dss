@@ -59,7 +59,7 @@ public class WriteDbfFileForContext extends Action<File> {
         
 		dataColumn = context.getDataColumn().getColumnData();
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
-		outputFile = new File(dataDir, NamingConventions.convertContextIdToXMLSafeName(context.getId()) + ".dbf");
+		outputFile = new File(dataDir, NamingConventions.convertContextIdToXMLSafeName(context.getModelID().intValue(), context.getId()) + ".dbf");
 		outputFile.createNewFile();
 		
 		DataSeriesType type = context.getAnalysis().getDataSeries();

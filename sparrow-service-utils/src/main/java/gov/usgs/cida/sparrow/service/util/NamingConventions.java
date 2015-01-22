@@ -53,15 +53,16 @@ public class NamingConventions {
 	 * that is, they contain little or no customization and have a high likelyhood
 	 * of being reused.
 	 * 
+	 * @param modelId
 	 * @param contextId
 	 * @param reusable If true, the reusable workspace name is used.
 	 * @return The layer name, prefixed with the appropriate workspace name.
 	 */
-	public static String getFullFlowlineLayerName(int contextId, boolean reusable) {
+	public static String getFullFlowlineLayerName(int modelId, int contextId, boolean reusable) {
 		if (reusable) {
-			return FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(contextId);
+			return FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
 		} else {
-			return FLOWLINE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(contextId);
+			return FLOWLINE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
 		}
 		
 	}
@@ -78,11 +79,11 @@ public class NamingConventions {
 	 * @param reusable If true, the reusable workspace name is used.
 	 * @return The layer name, prefixed with the appropriate workspace name.
 	 */
-	public static String getFullCatchmentLayerName(int contextId, boolean reusable) {
+	public static String getFullCatchmentLayerName(int modelId, int contextId, boolean reusable) {
 		if (reusable) {
-			return CATCHMENT_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(contextId);
+			return CATCHMENT_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
 		} else {
-			return CATCHMENT_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(contextId);
+			return CATCHMENT_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
 		}
 	}
 	
@@ -155,14 +156,15 @@ public class NamingConventions {
 	 * Creates a name for the layer that does not start with a number, so that
 	 * is it safe to use an an XML element name.
 	 * 
+	 * @param modelId
 	 * @param contextId
 	 * @return 
 	 */
-	public static String convertContextIdToXMLSafeName(int contextId) {
+	public static String convertContextIdToXMLSafeName(int modelId, int contextId) {
 		if (contextId >= 0) {
-			return "P" + Integer.toString(contextId);
+			return Integer.toString(modelId) + "P" + Integer.toString(contextId);
 		} else {
-			return "N" + Integer.toString(Math.abs(contextId));
+			return Integer.toString(modelId) + "N" + Integer.toString(Math.abs(contextId));
 		}
 	}
 	
@@ -173,11 +175,12 @@ public class NamingConventions {
 	 * These are context that have no adjustments and will be tile cached, which
 	 * requires a named style.
 	 * 
+	 * @param modelId
 	 * @param contextId
 	 * @return 
 	 */
-	public static String buildDefaultFlowlineStyleName(int contextId) {
-		return convertContextIdToXMLSafeName(contextId) + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX;
+	public static String buildDefaultFlowlineStyleName(int modelId, int contextId) {
+		return convertContextIdToXMLSafeName(modelId, contextId) + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX;
 	}
 	
 	/**
@@ -187,11 +190,12 @@ public class NamingConventions {
 	 * These are context that have no adjustments and will be tile cached, which
 	 * requires a named style.
 	 * 
+	 * @param modelId
 	 * @param contextId
 	 * @return 
 	 */
-	public static String buildDefaultCatchmentStyleName(int contextId) {
-		return convertContextIdToXMLSafeName(contextId) + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX;
+	public static String buildDefaultCatchmentStyleName(int modelId, int contextId) {
+		return convertContextIdToXMLSafeName(modelId, contextId) + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX;
 	}
 	
 	/**
@@ -203,10 +207,10 @@ public class NamingConventions {
 	public static int convertXMLSafeNameToContextId(String encodedContextId) throws NumberFormatException {
 		encodedContextId = encodedContextId.toUpperCase();
 		
-		if (encodedContextId.startsWith("P")) {
-			return Integer.parseInt(encodedContextId.substring(1));
-		} else if (encodedContextId.startsWith("N")) {
-			return (-1) * (Integer.parseInt(encodedContextId.substring(1)));
+		if (encodedContextId.contains("P")) {
+			return Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("P") + 1));
+		} else if (encodedContextId.contains("N")) {
+			return (-1) * (Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("N") + 1)));
 		} else {
 			throw new NumberFormatException("Unable to read context ID encoded as '" + encodedContextId + "'");
 		}

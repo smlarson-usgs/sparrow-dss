@@ -143,6 +143,7 @@ public class CreateGeoserverLayer extends Action<String> {
 
 		String xmlReq = this.getTextWithParamSubstitution("template",
 				"contextId", context.getId().toString(), 
+				"modelId", context.getModelID().toString(),
 				"coverageName", shapefileFileName, 
 				"dbfFilePath", dbfFile.getAbsolutePath(), 
 				"idFieldInDbf", idFieldInShapeFileAndDbfFile,
