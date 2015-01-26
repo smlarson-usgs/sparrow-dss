@@ -50,6 +50,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 
 
 	//Generated / self-loaded values
+	protected Long modelId;
 	protected SparrowModel sparrowModel;
 	protected ModelReachAreaRelations areaRelations;
 	protected ReachRowValueMap deliveryFractionMap;	//What reaches deliver to the target reaches?
@@ -86,7 +87,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	@Override
 	protected void initFields() throws Exception {
 
-		Long modelId = adjustmentGroups.getModelID();
+		modelId = adjustmentGroups.getModelID();
 		sparrowModel = SharedApplication.getInstance().getPredictData(modelId).getModel();
 
 		UnitAreaRequest unitAreaRequest = new UnitAreaRequest(modelId, AreaType.INCREMENTAL);
@@ -302,6 +303,11 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		if (! (aggLevel.isHuc() || aggLevel.isPolitical())) {
 			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either a HUC or a political region.");
 		}
+	}
+	
+	@Override
+	public Long getModelId() {
+		return modelId;
 	}
 
 }

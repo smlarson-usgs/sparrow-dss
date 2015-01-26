@@ -182,4 +182,9 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		
 		return info;
 	}
+	
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 }

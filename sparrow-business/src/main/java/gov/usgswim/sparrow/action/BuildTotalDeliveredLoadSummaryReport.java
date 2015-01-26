@@ -206,5 +206,10 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 		return yieldTable;
 	}
+	
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 
 }

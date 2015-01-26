@@ -54,4 +54,9 @@ public class LoadCalibrationSite extends Action<CalibrationSite> {
 		return result.toImmutable();
 	}
 	
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
+	
 }

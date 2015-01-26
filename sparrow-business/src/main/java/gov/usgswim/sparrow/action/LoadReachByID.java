@@ -84,5 +84,12 @@ public class LoadReachByID extends Action<ReachInfo> {
 		return result;
 	}
 
-
+	@Override
+	public Long getModelId() {
+		if (reachClientId != null) {
+			return reachClientId.getModelID();
+		} else {
+			return null;
+		}
+	}
 }

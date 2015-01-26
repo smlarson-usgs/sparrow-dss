@@ -61,17 +61,24 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 		
 		if (overrideCol.getRowCount() != sourceData.getRowCount()) {
 			
+			String modelId = sourceData.getProperty(TableProperties.MODEL_ID.toString());
+			
 			String m = "The number of rows in the sourceData table (" + sourceData.getRowCount() + ") " +
 			"and the overrideColumn (" + overrideCol.getRowCount() + ") must be the same.\n" +
-			"TableName: " + sourceData.getName() + " column name: " + overrideColumn.getName();
+			"TableName: " + sourceData.getName() + " column name: " + overrideColumn.getName() + " for model " + modelId;
 			
 			IllegalArgumentException e = new IllegalArgumentException(m);
+			
+			
 			log.fatal(m, e);
 			throw e;
 		} else if (overrideColumnIndex < 0 || overrideColumnIndex >= sourceData.getColumnCount()) {
 			
+			String modelId = sourceData.getProperty(TableProperties.MODEL_ID.toString());
+			
 			String m = "The overrideColumnIndex cannot be less than zero or beyond " +
-				"the last column of the sourceData.";
+				"the last column of the sourceData.\n" +
+				"TableName: " + sourceData.getName() + " requested column index: " + overrideColumnIndex + " for model " + modelId;
 			
 			IllegalArgumentException e = new IllegalArgumentException(m);
 			log.fatal(m, e);

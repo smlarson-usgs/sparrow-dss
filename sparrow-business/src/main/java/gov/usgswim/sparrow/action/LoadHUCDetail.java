@@ -67,7 +67,4 @@ public class LoadHUCDetail extends Action<HUC> {
 		return huc;
 	}
 	
-
-
-
 }

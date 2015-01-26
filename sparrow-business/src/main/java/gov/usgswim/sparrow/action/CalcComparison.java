@@ -101,5 +101,14 @@ public class CalcComparison extends Action<SparrowColumnSpecifier> {
 	public void setContext(PredictionContext context) {
 		this.context = context;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (context != null) {
+			return context.getModelID();
+		} else {
+			return null;
+		}
+	}
 
 }

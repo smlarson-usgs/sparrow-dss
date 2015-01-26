@@ -105,5 +105,10 @@ public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 		//Returns an ImmutableList of immutable SparrowModels.
 		return ImmutableList.copyOf(sessions);
 	}
+	
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 
 }

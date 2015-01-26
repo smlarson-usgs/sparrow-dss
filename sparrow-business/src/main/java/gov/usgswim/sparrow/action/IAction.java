@@ -53,5 +53,12 @@ public interface IAction<R extends Object> {
 	 * @throws Exception
 	 */
 	public R run(Connection readOnlyConnection, Connection readWriteConnection) throws Exception;
+	
+	/**
+	 * Returns the model ID for this operation, if applicable.
+	 * This is used in error reporting and logging.
+	 * @return 
+	 */
+	public Long getModelId();
 
 }

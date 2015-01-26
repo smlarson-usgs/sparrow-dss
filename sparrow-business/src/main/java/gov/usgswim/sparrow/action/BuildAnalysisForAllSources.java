@@ -177,4 +177,13 @@ public class BuildAnalysisForAllSources extends Action<List<ColumnData>> {
 
 	}
 	
+	@Override
+	public Long getModelId() {
+		if (context != null) {
+			return context.getModelID();
+		} else {
+			return null;
+		}
+	}
+	
 }

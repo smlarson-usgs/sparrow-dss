@@ -54,7 +54,8 @@ public class LoadEDANameColumn extends Action<ColumnData> {
 	}
 
 
-	public long getModelId() {
+	@Override
+	public Long getModelId() {
 		return modelId;
 	}
 

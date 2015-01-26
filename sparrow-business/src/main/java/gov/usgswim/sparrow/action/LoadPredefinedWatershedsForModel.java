@@ -64,5 +64,9 @@ public class LoadPredefinedWatershedsForModel extends Action<DataTable> {
 		}
 	}
 
-
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
+	
 }

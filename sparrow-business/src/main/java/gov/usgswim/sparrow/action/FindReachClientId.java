@@ -41,5 +41,14 @@ public class FindReachClientId extends Action<ReachClientId>{
 
 		return clientId;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (reachId != null) {
+			return reachId.getModelID();
+		} else {
+			return null;
+		}
+	}
 
 }

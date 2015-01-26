@@ -80,5 +80,14 @@ public class CalcConcentration extends Action<SparrowColumnSpecifier> {
 		
 		return resultCol;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (baseData != null) {
+			return baseData.getModelId();
+		} else {
+			return null;
+		}
+	}
 
 }

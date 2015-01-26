@@ -185,4 +185,13 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		
 		return results;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (modelBBox != null) {
+			return modelBBox.getModelId();
+		} else {
+			return null;
+		}
+	}
 }

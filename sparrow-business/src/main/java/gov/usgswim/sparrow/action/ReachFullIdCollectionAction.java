@@ -122,4 +122,9 @@ public class ReachFullIdCollectionAction extends Action<List<ReachFullId>> {
 
 		return result;
 	}
+	
+	@Override
+	public Long getModelId() {
+		return _modelId;
+	}
 }

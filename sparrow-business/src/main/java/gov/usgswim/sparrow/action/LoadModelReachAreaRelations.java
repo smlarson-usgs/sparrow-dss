@@ -213,7 +213,9 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 		return builder.toImmutable();
 	}
 
-
-
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 
 }

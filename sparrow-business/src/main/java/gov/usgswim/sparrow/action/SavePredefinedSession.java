@@ -129,5 +129,14 @@ public class SavePredefinedSession extends Action<IPredefinedSession> {
 
 		return newSession;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (session != null) {
+			return session.getModelId();
+		} else {
+			return null;
+		}
+	}
 
 }

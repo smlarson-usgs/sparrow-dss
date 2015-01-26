@@ -94,7 +94,8 @@ public class LoadReachAttributes extends Action<DataTable> {
 
 
 
-	public long getModelId() {
+	@Override
+	public Long getModelId() {
 		return modelId;
 	}
 

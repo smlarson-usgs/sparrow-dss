@@ -68,4 +68,13 @@ public class LoadReachesInHuc extends Action<long[]> {
 		this.criteria = criteria;
 	}
 	
+	@Override
+	public Long getModelId() {
+		if (criteria != null) {
+			return criteria.getModelID();
+		} else {
+			return null;
+		}
+	}
+	
 }

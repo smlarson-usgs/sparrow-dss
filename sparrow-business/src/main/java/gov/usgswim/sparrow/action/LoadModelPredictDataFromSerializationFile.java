@@ -139,6 +139,7 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 	}
 	
 
+	@Override
 	public Long getModelId() {
 		return this.modelId;
 	}
@@ -200,6 +201,5 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 	public void setAllowFetchFromDb(boolean allowFetchFromDb) {
 		this.allowFetchFromDb = allowFetchFromDb;
 	}
-
 
 }
