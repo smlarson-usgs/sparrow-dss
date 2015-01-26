@@ -278,8 +278,15 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	protected void postAction(boolean success, Exception error) {
 
+		Long modelId = getModelId();
+		String modelIdStr = (modelId != null)?modelId.toString():"unknown";
+		
 		invocation.setNonNullResponse(success);
 		invocation.setError(error);
+		
+		//In theory we would serialize the request object, but most don't have a
+		//meaningful toString form and the key part is which model it is for.
+		invocation.setRequestString("modelID: " + modelIdStr);
 
 		if (hasValidationErrors()) invocation.setValidationErrors(getValidationErrors());
 
@@ -299,11 +306,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 						if (error == null) {
 							log.info("Action completed for " + this.getClass().getName() +
-									" for model " + getModelId() + ".  Total Time: " + tTimeStr + "secs, Run Number: " +
+									" for model " + modelIdStr + ".  Total Time: " + tTimeStr + "secs, Run Number: " +
 									runNumber + NL + "Message from Action: " + msg);
 						} else {
 							log.error("Action completed, but generated an exception for " +
-									this.getClass().getName() + " for model " + getModelId() + ".  Total Time: " +
+									this.getClass().getName() + " for model " + modelIdStr + ".  Total Time: " +
 									tTimeStr + "secs, Run Number: " +
 									runNumber + NL + "Message from Action: " + msg, error);
 						}
@@ -313,11 +320,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 					if (error != null) {
 						log.error("Action FAILED w/ an exception for " +
-								this.getClass().getName() + " for model " + getModelId() + ".  Run Number: " +
+								this.getClass().getName() + " for model " + modelIdStr + ".  Run Number: " +
 								runNumber + NL + "Message from Action: " + msg, error);
 					} else if (hasValidationErrors()) {
 						log.error("Action FAILED due to validation errors for " +
-								this.getClass().getName() + " for model " + getModelId() + ".  Run Number: " +
+								this.getClass().getName() + " for model " + modelIdStr + ".  Run Number: " +
 								runNumber + ".  Validation errors follow:");
 
 						for (String valErr : getValidationErrors()) {
@@ -326,7 +333,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 					} else {
 						log.error("Action FAILED but did not generate an error for " +
-								this.getClass().getName() + " for model " + getModelId() + ".  Run Number: " +
+								this.getClass().getName() + " for model " + modelIdStr + ".  Run Number: " +
 								runNumber + NL + "Message from Action: " + msg);
 
 					}
