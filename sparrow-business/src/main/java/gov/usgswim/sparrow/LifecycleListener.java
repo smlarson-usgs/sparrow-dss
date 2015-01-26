@@ -7,7 +7,13 @@ import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -16,6 +22,7 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 
 import org.apache.log4j.extras.DOMConfigurator;
@@ -91,6 +98,12 @@ public class LifecycleListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent context, boolean clearCache){
 		try {
 			
+			
+			//Add a system property of the hostname so that the logging system
+			//can include the hostname in emails.
+			String host = findHostname();
+			System.setProperty("hostname", host);
+			
 			DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
 			boolean isJndiAware = SharedApplication.getInstance().isUsingJndi();
 			
@@ -149,5 +162,50 @@ public class LifecycleListener implements ServletContextListener {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	
+	
+	/**
+	 * Attempts to find the name of the machine, using a few different methods
+	 * @return 
+	 */
+	private static String findHostname() {
+	    String OS = System.getProperty("os.name").toLowerCase();
+		String hostName = null;
+
+        if (OS.contains("win")) {
+            hostName = StringUtils.trimToNull(System.getenv("COMPUTERNAME"));
+        } else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0) {
+			try {
+				hostName = StringUtils.trimToNull(execReadToString("hostname"));
+			} catch (IOException ex) {
+				//ignore
+			}
+        }
+		
+		if (hostName == null || hostName.equalsIgnoreCase("localhost")) {
+			try {
+				hostName = StringUtils.trimToNull(InetAddress.getLocalHost().getHostName());
+			} catch (UnknownHostException ex) {
+				//ignore
+			}
+		}
+		
+		if (hostName == null) {
+			hostName = "unknown";
+		}
+		
+		return hostName;
+    }
+
+    public static String execReadToString(String execCommand) throws IOException {
+        Process proc = Runtime.getRuntime().exec(execCommand);
+        try (InputStream stream = proc.getInputStream()) {
+            try (Scanner s = new Scanner(stream).useDelimiter("\\A")) {
+                return s.hasNext() ? s.next() : "";
+            }
+        }
+    }
 
 }
