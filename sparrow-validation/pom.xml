@@ -78,6 +78,46 @@
 
 						</configuration>
 					</execution>
+					<execution>
+						<id>Build_CalcAndLoadTotalContribArea</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<!-- Create additional jar -->
+							<shadedClassifierName>CalcAndLoadTotalContribArea</shadedClassifierName>
+							<!-- add to name -->
+
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>gov.usgs.cida.sparrow.calculation.CalcAndLoadTotalContribArea</mainClass>
+								</transformer>
+							</transformers>
+
+						</configuration>
+					</execution>
+					<execution>
+						<id>Build_CalcAndLoadTotalUpstreamArea</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<!-- Create additional jar -->
+							<shadedClassifierName>CalcAndLoadTotalUpstreamArea</shadedClassifierName>
+							<!-- add to name -->
+
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>gov.usgs.cida.sparrow.calculation.CalcAndLoadTotalUpstreamArea</mainClass>
+								</transformer>
+							</transformers>
+
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
