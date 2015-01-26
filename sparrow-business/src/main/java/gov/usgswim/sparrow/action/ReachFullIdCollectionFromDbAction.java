@@ -148,5 +148,8 @@ public class ReachFullIdCollectionFromDbAction extends Action<List<ReachFullId>>
 		
 	}
 
-
+	@Override
+	public Long getModelId() {
+		return _modelId;
+	}
 }

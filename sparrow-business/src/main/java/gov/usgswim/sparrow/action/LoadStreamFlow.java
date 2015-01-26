@@ -58,7 +58,8 @@ public class LoadStreamFlow extends Action<SparrowColumnSpecifier> {
 		
 	}
 
-	public long getModelId() {
+	@Override
+	public Long getModelId() {
 		return modelId;
 	}
 

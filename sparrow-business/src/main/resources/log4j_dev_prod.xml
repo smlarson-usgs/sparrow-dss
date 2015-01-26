@@ -56,7 +56,7 @@
 			
 			<!-- Temp change just to test this out...  Will generate a lot of email.  -->
 			<param name="LevelMin" value="info" />
-			<param name="LevelMin" value="error" />
+			<!-- <param name="LevelMin" value="error" /> -->
 			<param name="LevelMax" value="fatal" />
 		</filter>
 	</appender>

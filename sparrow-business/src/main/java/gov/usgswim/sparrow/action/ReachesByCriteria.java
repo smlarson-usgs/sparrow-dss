@@ -45,4 +45,13 @@ public class ReachesByCriteria extends Action<long[]> {
 	public void setCriteria(Criteria criteria) {
 		this.criteria = criteria;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (criteria != null) {
+			return criteria.getModelID();
+		} else {
+			return null;
+		}
+	}
 }

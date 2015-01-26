@@ -45,5 +45,12 @@ public class ReachFullIdAction extends Action<ReachFullId> {
 		}
 	}
 
-
+	@Override
+	public Long getModelId() {
+		if (clientId != null) {
+			return clientId.getModelID();
+		} else {
+			return null;
+		}
+	}
 }

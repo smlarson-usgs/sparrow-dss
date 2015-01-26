@@ -285,4 +285,13 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 		}
 
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (request != null) {
+			return request.getReachId().getModelID();
+		} else {
+			return null;
+		}
+	}
 }

@@ -359,4 +359,13 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 		return new SparrowColumnSpecifier(dataTable, dataColIndex, context.getId(), context.getModelID());
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (context != null) {
+			return context.getModelID();
+		} else {
+			return null;
+		}
+	}
 }

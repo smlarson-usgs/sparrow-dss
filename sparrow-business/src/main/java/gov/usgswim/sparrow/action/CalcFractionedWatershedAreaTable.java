@@ -145,4 +145,13 @@ public class CalcFractionedWatershedAreaTable extends Action<ColumnData> {
 		return areaMap;
 	}
 	
+	@Override
+	public Long getModelId() {
+		if (terminalReaches != null) {
+			return terminalReaches.getModelID();
+		} else {
+			return null;
+		}
+	}
+	
 }

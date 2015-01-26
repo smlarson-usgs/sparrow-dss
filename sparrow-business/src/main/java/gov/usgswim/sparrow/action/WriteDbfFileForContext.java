@@ -118,5 +118,14 @@ public class WriteDbfFileForContext extends Action<File> {
 
 		return dDir;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (context != null) {
+			return context.getModelID();
+		} else {
+			return null;
+		}
+	}
 
 }

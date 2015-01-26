@@ -215,5 +215,9 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 		//Returns an ImmutableList of immutable SparrowModels.
 		return ImmutableList.copyOf(result);
 	}
-
+	
+	@Override
+	public Long getModelId() {
+		return sparrowModelId;
+	}
 }

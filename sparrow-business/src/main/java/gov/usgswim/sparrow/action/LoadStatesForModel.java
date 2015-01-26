@@ -79,6 +79,9 @@ public class LoadStatesForModel extends Action<DataTable> {
 	public void setModelId(Long modelId) {
 		this.modelId = modelId;
 	}
-
-
+	
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 }

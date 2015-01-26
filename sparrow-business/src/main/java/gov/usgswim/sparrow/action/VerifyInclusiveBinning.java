@@ -47,4 +47,13 @@ public class VerifyInclusiveBinning extends Action<Boolean> {
 		
 		return Boolean.TRUE;
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (data != null) {
+			return data.getModelId();
+		} else {
+			return null;
+		}
+	}
 }

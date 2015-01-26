@@ -186,4 +186,12 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 		NAValue = nAValue;
 	}
 
+	@Override
+	public Long getModelId() {
+		if (data != null) {
+			return data.getModelId();
+		} else {
+			return null;
+		}
+	}
 }

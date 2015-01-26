@@ -63,6 +63,11 @@ public class LoadEdasForModel extends Action<DataTable> {
 			this.addValidationError("The modelId parameter cannot be null");
 		}
 	}
+	
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 
 
 }

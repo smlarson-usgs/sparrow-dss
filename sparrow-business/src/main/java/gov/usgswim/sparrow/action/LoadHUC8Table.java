@@ -48,7 +48,8 @@ public class LoadHUC8Table extends Action<DataTable> {
 		return values.toImmutable();
 	}
 
-	public long getModelId() {
+	@Override
+	public Long getModelId() {
 		return modelId;
 	}
 

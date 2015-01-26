@@ -278,5 +278,14 @@ public class CreateGeoserverLayer extends Action<String> {
 			return defaultType;
 		}
 	}
+	
+	@Override
+	public Long getModelId() {
+		if (context != null) {
+			return context.getModelID();
+		} else {
+			return null;
+		}
+	}
 
 }

@@ -181,6 +181,13 @@ public class CalcAdjustedSources extends Action<DataTable> {
 		this.adjustments = adjustments;
 	}
 
-
+	@Override
+	public Long getModelId() {
+		if (adjustments != null) {
+			return adjustments.getModelID();
+		} else {
+			return null;
+		}
+	}
 
 }

@@ -178,6 +178,13 @@ public class CalcBins extends Action<BinSet> {
 		this.inclusionMap = inclusionMap;
 	}
 	
-
+	@Override
+	public Long getModelId() {
+		if (dataColumn != null) {
+			return dataColumn.getModelId();
+		} else {
+			return null;
+		}
+	}
 	
 }

@@ -86,7 +86,10 @@ public class LoadHucsForModel extends Action<DataTable> {
 	}
 
 
-
+	@Override
+	public Long getModelId() {
+		return modelId;
+	}
 
 
 }
