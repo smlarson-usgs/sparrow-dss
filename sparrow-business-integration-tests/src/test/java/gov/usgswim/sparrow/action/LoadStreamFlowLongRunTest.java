@@ -38,7 +38,7 @@ public class LoadStreamFlowLongRunTest extends SparrowTestBaseWithDB {
 
 		LoadStreamFlow lf = new LoadStreamFlow();
 		lf.setModelId(SparrowTestBaseWithDB.TEST_MODEL_ID);
-		assertEquals(SparrowTestBaseWithDB.TEST_MODEL_ID.longValue(), lf.getModelId());
+		assertEquals(SparrowTestBaseWithDB.TEST_MODEL_ID.longValue(), lf.getModelId().longValue());
 	}
 	
 	/**

@@ -16,7 +16,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -281,6 +280,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 		invocation.setNonNullResponse(success);
 		invocation.setError(error);
+
 		if (hasValidationErrors()) invocation.setValidationErrors(getValidationErrors());
 
 		try {
@@ -299,7 +299,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 						if (error == null) {
 							log.info("Action completed for " + this.getClass().getName() +
-									".  Total Time: " + tTimeStr + "secs, Run Number: " +
+									" for model " + getModelId() + ".  Total Time: " + tTimeStr + "secs, Run Number: " +
 									runNumber + NL + "Message from Action: " + msg);
 						} else {
 							log.error("Action completed, but generated an exception for " +
