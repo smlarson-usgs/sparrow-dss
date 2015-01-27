@@ -288,7 +288,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	
 	@Override
 	public Long getModelId() {
-		if (request != null) {
+		if (request != null && request.getReachId() != null) {
 			return request.getReachId().getModelID();
 		} else {
 			return null;
