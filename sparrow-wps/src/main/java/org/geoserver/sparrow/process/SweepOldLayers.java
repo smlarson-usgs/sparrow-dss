@@ -45,7 +45,7 @@ public class SweepOldLayers implements SparrowWps, GeoServerProcess {
 	 */
 	@DescribeResult(name="response", description="Sweeps old layers", type=ServiceResponseWrapper.class)
 	public ServiceResponseWrapper execute(
-			@DescribeParameter(name="maxAgeSeconds", description="The layer name to add, without the workspace name", min = 1) Long maxAgeSeconds
+			@DescribeParameter(name="maxAgeSeconds", description="Sweep dynamic layers that are older than the specified number of seconds.", min = 0) Long maxAgeSeconds
 		) throws Exception {
 		
 		
