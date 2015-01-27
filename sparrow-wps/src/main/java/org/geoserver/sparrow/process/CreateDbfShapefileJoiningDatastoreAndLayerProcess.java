@@ -30,6 +30,7 @@ import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.layer.GeoServerTileLayer;
 import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
 import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
+import org.geoserver.sparrow.util.SweepResponse;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataAccess;
 import org.geotools.process.factory.DescribeParameter;
@@ -415,7 +416,8 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
              * possible that it wont get to something as a prerequisite for full removal might be what 
              * threw this exception.
              */
-			if(!GeoServerSparrowLayerSweeper.pruneDataStore(cb, catalog, dataStore, info, state.dbfFile)) {
+			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.pruneDataStore(catalog, dataStore, info, state.dbfFile);
+			if(! dsr.isDeleted) {
 				log.error("Unable to fully remove all layer creation changes for datastore [" + info.getName() + "]");
 			}
 			

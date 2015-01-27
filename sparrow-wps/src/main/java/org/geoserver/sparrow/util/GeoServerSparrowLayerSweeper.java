@@ -15,7 +15,6 @@ import javax.naming.NamingException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -30,16 +29,29 @@ import org.springframework.jndi.JndiTemplate;
 
 public class GeoServerSparrowLayerSweeper implements InitializingBean {
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.sparrow.util");
-	private static final Long DEFAULT_MAX_LAYER_AGE = 2592000000l; // 30d
-	private static final Long DEFAULT_RUN_EVER_MS = 3600000l; // 1h
+	private static final Long DEFAULT_MAX_LAYER_AGE = 172800000L; // 2d in ms
+	private static final Long DEFAULT_RUN_EVER_MS = 3600000L; // 1h in ms
 	private static final String DEFAULT_PRUNED_WORKSPACES = "sparrow-catchment,sparrow-flowline";
 	private static final String DBASE_KEY = "dbase_file";
 	private static final String DBASE_TIME_KEY = "lastUsedMS";
-	private Long maxAge;
+	private Long maxAge;	//Age in miliseconds
 	private Long runEveryMs;
-	private Catalog catalog;
+	private final Catalog catalog;
 	private String[] prunedWorkspaces;
 	private Thread sweeperThread;
+	
+	/** flag to determine if the sweep process should keep running */
+	private volatile boolean keepRunning = true;
+	
+	/** When the sweep actually runs (runSweep), this is used as a thread lock.  Do not share. */
+	private static final Object SWEEP_LOCK = new Object();
+	
+	/** 
+	 * Lock used when a single data store is deleted (pruneDataStore).
+	 * This is a separate lock from the sweep b/c the delete method may be
+	 * called separately by other processes.
+	 */
+	private static final Object DELETE_LOCK = new Object();
 
 	public GeoServerSparrowLayerSweeper(Catalog catalog) {
 		this.catalog = catalog;
@@ -47,8 +59,10 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean {
 
 	public void destroy() throws Exception {
 		LOGGER.log(Level.INFO, "Sweeper thread is shutting down");
+		
+		keepRunning = false;
 		this.sweeperThread.interrupt();
-		this.sweeperThread.join(this.runEveryMs + 60000);
+		this.sweeperThread.join(2000L);	//wait 2 seconds for the thread to die
 		LOGGER.log(Level.INFO, "Sweeper thread is shut down");
 	}
 
@@ -87,7 +101,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean {
 			this.sweeperThread.start();
 		} else {
 			// Failsafe
-			LOGGER.log(Level.INFO, "Because there were no workspaces set to read-only, sweeper will not run. If this is a mistake, set the parameter 'sparrow.geoserver.sweeper.workspaces.read-only' to any workspace. The workspace does not need to actually exist.");
+			LOGGER.log(Level.INFO, "Because there were no workspaces set, the sweeper process will not be started. If this is a mistake, set the parameter 'sparrow.geoserver.sweeper.workspaces.pruned' to a comma separated list of workspace names.");
 		}
 	}
 	
@@ -114,48 +128,211 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean {
 	 * 		10) Delete the dbf file
 	 * 
 	 */
-	public static boolean pruneDataStore(CatalogBuilder cBuilder, Catalog dsCatalog, DataAccess<? extends FeatureType, ? extends Feature> da, DataStoreInfo dsInfo, File dbfFile) {
-		boolean removedData = false;
+	public static SweepResponse.DataStoreResponse pruneDataStore(Catalog dsCatalog, DataAccess<? extends FeatureType, ? extends Feature> da, DataStoreInfo dsInfo, File dbfFile) {
 		
-		LOGGER.log(Level.INFO, "==========> PRUNING DATASTORE [" + dsInfo.getName() + "]");
-		
-		// 1) Get all resource names associated with this store (all layer names)
-		try {
-			List<Name> resourceNames = da.getNames();
-			if (!resourceNames.isEmpty()) {
-				for (Name resourceName : resourceNames) {
-					// 2) For each layer name, get the layer info object
-					// 3) For each layer info object, detach the layer from the GeoServer Catalog
-					// 4) For each layer info object, remove the layer completely from the GeoServer Catalog
-					LayerInfo layerInfo = dsCatalog.getLayerByName(resourceName);
-					dsCatalog.detach(layerInfo);
-					dsCatalog.remove(layerInfo);
-					
-					// 5) For each layer name, get the resource info object
-					// 6) For each resource info object, detach the resource from the GeoServer Catalog
-					// 7) For each resource info object, remove the resource completely from the GeoServer Catalog
-					ResourceInfo resourceInfo = dsCatalog.getResourceByName(resourceName, ResourceInfo.class);
-					dsCatalog.detach(resourceInfo);
-					dsCatalog.remove(resourceInfo);
+		synchronized (DELETE_LOCK) {
+			SweepResponse.DataStoreResponse response = new SweepResponse.DataStoreResponse(dsInfo.getWorkspace().getName(), dsInfo.getName());
+
+			LOGGER.log(Level.INFO, "==========> PRUNING DATASTORE [" + dsInfo.getName() + "]");
+
+			// 1) Get all resource names associated with this store (all layer names)
+			try {
+				List<Name> resourceNames = da.getNames();
+				if (!resourceNames.isEmpty()) {
+					for (Name resourceName : resourceNames) {
+						// 2) For each layer name, get the layer info object
+						// 3) For each layer info object, detach the layer from the GeoServer Catalog
+						// 4) For each layer info object, remove the layer completely from the GeoServer Catalog
+						LayerInfo layerInfo = dsCatalog.getLayerByName(resourceName);
+						
+						//This could be null if the layer was deleted manually in the UI
+						if (layerInfo != null) {
+							response.layersDeleted.add(layerInfo.getName());
+							dsCatalog.detach(layerInfo);
+							dsCatalog.remove(layerInfo);
+						}
+
+						// 5) For each layer name, get the resource info object
+						// 6) For each resource info object, detach the resource from the GeoServer Catalog
+						// 7) For each resource info object, remove the resource completely from the GeoServer Catalog
+						ResourceInfo resourceInfo = dsCatalog.getResourceByName(resourceName, ResourceInfo.class);
+						
+						if (resourceInfo != null) {
+							dsCatalog.detach(resourceInfo);
+							dsCatalog.remove(resourceInfo);
+						}
+					}
 				}
+
+				// 8) Clean up the GeoTools cache (DataAccess Object dispose() method)
+				da.dispose();
+
+				// 9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
+				dsCatalog.detach(dsInfo);
+				dsCatalog.remove(dsInfo);
+
+				// 10) Delete the dbf file
+				FileUtils.deleteQuietly(dbfFile);										
+				response.isDeleted = true;
+
+				LOGGER.log(Level.INFO, "===============> DATASTORE [" + dsInfo.getName() + "] HAS BEEN REMOVED");
+			} catch (Exception e) {
+				LOGGER.log(Level.WARNING, "A Sweeper exception has occurred during DataStore [" + dsInfo.getName() + "] removal.  Skipping DataStore and resuming...", e);
+				response.err = e;
+			}
+
+			return response;
+		}
+	}
+	
+	/**
+	 * Runs a sweep with default values
+	 */
+	public SweepResponse runSweep() throws Exception {
+		return runSweep(this.catalog, this.prunedWorkspaces, this.maxAge);
+	}
+	
+	public SweepResponse runSweep(Long maxAgeMs) throws Exception {
+		return runSweep(this.catalog, this.prunedWorkspaces, maxAgeMs);
+	}
+	
+	public static SweepResponse runSweep(Catalog catalog, String[] prunedWorkspaces, Long maxAgeMs) throws Exception {
+		synchronized (SWEEP_LOCK) {
+			
+			SweepResponse response = new SweepResponse();
+			
+			try {
+				LOGGER.log(Level.INFO, "\n\n************************************************************\nRunning Sparrow DBF Sweep\n************************************************************\n");
+				Long currentTime = new Date().getTime();
+
+				// Get a cleaned list of workspaces
+				List<WorkspaceInfo> workspaceInfoList = catalog.getWorkspaces();
+				for (WorkspaceInfo wsInfo : workspaceInfoList) {
+					if (!java.util.Arrays.asList(prunedWorkspaces).contains(wsInfo.getName())) {
+						LOGGER.log(Level.FINEST, "\n\n=====> WORKSPACE [" + wsInfo.getName() + "] IS NOT LISTED TO BE PRUNED.  SKIPPING...");
+						continue;
+					} 
+
+					LOGGER.log(Level.INFO, "\n\n----------\nCLEANING WORKSPACE [" + wsInfo.getName() + "]\n----------");
+
+					List<DataStoreInfo> dsInfoList = catalog.getDataStoresByWorkspace(wsInfo);
+						
+					for (DataStoreInfo dsInfo : dsInfoList) {
+						DataAccess<? extends FeatureType, ? extends Feature> da = dsInfo.getDataStore(new DefaultProgressListener());
+
+						/**
+						 * Lets get the dbf filename for this specific datastore
+						 */
+						Map<String, Serializable> connectionParams = dsInfo.getConnectionParameters();
+
+						if(connectionParams == null) {
+							response.kept.add(logSweepError(wsInfo, dsInfo, "There are no connection parameters for this datastore"));
+							continue;
+						}
+
+						Object dbaseLocationObj = connectionParams.get(DBASE_KEY);
+						if(dbaseLocationObj == null) {
+							response.kept.add(logSweepError(wsInfo, dsInfo, "There is no " + DBASE_KEY + " connection parameter for this datastore"));
+							continue;
+						}								
+
+						String dbaseLocation = null;								
+						if(dbaseLocationObj instanceof URL) {
+							dbaseLocation = ((URL)dbaseLocationObj).toString();
+						} else if(dbaseLocationObj instanceof String) {
+							dbaseLocation = (String)dbaseLocationObj;
+						}
+
+						if((dbaseLocation != null) && (!dbaseLocation.equals(""))) {
+							dbaseLocation = dbaseLocation.replace("file:", "");
+						} else {
+							response.kept.add(logSweepError(wsInfo, dsInfo, "The " + DBASE_KEY + " connection parameter must be either a string or a url and cannot be empty"));
+							continue;
+						}
+
+						/**
+						 * Lets get the age of this dbf file which is embedded in an 
+						 * attribute for the datastore "lastUsedMS"
+						 */
+						Long fileAge = 0L;
+						Object ageObject = connectionParams.get(DBASE_TIME_KEY);
+
+						if(ageObject == null) {
+							LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsInfo.getName() + "] in the [" +
+									wsInfo.getName() + "] workspace that does not have the age flag \"" + DBASE_TIME_KEY +
+									"\" associated with it.  Using the dbf file's last modified time for the age calculation...");
+
+							File tmpFile = new File(dbaseLocation);
+							fileAge = tmpFile.lastModified();
+						} else {
+							if(ageObject instanceof Long) {
+								fileAge = (Long)ageObject;
+							} else {
+								try {
+									fileAge = Long.parseLong((String)ageObject);
+								} catch (Exception e) {
+									LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsInfo.getName() + "] in the [" +
+											wsInfo.getName() + "] workspace that has a value associated with the age flag \"" + DBASE_TIME_KEY +
+											"\" that cannot be converted to a long value [" + ageObject.toString() + "]. " +
+											"Using the dbf file's last modified time for the age calculation...");
+
+									File tmpFile = new File(dbaseLocation);
+									fileAge = tmpFile.lastModified();
+								}
+							}
+						}
+
+						/**
+						 * If the file age of the DBF is larger than our timeout age we remove the layer from 
+						 * GeoServer's memory and then delete the dbf.
+						 */
+						if (currentTime - fileAge > maxAgeMs) {
+							File dbfFile = new File(dbaseLocation);
+							response.deleted.add(GeoServerSparrowLayerSweeper.pruneDataStore(catalog, da,  dsInfo, dbfFile));							
+						} else {
+							SweepResponse.DataStoreResponse dsr = new SweepResponse.DataStoreResponse(wsInfo.getName(), dsInfo.getName());
+							response.kept.add(dsr);
+						}
+					}
+
+
+					if(response.hasDeletions()) {
+						LOGGER.log(Level.INFO, "\n=====> " + response.deleted.size() + " DATASTORES WERE DELETED FROM WORKSPACE [" + wsInfo.getName() + "]");
+					} else {
+						LOGGER.log(Level.INFO, "\n=====> NO DATA WAS CLEANED FOR WORKSPACE [" + wsInfo.getName() + "]");
+					}
+
+					LOGGER.log(Level.INFO, "\n----------\nWORKSPACE [" + wsInfo.getName() + "] SWEEP COMPLETED\n----------");
+				}
+
+				LOGGER.log(Level.INFO, "\n\n************************************************************\nSparrow DBF Sweep Completed\n************************************************************\n\n");
+			} catch (Exception ex) {
+				LOGGER.log(Level.WARNING, "An error has occurred during execution of sweep", ex);
+				throw ex;
+			} finally {
+				// Clean up
 			}
 			
-			// 8) Clean up the GeoTools cache (DataAccess Object dispose() method)
-			da.dispose();
-			
-			// 9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
-			cBuilder.removeStore(dsInfo, false); 	// Use false here so it doesnt inadvertantly delete the common shapefile
-			
-			// 10) Delete the dbf file
-			FileUtils.deleteQuietly(dbfFile);										
-			removedData = true;
-			
-			LOGGER.log(Level.INFO, "===============> DATASTORE [" + dsInfo.getName() + "] HAS BEEN REMOVED");
-		} catch (Exception e) {
-			LOGGER.log(Level.WARNING, "A Sweeper exception has occurred during DataStore [" + dsInfo.getName() + "] removal.  Skipping DataStore and resuming...", e);
+			return response;
 		}
-		
-		return removedData;
+	}
+	
+	/**
+	 * Builds a DataStoreResponse and logs a warning message for issues with a specific DataStore
+	 * @param wsInfo
+	 * @param dsInfo
+	 * @param message
+	 * @return 
+	 */
+	private static SweepResponse.DataStoreResponse logSweepError(WorkspaceInfo wsInfo, DataStoreInfo dsInfo, String message) {
+		LOGGER.log(Level.WARNING, "The sweeper found the DataStore [" + dsInfo.getName() + "] in workspace [" +
+				wsInfo.getName() + "] and didn't know what to do with it, so it was skipped.  The issue was: " +
+				message);
+
+		SweepResponse.DataStoreResponse dsr = new SweepResponse.DataStoreResponse(wsInfo.getName(), dsInfo.getName());
+		dsr.dsName = dsInfo.getName();
+		dsr.err = new Exception(message);
+		return dsr;
 	}
 
 	private class SparrowSweeper implements Runnable {
@@ -176,139 +353,24 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean {
 
 		@Override
 		public void run() {
-			while (!Thread.interrupted()) {
+			while (keepRunning) {
+				
 				try {
-					LOGGER.log(Level.INFO, "\n\n************************************************************\nRunning Sparrow DBF Sweep\n************************************************************\n");
-					Long currentTime = new Date().getTime();
-					CatalogBuilder cBuilder = new CatalogBuilder(catalog);
-
-					// Get a cleaned list of workspaces
-					List<WorkspaceInfo> workspaceInfoList = catalog.getWorkspaces();
-					for (WorkspaceInfo wsInfo : workspaceInfoList) {
-						if (!java.util.Arrays.asList(prunedWorkspaces).contains(wsInfo.getName())) {
-							LOGGER.log(Level.INFO, "\n\n=====> WORKSPACE [" + wsInfo.getName() + "] IS NOT LISTED TO BE PRUNED.  SKIPPING...");
-							continue;
-						} 
-						
-						LOGGER.log(Level.INFO, "\n\n----------\nCLEANING WORKSPACE [" + wsInfo.getName() + "]\n----------");
-						boolean removedData = false;
-						
-						List<DataStoreInfo> dsInfoList = catalog.getDataStoresByWorkspace(wsInfo);
-
-						if (!dsInfoList.isEmpty()) {							
-							for (DataStoreInfo dsInfo : dsInfoList) {
-								DataAccess<? extends FeatureType, ? extends Feature> da = dsInfo.getDataStore(new DefaultProgressListener());
-								
-								/**
-								 * Lets get the dbf filename for this specific datastore
-								 */
-								Map<String, Serializable> connectionParams = dsInfo.getConnectionParameters();
-								
-								if(connectionParams == null) {
-									/**
-									 * This should not be null for this type of datastore
-									 */
-									LOGGER.log(Level.WARNING, "The sweeper found an incorrectly configured DataStore in the [" +
-											wsInfo.getName() + "] workspace.  DataStore [" + dsInfo.getName() + "] has no connection parameters " +
-											"configured.  Skipping DataStore...");
-									continue;
-								}
-								
-								Object dbaseLocationObj = connectionParams.get(DBASE_KEY);
-								if(dbaseLocationObj == null) {
-									continue;
-								}								
-								
-								String dbaseLocation = null;								
-								if(dbaseLocationObj instanceof URL) {
-									dbaseLocation = ((URL)dbaseLocationObj).toString();
-								} else if(dbaseLocationObj instanceof String) {
-									dbaseLocation = (String)dbaseLocationObj;
-								} else {
-									/**
-									 * This should either be a String or a URL.
-									 */
-									LOGGER.log(Level.WARNING, "The sweeper found an incorrectly configured DataStore in the [" +
-											wsInfo.getName() + "] workspace.  DataStore [" + dsInfo.getName() + "] has an unknown dbase_file " +
-											"object type.  Skipping DataStore...");
-									continue;
-								}
-								
-								if((dbaseLocation != null) && (!dbaseLocation.equals(""))) {
-									dbaseLocation = dbaseLocation.replace("file:", "");
-								} else {
-									/**
-									 * DBF file mentioned is not valid.  Continue on to the next one
-									 */
-									continue;
-								}
-								
-								/**
-								 * Lets get the age of this dbf file which is embedded in an 
-								 * attribute for the datastore "lastUsedMS"
-								 */
-								Long fileAge = 0L;
-								Object ageObject = connectionParams.get(DBASE_TIME_KEY);
-								
-								if(ageObject == null) {
-									LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsInfo.getName() + "] in the [" +
-											wsInfo.getName() + "] workspace that does not have the age flag \"" + DBASE_TIME_KEY +
-											"\" associated with it.  Using the dbf file's last modified time for the age calculation...");
-									
-									File tmpFile = new File(dbaseLocation);
-									fileAge = tmpFile.lastModified();
-								} else {
-									if(ageObject instanceof Long) {
-										fileAge = (Long)ageObject;
-									} else {
-										try {
-											fileAge = Long.parseLong((String)ageObject);
-										} catch (Exception e) {
-											LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsInfo.getName() + "] in the [" +
-													wsInfo.getName() + "] workspace that has a value associated with the age flag \"" + DBASE_TIME_KEY +
-													"\" that cannot be converted to a long value [" + ageObject.toString() + "]. " +
-													"Using the dbf file's last modified time for the age calculation...");
-											
-											File tmpFile = new File(dbaseLocation);
-											fileAge = tmpFile.lastModified();
-										}
-									}
-								}
-								
-								/**
-								 * If the file age of the DBF is larger than our timeout age we remove the layer from 
-								 * GeoServer's memory and then delete the dbf.
-								 */
-								if (currentTime - fileAge > this.maxAge) {
-									File dbfFile = new File(dbaseLocation);
-									removedData = GeoServerSparrowLayerSweeper.pruneDataStore(cBuilder, catalog, da,  dsInfo, dbfFile);							
-								}
-							}
-						}
-						
-						if(removedData) {
-							LOGGER.log(Level.INFO, "\n=====> DATA WAS CLEANED FOR WORKSPACE [" + wsInfo.getName() + "]");
-						} else {
-							LOGGER.log(Level.INFO, "\n=====> NO DATA WAS CLEANED FOR WORKSPACE [" + wsInfo.getName() + "]");
-						}
-						
-						LOGGER.log(Level.INFO, "\n----------\nWORKSPACE [" + wsInfo.getName() + "] SWEEP COMPLETED\n----------");
-					}
-
-					LOGGER.log(Level.INFO, "\n\n************************************************************\nSparrow DBF Sweep Completed\n************************************************************\n\n");
+					runSweep(catalog, prunedWorkspaces, maxAge);
 				} catch (Exception ex) {
-					LOGGER.log(Level.WARNING, "An error has occurred during execution of sweep", ex);
-				} finally {
-					// Clean up
+					//The error has already been logged.
 				}
+
 				try {
 					// TODO: Use ThreadPoolExecutor to do this - ( http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ThreadPoolExecutor.html ) 
 					Thread.sleep(runEveryMs);
 				} catch (InterruptedException ex) {
-					LOGGER.log(Level.INFO, "Sweeper thread is shutting down");
+					Thread.interrupted();	//clears the interupt flag
+					LOGGER.log(Level.INFO, "Sweeper thread was interupted.");
 				}
 			}
 
 		}
 	}
+	
 }

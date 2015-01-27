@@ -19,9 +19,14 @@
 	<bean id="layerReponsePPIO" class="org.geoserver.sparrow.process.LayerReponsePPIO"></bean>
 	<bean id="serviceResponseWrapperPPIO" class="gov.usgs.cida.sparrow.service.util.ServiceResponseWrapperPPIO"></bean>
 	<bean id="sparrowDataLayerReponsePPIO" class="org.geoserver.sparrow.process.SparrowDataLayerReponsePPIO"></bean>
+	<bean id="sweepResponsePPIO" class="org.geoserver.sparrow.util.SweepResponsePPIO"></bean>
 	
 	
     <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory"></bean>
+	
+    <bean id="sweeper" class="org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper">
+		<constructor-arg index="0" ref="catalog"/>
+	</bean>
 	
 	<bean id="createStyleProcess" class="org.geoserver.sparrow.process.CreateStyleProcess">
 		<constructor-arg index="0" ref="catalog"/>
@@ -45,11 +50,11 @@
 		<constructor-arg index="3" ref="createDbfShapefileJoiningDatastoreAndLayerProcess"/>
     </bean>
 	
-
+	<bean id="sweepOldLayers" class="org.geoserver.sparrow.process.SweepOldLayers">
+		<constructor-arg index="0" ref="sweeper"/>
+    </bean>
     
-    <bean id="sweeper" class="org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper">
-		<constructor-arg index="0" ref="catalog"/>
-	</bean>
+
 	
 	<!-- Register classes that have XStream Annotations -->
 <!--	<bean class="org.geoserver.sparrow.XStreamAnnotationRegistrar">
