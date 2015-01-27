@@ -76,19 +76,15 @@ public class LifecycleListener implements ServletContextListener {
 
 		SparrowCacheManager.destroy();
 
+		if (context != null) {
+			//Only log this if we have an actual servlet context, ie, we are running on a server
+			LogManager.getLogger(LifecycleListener.class).fatal("*** Server Shutdown ***");
+		}
 	}
 
 	//TODO: [ee] This is set to clear always....
 	public void contextInitialized(ServletContextEvent context) {
-		
-		//Init logging
-		//PropertyConfigurator.configure("log4j.xml");
-		
-		try {
-			contextInitialized(context, true);
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		} 
+		contextInitialized(context, true);
 	}
 	/**
 	 * Called when the context (the entire application) is initialize.
@@ -129,7 +125,6 @@ public class LifecycleListener implements ServletContextListener {
 			LogManager.resetConfiguration();
 			DOMConfigurator.configure(log4jUrl);
 			
-			
 			String cacheConfigLocation = props.getProperty(
 							APP_CACHE_CONFIG_FILE_KEY, 
 							SparrowCacheManager.DEFAULT_EHCACHE_CONFIG_LOCATION);
@@ -158,8 +153,17 @@ public class LifecycleListener implements ServletContextListener {
 				}
 			}
 			
+			if (context != null) {
+				LogManager.getLogger(LifecycleListener.class).fatal("*** Server Startup (Sorry, not really fatal...) ***");
+			}
+			
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			
+			try {
+				LogManager.getLogger(LifecycleListener.class).fatal("*** Server Startup FAILED", e);
+			} finally {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	
