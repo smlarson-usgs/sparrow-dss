@@ -32,7 +32,7 @@
           </elementProp>
           <elementProp name="MapRequestsConcurrentUsers" elementType="Argument">
             <stringProp name="Argument.name">MapRequestsConcurrentUsers</stringProp>
-            <stringProp name="Argument.value">${__P(MapRequestsConcurrentUsers,1)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapRequestsConcurrentUsers,6)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Only one user is required to sequentially load models.  Larger than one is a stress test.</stringProp>
           </elementProp>
@@ -56,13 +56,13 @@
           </elementProp>
           <elementProp name="MaxNumberOfModelsToRun" elementType="Argument">
             <stringProp name="Argument.name">MaxNumberOfModelsToRun</stringProp>
-            <stringProp name="Argument.value">${__P(MaxNumberOfModelsToRun,1)}</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfModelsToRun,99)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Filters how many models ids are queied fromGeoNetwork (sort order unknown)</stringProp>
           </elementProp>
           <elementProp name="MaxNumberOfTilesPerMap" elementType="Argument">
             <stringProp name="Argument.name">MaxNumberOfTilesPerMap</stringProp>
-            <stringProp name="Argument.value">${__P(MaxNumberOfTilesPerMap,1)}</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfTilesPerMap,24)}</stringProp>
             <stringProp name="Argument.desc">Request all tiles for map (6x4=24) unless this is set to less than 24.  If less than 24, must be divisible by the number of ConcurrentUsers.  Disable by setting to 0 value.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -86,7 +86,7 @@
           </elementProp>
           <elementProp name="RandomizeContexts" elementType="Argument">
             <stringProp name="Argument.name">RandomizeContexts</stringProp>
-            <stringProp name="Argument.value">${__P(RandomizeContexts, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(RandomizeContexts, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, a random adjustment is added to each context to force new context Ids and map layers</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -770,7 +770,6 @@ function makeTiles(south, west, tilesTall, tilesWide, tileLatLongSize) {
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Randomized Contexts" enabled="true">
             <stringProp name="IfController.condition">${RandomizeContexts}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
-            <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register Context ID (randomized)" enabled="true">
@@ -853,9 +852,8 @@ props.put(&quot;allModelMeta&quot;, allMetaData);
             </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Non-Randomized Contexts" enabled="true">
-            <stringProp name="IfController.condition">${RandomizeContexts} != &apos;true&apos;</stringProp>
+            <stringProp name="IfController.condition">&quot;${RandomizeContexts}&quot; != &quot;true&quot;</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
-            <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register Context ID (non-randomized)" enabled="true">
