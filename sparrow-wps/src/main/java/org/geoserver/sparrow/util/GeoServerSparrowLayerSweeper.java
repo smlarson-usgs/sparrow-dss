@@ -25,9 +25,10 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.jndi.JndiTemplate;
 
-public class GeoServerSparrowLayerSweeper implements InitializingBean {
+public class GeoServerSparrowLayerSweeper implements InitializingBean, DisposableBean {
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.sparrow.util");
 	private static final Long DEFAULT_MAX_LAYER_AGE = 172800000L; // 2d in ms
 	private static final Long DEFAULT_RUN_EVER_MS = 3600000L; // 1h in ms
@@ -57,6 +58,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean {
 		this.catalog = catalog;
 	}
 
+	@Override
 	public void destroy() throws Exception {
 		LOGGER.log(Level.INFO, "Sweeper thread is shutting down");
 		
