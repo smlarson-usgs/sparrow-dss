@@ -1,3 +1,0 @@
--e git+http://cida-eros-stash.er.usgs.gov:7990/stash/scm/gsc/py_geoserver_rest.git@80a9f2cd754835aac98434794eba8b128ed68927#egg=geoserver_rest_requests-master
-lxml==3.4.1
-requests==2.5.1
