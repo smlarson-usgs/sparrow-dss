@@ -167,6 +167,8 @@ if __name__ == '__main__':
         from params import QA as param_values
     elif tier_name == 'prod':
         from params import PROD as param_values
+    else:
+        raise Exception('Tier name not recognized')
         
     SPDSS_GS_URL = param_values['GS_HOST']
     GWC_URL = param_values['GWC_HOST']
