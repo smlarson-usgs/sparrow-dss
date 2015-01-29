@@ -23,7 +23,7 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
             },
             analysis : {
                 dataSeries : {
-                    "#text" : "total",
+                    "#text" : "total_yield",
                     "@source": null
                 }
             },
