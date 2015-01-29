@@ -85,7 +85,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 			fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.Data Series\')">Data Series</a>',
 			displayField: 'display',
 			valueField: 'value',
-			value: 'total',
+			value: 'total_yield',
 			groupTextTpl: '<h2>{text}</h2>',
 			showGroupName: false,
 			startCollapsed: false,

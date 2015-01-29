@@ -84,7 +84,7 @@ Sparrow.ui = function() { return{
 		}
 	    
 	}
-	
+	    
 	/*
 	 * Adds a new group.
 	 *
