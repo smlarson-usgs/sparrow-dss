@@ -10,11 +10,6 @@ import argparse
 from py_geoserver_rest_requests import GeoServerWorkspace, GeoWebCacheSetUp, GeoServerLayers
 
 
-WORKSPACES = ['sparrow-catchment-reusable', 
-              'sparrow-flowline-reusable'
-              ]
-
-
 def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces):
     """
     Get the layers belonging to a workspace.
@@ -68,10 +63,10 @@ def get_layer_styles(gs_url, gs_user, gs_pwd, ws_layer_content):
 
 def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326', 
                          tile_format='image/png8', grid_number=4326, zoom_start=0, 
-                         zoom_stop=3, threads=1, progress_check=5):
+                         zoom_stop=3, threads=1, progress_check=5, exclude_layers=()):
     """
     Generate seeding xml and post it to Geoserver for each layer in a workspace.
-    The starting zoom level is always 0.
+    The starting zoom level defaults to 0.
     
     The progress of the tile caching will be printed to the console. In addition,
     a rough record of the layers cached is logged to seeding.log.
@@ -88,6 +83,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
     :param int zoom_stop: the maximum zoom level that should be cached
     :param int threads: number of threads to be used when generating a tile cache
     :param float progress_check: interval in seconds between checks to GeoServer for progress on a caching job
+    :param exclude_layers: iterable containing the names of layers from the workspace(s) that should not be cached; defaults to an empty tuple
+    :type exclude_layers: list or tuple
     :return: requests objects from posting the seed requests
     :rtype: list
     
@@ -110,37 +107,43 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
         logging.info(layer_count)
         for layer_param in layer_params:
             layer_name = layer_param['layer_name']
-            style_name = layer_param['style_name']
-            sp_gwc = GeoWebCacheSetUp(gwc_url, gs_user, gs_pwd, ws_name, 
-                                      layer_name, cert_verify=False
-                                      )
             started = 'Started - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
             logging.info(started)
-            seed_xml = sp_gwc.create_seed_xml(style=style_name,
-                                              tile_format=tile_format,
-                                              gridset_number=grid_number,
-                                              zoom_start=zoom_start, 
-                                              zoom_stop=zoom_stop,
-                                              threads=threads
-                                              )
-            seed_request = sp_gwc.seed_request(seed_xml)
-            url_message = 'Request URL: {0}'.format(seed_request.url)
-            status_code_message = 'Status: {0}'.format(seed_request.status_code)
-            print(url_message)
-            print(status_code_message)
-            array_length = 1
-            while array_length > 0:
-                status = sp_gwc.query_task_status()
+            if layer_name in exclude_layers:
+                finished = 'Did not cache - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
+                seed_request = finished
                 print(datetime.datetime.now())
-                status_message = '{workspace}:{layer} - {progress}'.format(workspace=ws_name, 
-                                                                           layer=layer_name, 
-                                                                           progress=status[1]
-                                                                           )
-                print(status_message)
-                long_array = status[1]['long-array-array']
-                array_length = len(long_array)
-                time.sleep(progress_check)
-            finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
+                print(finished)
+            else:
+                style_name = layer_param['style_name']
+                sp_gwc = GeoWebCacheSetUp(gwc_url, gs_user, gs_pwd, ws_name, 
+                                          layer_name, cert_verify=False
+                                          )
+                seed_xml = sp_gwc.create_seed_xml(style=style_name,
+                                                  tile_format=tile_format,
+                                                  gridset_number=grid_number,
+                                                  zoom_start=zoom_start, 
+                                                  zoom_stop=zoom_stop,
+                                                  threads=threads
+                                                  )
+                seed_request = sp_gwc.seed_request(seed_xml)
+                url_message = 'Request URL: {0}'.format(seed_request.url)
+                status_code_message = 'Status: {0}'.format(seed_request.status_code)
+                print(url_message)
+                print(status_code_message)
+                array_length = 1
+                while array_length > 0:
+                    status = sp_gwc.query_task_status()
+                    print(datetime.datetime.now())
+                    status_message = '{workspace}:{layer} - {progress}'.format(workspace=ws_name, 
+                                                                               layer=layer_name, 
+                                                                               progress=status[1]
+                                                                               )
+                    print(status_message)
+                    long_array = status[1]['long-array-array']
+                    array_length = len(long_array)
+                    time.sleep(progress_check)
+                finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
             logging.info(finished)
             request_resps.append(seed_request)
     return request_resps
@@ -155,6 +158,8 @@ def clean_layer_names(layer_names):
 
 
 if __name__ == '__main__':
+    
+    from params import WORKSPACES
     
     parser = argparse.ArgumentParser()
     parser.add_argument('tier', type=str)
@@ -178,6 +183,7 @@ if __name__ == '__main__':
     layers = get_ws_layers(SPDSS_GS_URL, USER, PWD, WORKSPACES)
     lyr_with_styles = get_layer_styles(SPDSS_GS_URL, USER, PWD, layers)
     seed_responses = execute_seed_request(GWC_URL, USER, PWD, lyr_with_styles, 
-                                          zoom_stop=10, threads=2
+                                          zoom_stop=10, threads=2, 
+                                          exclude_layers=('53N448826903',)
                                           )
     print(len(seed_responses))
