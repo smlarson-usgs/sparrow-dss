@@ -19,6 +19,10 @@ DEV = {'GS_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver
        'PWD': PWD
        }
 
-QA = DEV
+QA = {'GS_HOST': None,
+      'GWC_HOST': None,
+      'USER': None,
+      'PWD': None
+      }
 
-PROD = DEV
+PROD = QA
