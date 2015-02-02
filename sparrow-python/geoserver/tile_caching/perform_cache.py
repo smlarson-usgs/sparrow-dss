@@ -17,6 +17,8 @@ tier_name = args.tier.lower()
 zoom_start = parser.zoom_start
 zoom_stop = parser.zoom_stop
 
+if zoom_start > zoom_stop:
+    raise Exception('Starting zoom level cannot be larger than the ending zoom level.')
 
 if tier_name == 'dev':
     from params import DEV as param_values
