@@ -18,16 +18,18 @@ public class CalcStyleUrlParams extends Action<String> {
 		{"FEE391", "EC7014"},
 		{"FFFFD4", "FEC44F", "CC4C02"},
 		{"FFFFD4", "FEE391", "FE9929", "CC4C02"},
-		{"FFFFD4", "FEE391", "FEC44F", "FE9929", "EC7014"}
+		{"FFFFD4", "FEE391", "FEC44F", "FE9929", "EC7014"},
+		{"FFFFD4", "FEE391", "FEC44F", "FE9929", "F5851F", "EC7014"}
 	};
 	
 	protected static String[][] NEGATIVE_HUES = new String[][] {
 		{},
 		{"41B6C4"}, 
 		{"225EA8", "41B6C4"}, 
-		{"0C2C84", "1D91C0", "7FCDBB"}, 
-		{"225EA8", "1D91C0", "41B6C4", "7FCDBB"} , 
-		{"0C2C84", "225EA8", "1D91C0", "41B6C4", "7FCDBB"} 
+		{"0C2C84", "1D91C0", "99EECC"}, 
+		{"225EA8", "1D91C0", "41B6C4", "99EECC"},
+		{"0C2C84", "225EA8", "1D91C0", "41B6C4", "99EECC"},
+		{"0C2C84", "225EA8", "1D91C0", "41B6C4", "66CCCC", "99EECC"} 
 	};
 	
     public CalcStyleUrlParams(BinSet binSet) {
@@ -41,8 +43,8 @@ public class CalcStyleUrlParams extends Action<String> {
 			return;
 		}
 		
-		if (binSet.getActualBinCount() > 5) {
-			addValidationError("The binset cannot have more than five bins in it.");
+		if (binSet.getActualBinCount() > (POSITIVE_HUES.length - 1)) {
+			addValidationError("The binset cannot have more than " + (POSITIVE_HUES.length - 1) + " bins in it.");
 		}
 	}
 	
