@@ -56,7 +56,7 @@
           </elementProp>
           <elementProp name="MaxNumberOfModelsToRun" elementType="Argument">
             <stringProp name="Argument.name">MaxNumberOfModelsToRun</stringProp>
-            <stringProp name="Argument.value">${__P(MaxNumberOfModelsToRun,1)}</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfModelsToRun,99)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Filters how many models ids are queied fromGeoNetwork (sort order unknown)</stringProp>
           </elementProp>
@@ -86,7 +86,7 @@
           </elementProp>
           <elementProp name="RandomizeContexts" elementType="Argument">
             <stringProp name="Argument.name">RandomizeContexts</stringProp>
-            <stringProp name="Argument.value">${__P(RandomizeContexts, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(RandomizeContexts, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, a random adjustment is added to each context to force new context Ids and map layers</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -770,7 +770,6 @@ function makeTiles(south, west, tilesTall, tilesWide, tileLatLongSize) {
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Randomized Contexts" enabled="true">
             <stringProp name="IfController.condition">${RandomizeContexts}</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
-            <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register Context ID (randomized)" enabled="true">
@@ -853,9 +852,8 @@ props.put(&quot;allModelMeta&quot;, allMetaData);
             </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Non-Randomized Contexts" enabled="true">
-            <stringProp name="IfController.condition">${RandomizeContexts} != &apos;true&apos;</stringProp>
+            <stringProp name="IfController.condition">&quot;${RandomizeContexts}&quot; != &quot;true&quot;</stringProp>
             <boolProp name="IfController.evaluateAll">false</boolProp>
-            <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register Context ID (non-randomized)" enabled="true">
@@ -864,7 +862,7 @@ props.put(&quot;allModelMeta&quot;, allMetaData);
                   <elementProp name="xmlreq" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
                     <stringProp name="Argument.name">xmlreq</stringProp>
-                    <stringProp name="Argument.value">&lt;PredictionContext xmlns=&quot;http://www.usgs.gov/sparrow/prediction-schema/v0_2&quot; 	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; model-id=&quot;${modelId}&quot;&gt; 	&lt;adjustmentGroups conflicts=&quot;accumulate&quot;&gt; 		&lt;individualGroup enabled=&quot;true&quot;/&gt; 	&lt;/adjustmentGroups&gt; 	&lt;analysis&gt; 		&lt;dataSeries source=&quot;&quot;&gt;total&lt;/dataSeries&gt; 		&lt;groupBy aggFunction=&quot;avg&quot;/&gt; 	&lt;/analysis&gt; 	&lt;terminalReaches/&gt; 	&lt;areaOfInterest/&gt; 	&lt;nominalComparison type=&quot;none&quot;/&gt; &lt;/PredictionContext&gt;</stringProp>
+                    <stringProp name="Argument.value">&lt;PredictionContext xmlns=&quot;http://www.usgs.gov/sparrow/prediction-schema/v0_2&quot; 	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; model-id=&quot;${modelId}&quot;&gt; 	&lt;adjustmentGroups conflicts=&quot;accumulate&quot;&gt; 		&lt;individualGroup enabled=&quot;true&quot;/&gt; 	&lt;/adjustmentGroups&gt; 	&lt;analysis&gt; 		&lt;dataSeries source=&quot;&quot;&gt;total&lt;/dataSeries&gt; 	&lt;/analysis&gt; 	&lt;terminalReaches/&gt; 	&lt;nominalComparison type=&quot;none&quot;/&gt; &lt;/PredictionContext&gt;</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   </elementProp>
