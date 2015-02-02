@@ -10,8 +10,13 @@ from seed_request import get_ws_layers, get_layer_styles, execute_seed_request
 
 parser = argparse.ArgumentParser()
 parser.add_argument('tier', type=str)
+parser.add_argument('zoom_start', type=int)
+parser.add_argument('zoom_stop', type=int)
 args = parser.parse_args()
 tier_name = args.tier.lower()
+zoom_start = parser.zoom_start
+zoom_stop = parser.zoom_stop
+
 
 if tier_name == 'dev':
     from params import DEV as param_values
@@ -30,6 +35,7 @@ PWD = param_values['PWD']
 layers = get_ws_layers(SPDSS_GS_URL, USER, PWD, WORKSPACES)
 lyr_with_styles = get_layer_styles(SPDSS_GS_URL, USER, PWD, layers)
 seed_responses = execute_seed_request(GWC_URL, USER, PWD, lyr_with_styles, 
-                                      zoom_stop=10, threads=2
+                                      zoom_start=zoom_start, zoom_stop=zoom_stop, 
+                                      threads=2
                                       )
 print(len(seed_responses))
