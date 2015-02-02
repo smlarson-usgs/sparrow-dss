@@ -3535,7 +3535,8 @@ props.put(&quot;contextIdIndex&quot;, contextIdIndex);</stringProp>
             <stringProp name="script">var modelIdIndex = Number(props.get(&quot;modelIdIndex&quot;));			//pointer into modelIds
 modelIdIndex++;
 
-props.put(&quot;modelIdIndex&quot;, modelIdIndex);</stringProp>
+props.put(&quot;modelIdIndex&quot;, modelIdIndex);
+props.put(&quot;contextIdIndex&quot;, 0);</stringProp>
             <stringProp name="scriptLanguage">javascript</stringProp>
           </BSFSampler>
           <hashTree/>
