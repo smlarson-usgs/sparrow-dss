@@ -8,6 +8,10 @@ try:
 except ImportError:
     raise Exception('Failed to find user and password information.')
 
+WORKSPACES = ['sparrow-catchment-reusable', 
+              'sparrow-flowline-reusable'
+              ]
+
 
 DEV = {'GS_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver/rest',
        'GWC_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver/gwc/rest',
@@ -15,6 +19,10 @@ DEV = {'GS_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver
        'PWD': PWD
        }
 
-QA = DEV
+QA = {'GS_HOST': None,
+      'GWC_HOST': None,
+      'USER': None,
+      'PWD': None
+      }
 
-PROD = DEV
+PROD = QA
