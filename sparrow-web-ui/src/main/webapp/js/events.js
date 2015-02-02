@@ -216,14 +216,15 @@ Sparrow.events.EventManager = function(){ return{
 				Sparrow.SESSION.PermanentMapState.lon = null;
 				Sparrow.SESSION.PermanentMapState.zoom = null;
 				
-				//add the sparrow data layer to the map
-				make_map();
 			} else {
 				map1.fitToBBox(Sparrow.SESSION.getOriginalBoundEast(),
 					Sparrow.SESSION.getOriginalBoundSouth(), 
 					Sparrow.SESSION.getOriginalBoundWest(), 
 					Sparrow.SESSION.getOriginalBoundNorth());
 			}
+			
+			//add the sparrow data layer to the map
+			make_map();
 
 		});
 
