@@ -14,8 +14,8 @@ parser.add_argument('zoom_start', type=int)
 parser.add_argument('zoom_stop', type=int)
 args = parser.parse_args()
 tier_name = args.tier.lower()
-zoom_start = parser.zoom_start
-zoom_stop = parser.zoom_stop
+zoom_start = args.zoom_start
+zoom_stop = args.zoom_stop
 
 if zoom_start > zoom_stop:
     raise Exception('Starting zoom level cannot be larger than the ending zoom level.')
