@@ -239,15 +239,17 @@ Sparrow.COLORS = {
 	                  ['FEE391', 'EC7014'], 
 	                  ['FFFFD4','FEC44F','CC4C02'], 
 	                  ['FFFFD4','FEE391','FE9929','CC4C02'], 
-	                  ['FFFFD4','FEE391','FEC44F','FE9929','EC7014'] 
+	                  ['FFFFD4','FEE391','FEC44F','FE9929','EC7014'],
+					  ['FFFFD4','FEE391','FEC44F','FE9929','F5851F','EC7014']
 	                ],
 
 	NEGATIVE_HUES : [null,
 	                 ['41B6C4'], 
 	                 ['225EA8', '41B6C4'], 
-	                 ['0C2C84', '1D91C0', '7FCDBB'], 
-	                 ['225EA8', '1D91C0', '41B6C4', '7FCDBB'] , 
-	                 ['0C2C84', '225EA8', '1D91C0', '41B6C4', '7FCDBB'] 
+	                 ['0C2C84', '1D91C0', '99EECC'], 
+	                 ['225EA8', '1D91C0', '41B6C4', '99EECC'],
+					 ['0C2C84', '225EA8', '1D91C0', '41B6C4', '99EECC'],
+	                 ['0C2C84', '225EA8', '1D91C0', '41B6C4', '66CCCC', '99EECC'] 
 	                ],
 
 	/**
