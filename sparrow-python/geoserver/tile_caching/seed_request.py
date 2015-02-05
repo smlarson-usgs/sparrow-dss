@@ -142,8 +142,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                                                                )
                     print(status_message)
                     long_array = status[1]['long-array-array']
-                    thread1 = long_array[0]
                     try:
+                        thread1 = long_array[0]
                         tile_count = thread1[1]
                         job_id = thread1[3]
                         job_tile_count = (job_id, tile_count)
