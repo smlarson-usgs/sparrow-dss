@@ -99,6 +99,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                         format='%(asctime)s %(message)s'
                         )
     request_resps = []
+    job_ids_with_tiles = []
     for cache_datum in cache_data:
         ws_name, layer_params = cache_datum
         layer_count = 'Total layers for {workspace_name}: {layer_count}'.format(workspace_name=ws_name,
@@ -141,11 +142,23 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                                                                )
                     print(status_message)
                     long_array = status[1]['long-array-array']
+                    thread1 = long_array[0]
+                    tile_count = thread1[1]
+                    job_id = thread1[3]
+                    job_tile_count = (job_id, tile_count)
+                    if job_tile_count not in job_ids_with_tiles:
+                        job_ids_with_tiles.append(job_tile_count)
                     array_length = len(long_array)
                     time.sleep(progress_check)
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
             logging.info(finished)
             request_resps.append(seed_request)
+            tile_counts = []
+            for job_tile_tuple in job_ids_with_tiles:
+                tile_count = job_tile_tuple[1]
+                tile_counts.append(tile_counts)
+            tile_sum = sum(tile_counts)
+            print('Total tiles: {0}'.format(tile_sum))
     return request_resps
             
 
