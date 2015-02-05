@@ -156,11 +156,10 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
             logging.info(finished)
             request_resps.append(seed_request)
-        tile_counts = []
-        for job_tile_tuple in job_ids_with_tiles:
-            tile_count = float(job_tile_tuple[1])
-            print(tile_count)
-            tile_counts.append(tile_count)
+    tile_counts = []
+    for job_tile_tuple in job_ids_with_tiles:
+        tile_count = float(job_tile_tuple[1])
+        tile_counts.append(tile_count)
     print(tile_counts)
     tile_sum = sum(tile_counts)
     print('Total tiles: {0}'.format(tile_sum))
