@@ -150,7 +150,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                         if job_tile_count not in job_ids_with_tiles:
                             job_ids_with_tiles.append(job_tile_count)
                     except IndexError:
-                        continue
+                        pass
                     array_length = len(long_array)
                     time.sleep(progress_check)
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
