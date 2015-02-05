@@ -143,11 +143,14 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                     print(status_message)
                     long_array = status[1]['long-array-array']
                     thread1 = long_array[0]
-                    tile_count = thread1[1]
-                    job_id = thread1[3]
-                    job_tile_count = (job_id, tile_count)
-                    if job_tile_count not in job_ids_with_tiles:
-                        job_ids_with_tiles.append(job_tile_count)
+                    try:
+                        tile_count = thread1[1]
+                        job_id = thread1[3]
+                        job_tile_count = (job_id, tile_count)
+                        if job_tile_count not in job_ids_with_tiles:
+                            job_ids_with_tiles.append(job_tile_count)
+                    except IndexError:
+                        continue
                     array_length = len(long_array)
                     time.sleep(progress_check)
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
