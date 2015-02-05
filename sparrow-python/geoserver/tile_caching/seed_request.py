@@ -143,9 +143,9 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                     print(status_message)
                     long_array = status[1]['long-array-array']
                     try:
-                        thread1 = long_array[0]
-                        tile_count = thread1[1]
-                        job_id = thread1[3]
+                        thread0 = long_array[0]
+                        tile_count = thread0[1]
+                        job_id = thread0[3]
                         job_tile_count = (job_id, tile_count)
                         if job_tile_count not in job_ids_with_tiles:
                             job_ids_with_tiles.append(job_tile_count)
@@ -159,9 +159,11 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
         tile_counts = []
         for job_tile_tuple in job_ids_with_tiles:
             tile_count = float(job_tile_tuple[1])
-            tile_counts.append(tile_counts)
-        tile_sum = sum(tile_counts)
-        print('Total tiles: {0}'.format(tile_sum))
+            print(tile_count)
+            tile_counts.append(tile_count)
+    print(tile_counts)
+    tile_sum = sum(tile_counts)
+    print('Total tiles: {0}'.format(tile_sum))
     return request_resps
             
 
