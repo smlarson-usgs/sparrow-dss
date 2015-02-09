@@ -6,8 +6,8 @@ Created on Jan 27, 2015
 import time
 import datetime
 import logging
-import argparse
 from py_geoserver_rest_requests import GeoServerWorkspace, GeoWebCacheSetUp, GeoServerLayers
+from params import OVERLAY_WORKSPACES
 
 
 def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces):
@@ -120,6 +120,26 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                 sp_gwc = GeoWebCacheSetUp(gwc_url, gs_user, gs_pwd, ws_name, 
                                           layer_name, cert_verify=False
                                           )
+                # deal with overlay layers that do not have image/png8 as a caching option
+                if ws_name in OVERLAY_WORKSPACES:  
+                    tiling_config = sp_gwc.get_tile_cache_config()
+                    config_content = tiling_config[1]
+                    mime_formats = config_content['GeoServerLayer'].get('mimeFormats', [])
+                    # check if image/png8 is one of the mimeFormats
+                    # if it is not, add it
+                    if tile_format not in mime_formats:
+                        mime_formats.append(tile_format)
+                        updated_cache_config_xml = sp_gwc.create_disable_enable_cache_xml(format_list=tuple(mime_formats),
+                                                                                          style=style_name,
+                                                                                          gridset_name=grid
+                                                                                          )
+                        update_cache_config = sp_gwc.disable_or_enable_cache(payload=updated_cache_config_xml)
+                        update_config_message = 'Updated layer parmeters for {workspace}:{layer} - {status_code}'.format(workspace=ws_name,
+                                                                                                                         layer=layer_name,
+                                                                                                                         status_code=update_cache_config.status_code
+                                                                                                                         )
+                        print(update_config_message)
+                        logging.info(update_config_message)
                 seed_xml = sp_gwc.create_seed_xml(style=style_name,
                                                   tile_format=tile_format,
                                                   gridset_number=grid_number,
@@ -172,35 +192,3 @@ def clean_layer_names(layer_names):
         layer_sans_ws_name = layer_name.split(':')[1]
         clean_names.append(layer_sans_ws_name)
     return clean_names
-
-
-if __name__ == '__main__':
-    
-    from params import WORKSPACES
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument('tier', type=str)
-    args = parser.parse_args()
-    tier_name = args.tier.lower()
-    
-    if tier_name == 'dev':
-        from params import DEV as param_values
-    elif tier_name == 'qa':
-        from params import QA as param_values
-    elif tier_name == 'prod':
-        from params import PROD as param_values
-    else:
-        raise Exception('Tier name not recognized')
-        
-    SPDSS_GS_URL = param_values['GS_HOST']
-    GWC_URL = param_values['GWC_HOST']
-    USER = param_values['USER']
-    PWD = param_values['PWD']
-    
-    layers = get_ws_layers(SPDSS_GS_URL, USER, PWD, WORKSPACES)
-    lyr_with_styles = get_layer_styles(SPDSS_GS_URL, USER, PWD, layers)
-    seed_responses = execute_seed_request(GWC_URL, USER, PWD, lyr_with_styles, 
-                                          zoom_stop=10, threads=2, 
-                                          exclude_layers=('53N448826903',)
-                                          )
-    print(len(seed_responses))
