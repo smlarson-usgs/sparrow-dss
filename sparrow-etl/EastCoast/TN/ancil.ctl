@@ -18,9 +18,9 @@ TRAILING NULLCOLS
 ,mavelu filler
 ,target filler
 ,MRB filler
-,HUC8
+,HUC8 "lpad(:HUC8,8,'0')"
 ,reachcode_comb filler
-,edacode "substr(:edacode,1,5)"
+,edacode
 ,edaname
 ,ReachTOT filler
 ,rchtype
