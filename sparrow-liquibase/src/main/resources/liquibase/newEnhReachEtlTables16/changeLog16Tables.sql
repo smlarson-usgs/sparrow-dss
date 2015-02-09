@@ -56,3 +56,8 @@ noparallel
 monitoring;
 --rollback drop table temp_enh_reach_attrib;
 
+--changeset kmschoep:add_col_enh_reach
+alter table enh_reach add (mrb_no number);
+--rollback select 'cannot drop col from compressed table' from dual;
+
+
