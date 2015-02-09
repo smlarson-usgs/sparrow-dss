@@ -8,9 +8,16 @@ try:
 except ImportError:
     raise Exception('Failed to find user and password information.')
 
-WORKSPACES = ['sparrow-catchment-reusable', 
-              'sparrow-flowline-reusable'
-              ]
+REUSABLE_WORKSPACES = ['sparrow-catchment-reusable', 
+                       'sparrow-flowline-reusable',
+                       ]
+
+OVERLAY_WORKSPACES = ['huc8-overlay',
+                      'catchment-overlay',
+                      'reach-overlay'
+                      ]
+
+WORKSPACES = REUSABLE_WORKSPACES +  OVERLAY_WORKSPACES
 
 
 DEV = {'GS_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver/rest',
