@@ -12,5 +12,6 @@
 
 	<include file="changeLog14_ModelReachAddOldIDCol.sql" relativeToChangelogFile="true"/>
 	<include file="changeLog14_ModelReachUpdIDwFullID.sql" relativeToChangelogFile="true"/>
+	<include file="changeLog14_expand_eda_code_col.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
