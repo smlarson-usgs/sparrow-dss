@@ -17,7 +17,7 @@ OVERLAY_WORKSPACES = ['huc8-overlay',
                       'reach-overlay'
                       ]
 
-WORKSPACES = REUSABLE_WORKSPACES +  OVERLAY_WORKSPACES
+WORKSPACES = REUSABLE_WORKSPACES + OVERLAY_WORKSPACES
 
 
 DEV = {'GS_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver/rest',
