@@ -37,7 +37,7 @@ begin
   my_synonyms synonym_table;
 
 begin
-  open watershed_cur(model_id);
+  open watershed_cur(:wmodel_id);
   fetch watershed_cur bulk collect into my_synonyms;
   close watershed_cur;
     
@@ -47,24 +47,24 @@ begin
                         WHEN 'IDENTIFIER' then execute immediate 'insert into model_reach_watershed_swap (model_reach_id, watershed_id, sparrow_model_id_partition)
                                     select mav.model_reach_id, ' ||my_synonyms(i).watershed_id||',' ||my_synonyms(i).sparrow_model_id ||
                                     ' from model_attrib_vw mav
-                                          where mav.sparrow_model_id='||model_id||' and
+                                          where mav.sparrow_model_id='||:wmodel_id||' and
                                                 mav.full_identifier in (' ||my_synonyms(i).watershed_parameters ||')';
                         WHEN 'EDANAME' then execute immediate 'insert into model_reach_watershed_swap (model_reach_id, watershed_id, sparrow_model_id_partition)
                                     select mav.model_reach_id, ' ||my_synonyms(i).watershed_id||',' ||my_synonyms(i).sparrow_model_id ||
                                     ' from model_attrib_vw mav
-                                          where mav.sparrow_model_id='||model_id||' and
+                                          where mav.sparrow_model_id='||:wmodel_id||' and
 						(mav.shore_reach=1 or mav.term_estuary=1) and
                                                 mav.edaname in (' ||my_synonyms(i).watershed_parameters ||')'; 
                         WHEN 'EDACODE' then execute immediate 'insert into model_reach_watershed_swap (model_reach_id, watershed_id, sparrow_model_id_partition)
                                     select mav.model_reach_id, ' ||my_synonyms(i).watershed_id||',' ||my_synonyms(i).sparrow_model_id ||
                                     ' from model_attrib_vw mav
-                                            where mav.sparrow_model_id='||model_id||' and
+                                            where mav.sparrow_model_id='||:wmodel_id||' and
                                                 (mav.shore_reach=1 or mav.term_estuary=1) and
                                                 mav.edacode in (' || my_synonyms(i).watershed_parameters || ')';
                         WHEN 'LIKEEDACODE' then execute immediate 'insert into model_reach_watershed_swap (model_reach_id, watershed_id, sparrow_model_id_partition)
                                     select mav.model_reach_id, '||my_synonyms(i).watershed_id||',' ||my_synonyms(i).sparrow_model_id || 
                                     ' from model_attrib_vw mav
-                                            where mav.sparrow_model_id='||model_id||' and
+                                            where mav.sparrow_model_id='||:wmodel_id||' and
                                                 (mav.shore_reach=1 or mav.term_estuary=1) and
                                                 mav.edacode like (' ||my_synonyms(i).watershed_parameters ||')';
                         ELSE insert into model_reach_watershed_swap (model_reach_id, watershed_id, sparrow_model_id_partition)
@@ -72,8 +72,8 @@ begin
                                     from (select mra.model_reach_id, pw.watershed_id, pw.sparrow_model_id 
                                           from model_reach_attrib mra,
                                           predefined_watershed pw
-                                          where mra.sparrow_model_id_partition=:model_id and
-                                                pw.sparrow_model_id=:model_id and
+                                          where mra.sparrow_model_id_partition=:wmodel_id and
+                                                pw.sparrow_model_id=:wmodel_id and
                                                 (mra.shore_reach=1 or mra.term_estuary=1) and
                                                 1=2) a;
     END CASE;
