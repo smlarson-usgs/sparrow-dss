@@ -25,6 +25,7 @@ public class SweepResponse {
 		public String dsName = null;
 		public String wksName = null;
 		public boolean isDeleted = false;
+		public String message = null;
 		public Long age = null;	//only valid if kept
 		public Exception err = null;
 		public ArrayList<String> layersDeleted = new ArrayList(0);	//only valid if deleted

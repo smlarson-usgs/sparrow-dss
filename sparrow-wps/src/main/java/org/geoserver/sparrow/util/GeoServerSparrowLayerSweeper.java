@@ -2,6 +2,7 @@ package org.geoserver.sparrow.util;
 
 import gov.usgs.cida.sparrow.service.util.NamingConventions;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Arrays;
@@ -131,44 +132,69 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
  		10) Delete the dbf file
 	 * 
 	 */
-	public static SweepResponse.DataStoreResponse pruneDataStore(Catalog dsCatalog, DataAccess<? extends FeatureType, ? extends Feature> da, DataStoreInfo dsInfo, File dbfFile) {
+	public static SweepResponse.DataStoreResponse pruneDataStore(Catalog dsCatalog, DataStoreInfo dsInfo, File dbfFile) {
 		
 		synchronized (DELETE_LOCK) {
+			
 			SweepResponse.DataStoreResponse response = new SweepResponse.DataStoreResponse(dsInfo.getWorkspace().getName(), dsInfo.getName());
+			
+			DataAccess<? extends FeatureType, ? extends Feature> da = null;
+			
+			try {
+				da = dsInfo.getDataStore(null);
+				response.message = "";
+			} catch (IOException ex) {
+				response.message = "Could not connect to the data-access for this layer.  Will continue trying to delete other aspects.  ";
+			}
+			
+			
 
 			LOGGER.log(Level.INFO, "==========> PRUNING DATASTORE [" + dsInfo.getName() + "]");
 
 			// 1) Get all resource names associated with this store (all layer names)
+
 			try {
-				List<Name> resourceNames = da.getNames();
-				if (!resourceNames.isEmpty()) {
-					for (Name resourceName : resourceNames) {
-						// 2) For each layer dsName, get the layer info object
-						// 3) For each layer info object, detach the layer from the GeoServer Catalog
-						// 4) For each layer info object, remove the layer completely from the GeoServer Catalog
-						LayerInfo layerInfo = dsCatalog.getLayerByName(resourceName);
-						
-						//This could be null if the layer was deleted manually in the UI
-						if (layerInfo != null) {
-							response.layersDeleted.add(layerInfo.getName());
-							dsCatalog.detach(layerInfo);
-							dsCatalog.remove(layerInfo);
+
+				if (da != null) {
+					List<Name> resourceNames = da.getNames();
+					if (!resourceNames.isEmpty()) {
+
+						String delResNames = "Deleted resources: ";
+
+						for (Name resourceName : resourceNames) {
+							// 2) For each layer dsName, get the layer info object
+							// 3) For each layer info object, detach the layer from the GeoServer Catalog
+							// 4) For each layer info object, remove the layer completely from the GeoServer Catalog
+							LayerInfo layerInfo = dsCatalog.getLayerByName(resourceName);
+
+							//This could be null if the layer was deleted manually in the UI
+							if (layerInfo != null) {
+
+								delResNames += resourceName.getLocalPart() + ", ";
+
+								response.layersDeleted.add(layerInfo.getName());
+								dsCatalog.detach(layerInfo);
+								dsCatalog.remove(layerInfo);
+							}
+
+							// 5) For each layer dsName, get the resource info object
+							// 6) For each resource info object, detach the resource from the GeoServer Catalog
+							// 7) For each resource info object, remove the resource completely from the GeoServer Catalog
+							ResourceInfo resourceInfo = dsCatalog.getResourceByName(resourceName, ResourceInfo.class);
+
+							if (resourceInfo != null) {
+								dsCatalog.detach(resourceInfo);
+								dsCatalog.remove(resourceInfo);
+							}
 						}
 
-						// 5) For each layer dsName, get the resource info object
-						// 6) For each resource info object, detach the resource from the GeoServer Catalog
-						// 7) For each resource info object, remove the resource completely from the GeoServer Catalog
-						ResourceInfo resourceInfo = dsCatalog.getResourceByName(resourceName, ResourceInfo.class);
 						
-						if (resourceInfo != null) {
-							dsCatalog.detach(resourceInfo);
-							dsCatalog.remove(resourceInfo);
-						}
+						response.message += delResNames;
 					}
-				}
 
-				// 8) Clean up the GeoTools cache (DataAccess Object dispose() method)
-				da.dispose();
+					// 8) Clean up the GeoTools cache (DataAccess Object dispose() method)
+					da.dispose();
+				}
 
 				// 9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
 				dsCatalog.detach(dsInfo);
@@ -182,6 +208,22 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "A Sweeper exception has occurred during DataStore [" + dsInfo.getName() + "] removal.  Skipping DataStore and resuming...", e);
 				response.err = e;
+				
+				try {
+					List<Name> resourceNames = da.getNames();
+					if (!resourceNames.isEmpty()) {
+						
+						String names = "Undeleted resources: ";
+						
+						for (Name resourceName : resourceNames) {
+							names += resourceName.getLocalPart() + " (" + resourceName.getURI() + "), ";
+						}
+						
+						response.message += names;
+					}
+				} catch (Exception ee) {
+					response.message += "Unable to build list of undeleted resources.";
+				}
 			}
 
 			return response;
@@ -327,9 +369,8 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 							 */
 							if (currentTime - fileAge > maxAgeMs) {
 								
-								DataAccess<? extends FeatureType, ? extends Feature> da = dsInfo.getDataStore(new DefaultProgressListener());
 								File dbfFile = new File(dbaseLocation);
-								response.deleted.add(GeoServerSparrowLayerSweeper.pruneDataStore(catalog, da,  dsInfo, dbfFile));	
+								response.deleted.add(GeoServerSparrowLayerSweeper.pruneDataStore(catalog, dsInfo, dbfFile));	
 								
 							} else {
 								SweepResponse.DataStoreResponse dsr = new SweepResponse.DataStoreResponse(wsInfo.getName(), dsName);
