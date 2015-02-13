@@ -32,4 +32,9 @@ QA = {'GS_HOST': None,
       'PWD': None
       }
 
-PROD = QA
+PROD = {
+	'GS_HOST': 'http://cida-eros-sparrowprodgeo.er.usgs.gov:8080/sparrowgeoserver/rest',
+	'GWC_HOST': 'http://cida-eros-sparrowprodgeo.er.usgs.gov:8081/sparrowgeoserver/gwc/rest',
+	'USER': USER,
+	'PWD': PWD
+	}
