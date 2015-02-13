@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
 import org.geoserver.sparrow.util.SweepResponse;
 import org.geotools.process.factory.DescribeParameter;
@@ -39,23 +41,96 @@ public class SweepOldLayers implements SparrowWps, GeoServerProcess {
 	/**
 	 * Requests that the layer be created if it does not already exist.
 	 * 
-	 * @param maxAgeSeconds Age in seconds allowed for a layer.  Layers older will be deleted.
+	 * @param maxAgeMinutes Age in seconds allowed for a layer.  Layers older will be deleted.
+	 * @param workspaces
+	 * @param modelId
+	 * @param nameRegex
 	 * @return
 	 * @throws Exception 
 	 */
 	@DescribeResult(name="response", description="Sweeps old layers", type=ServiceResponseWrapper.class)
 	public ServiceResponseWrapper execute(
-			@DescribeParameter(name="maxAgeSeconds", description="Sweep dynamic layers that are older than the specified number of seconds.", min = 0) Long maxAgeSeconds
+			@DescribeParameter(name="maxAgeMinutes", 
+					description="Sweep layers that are older than the specified number of minutes.  If unspecified, a default value is used, approx 24 hours.", 
+					min = 0, max = 1) Long maxAgeMinutes,
+			@DescribeParameter(name="workspaces", 
+					description="Optional.  One or more workspaces to sweep (how to spec more than one in request builder?)  If unspecified, the standard 'non-reusable' workspaces will be swept.", 
+					min = 0) String[] workspaces,
+			@DescribeParameter(name="modelId", 
+					description="Optional.  If specified, only datastores and layers of this model will be swept.  This param and nameRegex are mutually exclusive.  Combined w/ the workspace name (or the default non-reusable workspaces)", 
+					min = 0, max = 1) Integer modelId,
+			@DescribeParameter(name="nameRegex", 
+					description="Optional.  If specified, only datastores and layers matching this regex will be swept.  This param and modelId are mutually exclusive.  Combined w/ the workspace name (or the default non-reusable workspaces)", 
+					min = 0, max = 1) String nameRegex
 		) throws Exception {
 		
-		
+		//New wrapper
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper();
 		wrap.setEntityClass(SweepResponse.class);
 		wrap.setMimeType(ServiceResponseMimeType.XML);
 		wrap.setOperation(ServiceResponseOperation.DELETE);
 		wrap.setStatus(ServiceResponseStatus.OK);
 		
+		//state
+		UserState state = new UserState();
+		state.maxAgeMinutes = maxAgeMinutes;
+		state.workspaces = workspaces;
+		state.modelId = modelId;
+		state.nameRegex = nameRegex;
 		
+		init(state, wrap);
+		
+		
+		SweepResponse response = null;
+
+		if (wrap.isOK()) {
+			try {
+
+				
+				log.debug("Sweep request received for stores older than {} minutes in workspaces {}, modelId {}, regex matching {}",
+						new Object[]{state.maxAgeMinutes, state.workspaces, state.modelId, state.nameRegex});
+				
+				if (state.modelId != null) {
+					response = sweeper.runSweep(state.workspaces, state.modelId, state.maxAgeMs);
+				} else if (state.nameRegex != null) {
+					response = sweeper.runSweep(state.workspaces, state.nameRegex, state.maxAgeMs);
+				} else {
+					response = sweeper.runSweep(state.workspaces, (String)null, state.maxAgeMs);
+				}
+
+				wrap.addEntity(response);
+
+			} catch (Exception e) {
+				//This is an unhandled error during create
+				wrap.setStatus(ServiceResponseStatus.FAIL);
+				wrap.setError(e);
+
+				String msg = "FAILED:  An unexpected error happened while sweeping";
+				wrap.setMessage(msg);
+				log.error(msg, e);
+				return wrap;
+			}
+		}
+
+		if (wrap.isOK()) {
+			log.debug("Request COMPLETE OK to sweep old layers");
+		} else {
+			log.error("FAILED to sweep old layers.  Message: " + wrap.getMessage());
+			return wrap;
+		}
+		
+		return wrap;
+	}
+	
+		/**
+	 * Initiate the self-initialized params from the user params and does validation.
+	 * @param state
+	 * @param wrap
+	 */
+	private void init(UserState state, ServiceResponseWrapper wrap) {
+		
+		//
+		//Check credentials
 		Object userObj = null;
 		String userName = null;
 		
@@ -74,47 +149,51 @@ public class SweepOldLayers implements SparrowWps, GeoServerProcess {
 			wrap.setStatus(ServiceResponseStatus.FAIL);
 			wrap.setMessage("You are not logged in or are not the admin user.  " +
 					"To use from GeoServer WPS demo page, you must check the Authenticate option and login as admin.");
-			return wrap;
+			return;
 		}
-
 		
-
 		
-		SweepResponse response = null;
-		
-	
-
-		try {
-			
-			if (maxAgeSeconds != null) {
-				log.debug("Request to sweep old layers received for layers older than " + (maxAgeSeconds * 1000L) + " seconds.");
-				response = sweeper.runSweep(maxAgeSeconds * 1000L);
-			} else {
-				log.debug("Request to sweep old layers received for layers older than the default configured time.");
-				response = sweeper.runSweep();
-			}
-			
-			wrap.addEntity(response);
-			
-		} catch (Exception e) {
-			//This is an unhandled error during create
+		//
+		//Validation
+		if (state.modelId != null && state.nameRegex != null) {
+			wrap.setMessage("The parameters modelId and nameRegex cannot both be specified.");
 			wrap.setStatus(ServiceResponseStatus.FAIL);
-			wrap.setError(e);
-
-			String msg = "FAILED:  An unexpected error happened while sweeping";
-			wrap.setMessage(msg);
-			log.error(msg, e);
-			return wrap;
-		}
-
-		if (wrap.isOK()) {
-			log.debug("Request COMPLETE OK to sweep old layers");
-		} else {
-			log.error("FAILED to sweep old layers");
-			return wrap;
+			return;
 		}
 		
-		return wrap;
+		if (state.nameRegex != null) {
+			try {
+				Pattern p = Pattern.compile(state.nameRegex);
+			} catch (PatternSyntaxException e) {
+				wrap.setMessage("The nameRegex '" + state.nameRegex + "' is not a valid regex expression");
+				wrap.setStatus(ServiceResponseStatus.FAIL);
+				return;
+			}
+		}
+		
+		
+		//
+		//initiation
+		if (state.workspaces != null && state.workspaces.length == 0) {
+			state.workspaces = null;
+		}
+		
+		if (state.maxAgeMinutes != null) {
+			state.maxAgeMs = state.maxAgeMinutes * 60L * 1000L;
+		}
+	}
+	
+	/**
+	 * The WPS is single instance, so a state class for each user request holds
+	 * all info for a single execution.
+	 */
+	private class UserState {
+		//User params, set for each invocation
+		Long maxAgeMinutes;
+		Long maxAgeMs;	//calculated
+		String[] workspaces;
+		Integer modelId;
+		String nameRegex;
 	}
 	
 	

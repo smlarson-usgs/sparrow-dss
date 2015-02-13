@@ -169,6 +169,17 @@ public class NamingConventions {
 	}
 	
 	/**
+	 * Builds a regex string that can be used to match resources associated with
+	 * a particular model.
+	 * 
+	 * @param modelId
+	 * @return 
+	 */
+	public static String buildModelRegex(int modelId) {
+		return "" + modelId + "[NP].*";
+	}
+	
+	/**
 	 * Returns the default style name for the flowline layer of a given context.
 	 * 
 	 * Note that only 'reusable' contexts should be given named default styles -

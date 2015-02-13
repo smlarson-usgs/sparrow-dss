@@ -1,5 +1,6 @@
 package org.geoserver.sparrow.util;
 
+import gov.usgs.cida.sparrow.service.util.NamingConventions;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
@@ -117,17 +118,17 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	 * 
 	 *
 	 * The logic for removing everything associated with this dbf file is as follows:
-	 * 
-	 * 		1) Get all resource names associated with this store (all layer names)
-	 * 		2) For each layer name, get the layer info object
-	 * 		3) For each layer info object, detach the layer from the GeoServer Catalog
-	 * 		4) For each layer info object, remove the layer completely from the GeoServer Catalog
-	 * 		5) For each layer name, get the resource info object
-	 * 		6) For each resource info object, detach the resource from the GeoServer Catalog
-	 * 		7) For each resource info object, remove the resource completely from the GeoServer Catalog
-	 * 		8) Clean up the GeoTools cache (DataAccess Object dispose() method)
-	 * 		9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
-	 * 		10) Delete the dbf file
+ 
+ 		1) Get all resource names associated with this store (all layer names)
+ 		2) For each layer dsName, get the layer info object
+ 		3) For each layer info object, detach the layer from the GeoServer Catalog
+ 		4) For each layer info object, remove the layer completely from the GeoServer Catalog
+ 		5) For each layer dsName, get the resource info object
+ 		6) For each resource info object, detach the resource from the GeoServer Catalog
+ 		7) For each resource info object, remove the resource completely from the GeoServer Catalog
+ 		8) Clean up the GeoTools cache (DataAccess Object dispose() method)
+ 		9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
+ 		10) Delete the dbf file
 	 * 
 	 */
 	public static SweepResponse.DataStoreResponse pruneDataStore(Catalog dsCatalog, DataAccess<? extends FeatureType, ? extends Feature> da, DataStoreInfo dsInfo, File dbfFile) {
@@ -142,7 +143,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 				List<Name> resourceNames = da.getNames();
 				if (!resourceNames.isEmpty()) {
 					for (Name resourceName : resourceNames) {
-						// 2) For each layer name, get the layer info object
+						// 2) For each layer dsName, get the layer info object
 						// 3) For each layer info object, detach the layer from the GeoServer Catalog
 						// 4) For each layer info object, remove the layer completely from the GeoServer Catalog
 						LayerInfo layerInfo = dsCatalog.getLayerByName(resourceName);
@@ -154,7 +155,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 							dsCatalog.remove(layerInfo);
 						}
 
-						// 5) For each layer name, get the resource info object
+						// 5) For each layer dsName, get the resource info object
 						// 6) For each resource info object, detach the resource from the GeoServer Catalog
 						// 7) For each resource info object, remove the resource completely from the GeoServer Catalog
 						ResourceInfo resourceInfo = dsCatalog.getResourceByName(resourceName, ResourceInfo.class);
@@ -191,14 +192,47 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	 * Runs a sweep with default values
 	 */
 	public SweepResponse runSweep() throws Exception {
-		return runSweep(this.catalog, this.prunedWorkspaces, this.maxAge);
+		return runSweep(this.catalog, this.prunedWorkspaces, (String)null, this.maxAge);
 	}
 	
 	public SweepResponse runSweep(Long maxAgeMs) throws Exception {
-		return runSweep(this.catalog, this.prunedWorkspaces, maxAgeMs);
+		
+		if (maxAgeMs == null) maxAgeMs = this.maxAge;
+		
+		return runSweep(this.catalog, this.prunedWorkspaces, (String)null, maxAgeMs);
 	}
 	
-	public static SweepResponse runSweep(Catalog catalog, String[] prunedWorkspaces, Long maxAgeMs) throws Exception {
+	public SweepResponse runSweep(String[] prunedWorkspaces, Integer modelId, Long maxAgeMs) throws Exception {
+		
+		if (prunedWorkspaces == null) prunedWorkspaces = this.prunedWorkspaces;
+		if (maxAgeMs == null) maxAgeMs = this.maxAge;
+		
+		if (modelId != null) {
+			return runSweep(catalog, prunedWorkspaces, NamingConventions.buildModelRegex(modelId), maxAgeMs);
+		} else {
+			return runSweep(catalog, prunedWorkspaces, (String)null, maxAgeMs);	
+		}
+	}
+	
+	public SweepResponse runSweep(String[] prunedWorkspaces, String namePattern, Long maxAgeMs) throws Exception {
+		
+		if (prunedWorkspaces == null) prunedWorkspaces = this.prunedWorkspaces;
+		if (maxAgeMs == null) maxAgeMs = this.maxAge;
+		
+		
+		return runSweep(catalog, prunedWorkspaces, namePattern, maxAgeMs);
+	}
+	
+	private SweepResponse runSweep(Catalog catalog, String[] prunedWorkspaces, Integer modelId, Long maxAgeMs) throws Exception {
+		
+		if (modelId != null) {
+			return runSweep(catalog, prunedWorkspaces, NamingConventions.buildModelRegex(modelId), maxAgeMs);
+		} else {
+			return runSweep(catalog, prunedWorkspaces, (String)null, maxAgeMs);	
+		}
+	}
+	
+	private SweepResponse runSweep(Catalog catalog, String[] prunedWorkspaces, String namePattern, Long maxAgeMs) throws Exception {
 		synchronized (SWEEP_LOCK) {
 			
 			SweepResponse response = new SweepResponse();
@@ -220,81 +254,92 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 					List<DataStoreInfo> dsInfoList = catalog.getDataStoresByWorkspace(wsInfo);
 						
 					for (DataStoreInfo dsInfo : dsInfoList) {
-						DataAccess<? extends FeatureType, ? extends Feature> da = dsInfo.getDataStore(new DefaultProgressListener());
+						
+						String dsName = StringUtils.trimToEmpty(dsInfo.getName());
+						
+						if (namePattern == null || dsName.matches(namePattern)) {
 
-						/**
-						 * Lets get the dbf filename for this specific datastore
-						 */
-						Map<String, Serializable> connectionParams = dsInfo.getConnectionParameters();
+							/**
+							 * Lets get the dbf filename for this specific datastore
+							 */
+							Map<String, Serializable> connectionParams = dsInfo.getConnectionParameters();
 
-						if(connectionParams == null) {
-							response.kept.add(logSweepError(wsInfo, dsInfo, "There are no connection parameters for this datastore"));
-							continue;
-						}
+							if(connectionParams == null) {
+								response.kept.add(logSweepError(wsInfo, dsInfo, "There are no connection parameters for this datastore"));
+								continue;
+							}
 
-						Object dbaseLocationObj = connectionParams.get(DBASE_KEY);
-						if(dbaseLocationObj == null) {
-							response.kept.add(logSweepError(wsInfo, dsInfo, "There is no " + DBASE_KEY + " connection parameter for this datastore"));
-							continue;
-						}								
+							Object dbaseLocationObj = connectionParams.get(DBASE_KEY);
+							if(dbaseLocationObj == null) {
+								response.kept.add(logSweepError(wsInfo, dsInfo, "There is no " + DBASE_KEY + " connection parameter for this datastore"));
+								continue;
+							}								
 
-						String dbaseLocation = null;								
-						if(dbaseLocationObj instanceof URL) {
-							dbaseLocation = ((URL)dbaseLocationObj).toString();
-						} else if(dbaseLocationObj instanceof String) {
-							dbaseLocation = (String)dbaseLocationObj;
-						}
+							String dbaseLocation = null;								
+							if(dbaseLocationObj instanceof URL) {
+								dbaseLocation = ((URL)dbaseLocationObj).toString();
+							} else if(dbaseLocationObj instanceof String) {
+								dbaseLocation = (String)dbaseLocationObj;
+							}
 
-						if((dbaseLocation != null) && (!dbaseLocation.equals(""))) {
-							dbaseLocation = dbaseLocation.replace("file:", "");
-						} else {
-							response.kept.add(logSweepError(wsInfo, dsInfo, "The " + DBASE_KEY + " connection parameter must be either a string or a url and cannot be empty"));
-							continue;
-						}
-
-						/**
-						 * Lets get the age of this dbf file which is embedded in an 
-						 * attribute for the datastore "lastUsedMS"
-						 */
-						Long fileAge = 0L;
-						Object ageObject = connectionParams.get(DBASE_TIME_KEY);
-
-						if(ageObject == null) {
-							LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsInfo.getName() + "] in the [" +
-									wsInfo.getName() + "] workspace that does not have the age flag \"" + DBASE_TIME_KEY +
-									"\" associated with it.  Using the dbf file's last modified time for the age calculation...");
-
-							File tmpFile = new File(dbaseLocation);
-							fileAge = tmpFile.lastModified();
-						} else {
-							if(ageObject instanceof Long) {
-								fileAge = (Long)ageObject;
+							if((dbaseLocation != null) && (!dbaseLocation.equals(""))) {
+								dbaseLocation = dbaseLocation.replace("file:", "");
 							} else {
-								try {
-									fileAge = Long.parseLong((String)ageObject);
-								} catch (Exception e) {
-									LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsInfo.getName() + "] in the [" +
-											wsInfo.getName() + "] workspace that has a value associated with the age flag \"" + DBASE_TIME_KEY +
-											"\" that cannot be converted to a long value [" + ageObject.toString() + "]. " +
-											"Using the dbf file's last modified time for the age calculation...");
+								response.kept.add(logSweepError(wsInfo, dsInfo, "The " + DBASE_KEY + " connection parameter must be either a string or a url and cannot be empty"));
+								continue;
+							}
 
-									File tmpFile = new File(dbaseLocation);
-									fileAge = tmpFile.lastModified();
+							/**
+							 * Lets get the age of this dbf file which is embedded in an 
+							 * attribute for the datastore "lastUsedMS"
+							 */
+							Long fileAge = 0L;
+							Object ageObject = connectionParams.get(DBASE_TIME_KEY);
+
+							if(ageObject == null) {
+								LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsName + "] in the [" +
+										wsInfo.getName() + "] workspace that does not have the age flag \"" + DBASE_TIME_KEY +
+										"\" associated with it.  Using the dbf file's last modified time for the age calculation...");
+
+								File tmpFile = new File(dbaseLocation);
+								fileAge = tmpFile.lastModified();
+							} else {
+								if(ageObject instanceof Long) {
+									fileAge = (Long)ageObject;
+								} else {
+									try {
+										fileAge = Long.parseLong((String)ageObject);
+									} catch (Exception e) {
+										LOGGER.log(Level.WARNING, "The sweeper found a DataStore [" + dsName + "] in the [" +
+												wsInfo.getName() + "] workspace that has a value associated with the age flag \"" + DBASE_TIME_KEY +
+												"\" that cannot be converted to a long value [" + ageObject.toString() + "]. " +
+												"Using the dbf file's last modified time for the age calculation...");
+
+										File tmpFile = new File(dbaseLocation);
+										fileAge = tmpFile.lastModified();
+									}
 								}
 							}
-						}
 
-						/**
-						 * If the file age of the DBF is larger than our timeout age we remove the layer from 
-						 * GeoServer's memory and then delete the dbf.
-						 */
-						if (currentTime - fileAge > maxAgeMs) {
-							File dbfFile = new File(dbaseLocation);
-							response.deleted.add(GeoServerSparrowLayerSweeper.pruneDataStore(catalog, da,  dsInfo, dbfFile));							
+							/**
+							 * If the file age of the DBF is larger than our timeout age we remove the layer from 
+							 * GeoServer's memory and then delete the dbf.
+							 */
+							if (currentTime - fileAge > maxAgeMs) {
+								
+								DataAccess<? extends FeatureType, ? extends Feature> da = dsInfo.getDataStore(new DefaultProgressListener());
+								File dbfFile = new File(dbaseLocation);
+								response.deleted.add(GeoServerSparrowLayerSweeper.pruneDataStore(catalog, da,  dsInfo, dbfFile));	
+								
+							} else {
+								SweepResponse.DataStoreResponse dsr = new SweepResponse.DataStoreResponse(wsInfo.getName(), dsName);
+								response.kept.add(dsr);
+							}
+							
 						} else {
-							SweepResponse.DataStoreResponse dsr = new SweepResponse.DataStoreResponse(wsInfo.getName(), dsInfo.getName());
-							response.kept.add(dsr);
+							LOGGER.log(Level.FINE, "Skipping store '" + dsName + "' - does not match requested name pattern '" + namePattern + "'");
 						}
+						
 					}
 
 
@@ -358,7 +403,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 			while (keepRunning) {
 				
 				try {
-					runSweep(catalog, prunedWorkspaces, maxAge);
+					runSweep(catalog, prunedWorkspaces, (String)null, maxAge);
 				} catch (Exception ex) {
 					//The error has already been logged.
 				}
@@ -368,7 +413,13 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 					Thread.sleep(runEveryMs);
 				} catch (InterruptedException ex) {
 					Thread.interrupted();	//clears the interupt flag
-					LOGGER.log(Level.INFO, "Sweeper thread was interupted.");
+					
+					if (keepRunning) {
+						LOGGER.log(Level.INFO, "Sweeper thread was interupted, but the keepRunning flag is true, so it will continue.");
+					} else {
+						LOGGER.log(Level.INFO, "Sweeper thread was interupted and the keepRunning flag is false, so it will stop.");
+					}
+					
 				}
 			}
 
