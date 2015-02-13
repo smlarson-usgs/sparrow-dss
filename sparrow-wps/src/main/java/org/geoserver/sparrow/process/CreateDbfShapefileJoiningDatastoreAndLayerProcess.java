@@ -416,7 +416,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
              * possible that it wont get to something as a prerequisite for full removal might be what 
              * threw this exception.
              */
-			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.pruneDataStore(catalog, dataStore, info, state.dbfFile);
+			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.pruneDataStore(catalog, info, state.dbfFile);
 			if(! dsr.isDeleted) {
 				log.error("Unable to fully remove all layer creation changes for datastore [" + info.getName() + "]");
 			}
