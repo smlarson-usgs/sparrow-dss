@@ -1,7 +1,7 @@
 package gov.usgs.cida.sparrow.service.utils;
 
 import gov.usgs.cida.sparrow.service.util.NamingConventions;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -34,5 +34,20 @@ public class NamingConventionsTest {
 		assertEquals(-1234, NamingConventions.convertXMLSafeNameToContextId("50N1234"));
 		assertEquals(1234, NamingConventions.convertXMLSafeNameToContextId("50P1234"));
 		assertEquals(0, NamingConventions.convertXMLSafeNameToContextId("50P0"));
+	 }
+	 
+	 @Test
+	 public void modelResourceRegex() {
+		assertTrue("50P721080852.dbf".matches(NamingConventions.buildModelRegex(50)));
+		assertTrue("50N721080852.dbf".matches(NamingConventions.buildModelRegex(50)));
+		assertTrue("0P721080852.dbf".matches(NamingConventions.buildModelRegex(0)));
+		assertTrue("0NP721080852.dbf".matches(NamingConventions.buildModelRegex(0)));
+		assertTrue("50P721080".matches(NamingConventions.buildModelRegex(50)));
+		
+		
+		assertFalse("51P721080".matches(NamingConventions.buildModelRegex(50)));
+		assertFalse("50Z721080".matches(NamingConventions.buildModelRegex(50)));
+		assertFalse("51p721080".matches(NamingConventions.buildModelRegex(50)));
+		assertFalse("51n721080".matches(NamingConventions.buildModelRegex(50)));
 	 }
 }

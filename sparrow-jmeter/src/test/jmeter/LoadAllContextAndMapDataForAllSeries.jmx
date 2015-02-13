@@ -118,33 +118,33 @@
         <stringProp name="TestPlan.comments">How many users and how many of each map each user requests.</stringProp>
       </Arguments>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="QA Server Configuration Variables" enabled="false">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Prod Server Configuration Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
-            <stringProp name="Argument.value">${__P(ServiceHost,cida-eros-sparrowsvcqa2)}</stringProp>
+            <stringProp name="Argument.value">${__P(Host,cida-eros-sparrowprodsvc.er.usgs.gov)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Takes a startup prop of name &apos;Host&apos; or uses &apos;cida-...&apos; if not provided.  Places in var &apos;Host&apos;.</stringProp>
           </elementProp>
           <elementProp name="ServicePort" elementType="Argument">
             <stringProp name="Argument.name">ServicePort</stringProp>
-            <stringProp name="Argument.value">${__P(ServicePort,8080)}</stringProp>
+            <stringProp name="Argument.value">${__P(Port,8080)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="ServiceContextPath" elementType="Argument">
             <stringProp name="Argument.name">ServiceContextPath</stringProp>
-            <stringProp name="Argument.value">${__P(ServiceContextPath,sparrow_mv)}</stringProp>
+            <stringProp name="Argument.value">${__P(ContextPath,sparrow_mv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="MapRequestsConcurrentUsers" elementType="Argument">
             <stringProp name="Argument.name">MapRequestsConcurrentUsers</stringProp>
-            <stringProp name="Argument.value">${__P(MapRequestsConcurrentUsers,24)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapRequestsConcurrentUsers,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Only one user is required to sequentially load models.  Larger than one is a stress test.</stringProp>
           </elementProp>
           <elementProp name="GeoserverHost" elementType="Argument">
             <stringProp name="Argument.name">GeoserverHost</stringProp>
-            <stringProp name="Argument.value">${__P(GeoserverHost,cida-eros-sparrowsvcqa1)}</stringProp>
+            <stringProp name="Argument.value">${__P(GeoserverHost,cida-eros-sparrowprodgeo)}</stringProp>
             <stringProp name="Argument.desc">Geoserver host name</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -168,7 +168,7 @@
           </elementProp>
           <elementProp name="MaxNumberOfTilesPerMap" elementType="Argument">
             <stringProp name="Argument.name">MaxNumberOfTilesPerMap</stringProp>
-            <stringProp name="Argument.value">${__P(MaxNumberOfTilesPerMap,0)}</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfTilesPerMap,1)}</stringProp>
             <stringProp name="Argument.desc">Request all tiles for map (6x4=24) unless this is set to less than 24.  If less than 24, must be divisible by the number of ConcurrentUsers.  Disable by setting to 0 value.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -192,13 +192,13 @@
           </elementProp>
           <elementProp name="RandomizeContexts" elementType="Argument">
             <stringProp name="Argument.name">RandomizeContexts</stringProp>
-            <stringProp name="Argument.value">${__P(RandomizeContexts, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(RandomizeContexts, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, a random adjustment is added to each context to force new context Ids and map layers</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="GeonetworkHost" elementType="Argument">
             <stringProp name="Argument.name">GeonetworkHost</stringProp>
-            <stringProp name="Argument.value">${__P(GeonetworkHost,cida-eros-sparrowguiqa1)}</stringProp>
+            <stringProp name="Argument.value">${__P(GeonetworkHost,cida-eros-sparrowprodgui.er.usgs.gov)}</stringProp>
             <stringProp name="Argument.desc">Geonetwork host name</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -216,7 +216,7 @@
           </elementProp>
           <elementProp name="EnableAppLevelDebugMessages" elementType="Argument">
             <stringProp name="Argument.name">EnableAppLevelDebugMessages</stringProp>
-            <stringProp name="Argument.value">${__P(EnableAppLevelDebugMessages, false)}</stringProp>
+            <stringProp name="Argument.value">${__P(EnableAppLevelDebugMessages, true)}</stringProp>
             <stringProp name="Argument.desc">Set to true to turn on app level debug msg&apos;s, which are on the level of one per tile requested.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
