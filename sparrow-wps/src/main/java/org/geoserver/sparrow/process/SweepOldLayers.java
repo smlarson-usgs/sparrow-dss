@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.apache.commons.lang.StringUtils;
 import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
 import org.geoserver.sparrow.util.SweepResponse;
 import org.geotools.process.factory.DescribeParameter;
@@ -54,7 +56,7 @@ public class SweepOldLayers implements SparrowWps, GeoServerProcess {
 					description="Sweep layers that are older than the specified number of minutes.  If unspecified, a default value is used, approx 24 hours.", 
 					min = 0, max = 1) Long maxAgeMinutes,
 			@DescribeParameter(name="workspaces", 
-					description="Optional.  One or more workspaces to sweep (how to spec more than one in request builder?)  If unspecified, the standard 'non-reusable' workspaces will be swept.", 
+					description="Optional.  One or more workspaces to sweep (separate w/ comma and/or spaces)  If unspecified, the standard 'non-reusable' workspaces will be swept.", 
 					min = 0) String[] workspaces,
 			@DescribeParameter(name="modelId", 
 					description="Optional.  If specified, only datastores and layers of this model will be swept.  This param and nameRegex are mutually exclusive.  Combined w/ the workspace name (or the default non-reusable workspaces)", 
@@ -174,8 +176,24 @@ public class SweepOldLayers implements SparrowWps, GeoServerProcess {
 		
 		//
 		//initiation
-		if (state.workspaces != null && state.workspaces.length == 0) {
-			state.workspaces = null;
+		if (state.workspaces != null) {
+			if (state.workspaces.length == 0) {
+				state.workspaces = null;
+			} else {
+				
+				//parse workspaces, splitting on comma and space
+				ArrayList<String> wks = new ArrayList(1);
+				
+				for (String s : state.workspaces) {
+					String[] ss = StringUtils.split(s, ", ");
+					
+					for (String tt : ss) {
+						wks.add(tt);
+					}
+				}
+				
+				state.workspaces = wks.toArray(new String[wks.size()]);
+			}
 		}
 		
 		if (state.maxAgeMinutes != null) {
