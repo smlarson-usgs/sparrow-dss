@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -155,79 +156,82 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 
 			try {
 
-				if (da != null) {
-					List<Name> resourceNames = da.getNames();
-					if (!resourceNames.isEmpty()) {
+				for (ResourceInfo resource : dsCatalog.getResourcesByStore(dsInfo, ResourceInfo.class)) {
 
-						String delResNames = "Deleted resources: ";
-
-						for (Name resourceName : resourceNames) {
-							// 2) For each layer dsName, get the layer info object
-							// 3) For each layer info object, detach the layer from the GeoServer Catalog
-							// 4) For each layer info object, remove the layer completely from the GeoServer Catalog
-							LayerInfo layerInfo = dsCatalog.getLayerByName(resourceName);
-
-							//This could be null if the layer was deleted manually in the UI
-							if (layerInfo != null) {
-
-								delResNames += resourceName.getLocalPart() + ", ";
-
-								response.layersDeleted.add(layerInfo.getName());
-								dsCatalog.detach(layerInfo);
-								dsCatalog.remove(layerInfo);
-							}
-
-							// 5) For each layer dsName, get the resource info object
-							// 6) For each resource info object, detach the resource from the GeoServer Catalog
-							// 7) For each resource info object, remove the resource completely from the GeoServer Catalog
-							ResourceInfo resourceInfo = dsCatalog.getResourceByName(resourceName, ResourceInfo.class);
-
-							if (resourceInfo != null) {
-								dsCatalog.detach(resourceInfo);
-								dsCatalog.remove(resourceInfo);
-							}
-						}
-
-						
-						response.message += delResNames;
+					dsCatalog.detach(resource);
+					dsCatalog.remove(resource);
+					ResourceInfo followUp = dsCatalog.getResourceByStore(dsInfo, resource.getName(), ResourceInfo.class);
+					
+					if (followUp == null) {
+						response.resources.add(resource.getName());
+						response.resourcesNotes.add("deleted");
+					} else {
+						response.resources.add(resource.getName());
+						response.resourcesNotes.add("attempted to delete, but still present in catalog");
 					}
 
+				}
+
+				if (da != null) {
 					// 8) Clean up the GeoTools cache (DataAccess Object dispose() method)
 					da.dispose();
 				}
 
 				// 9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
 				dsCatalog.detach(dsInfo);
-				dsCatalog.remove(dsInfo);
+				
+				try {
+					dsCatalog.remove(dsInfo);	//can throw an exception if there are still undeleted resources
+				} catch (IllegalArgumentException ie) {
+					try {
+						for (ResourceInfo resource : dsCatalog.getResourcesByStore(dsInfo, ResourceInfo.class)) {
+							response.resources.add(resource.getName());
+							response.resourcesNotes.add("Reported as still present when dataStore.remove() was called.");
+						}
+					} catch (Exception ee) {
+						response.message += "Unable to build list of undeleted resources.";
+					}
+				}
 
-				// 10) Delete the dbf file
-				FileUtils.deleteQuietly(dbfFile);										
+				//Can only delete the dbf file is no other datastores are using it
+				//For Sparrow, that happens when there is a ds with the same name (will be in a different workspace)
+				List<DataStoreInfo> dsOfSameName = getDatastoresForName(dsCatalog, dsInfo.getName());
+				
+				if (dsOfSameName.size() == 0) {
+					// 10) Delete the dbf file
+					FileUtils.deleteQuietly(dbfFile);
+					response.isDbfDeleted = true;
+				}
+										
 				response.isDeleted = true;
 
 				LOGGER.log(Level.INFO, "===============> DATASTORE [" + dsInfo.getName() + "] HAS BEEN REMOVED");
 			} catch (Exception e) {
 				LOGGER.log(Level.WARNING, "A Sweeper exception has occurred during DataStore [" + dsInfo.getName() + "] removal.  Skipping DataStore and resuming...", e);
 				response.err = e;
-				
-				try {
-					List<Name> resourceNames = da.getNames();
-					if (!resourceNames.isEmpty()) {
-						
-						String names = "Undeleted resources: ";
-						
-						for (Name resourceName : resourceNames) {
-							names += resourceName.getLocalPart() + " (" + resourceName.getURI() + "), ";
-						}
-						
-						response.message += names;
-					}
-				} catch (Exception ee) {
-					response.message += "Unable to build list of undeleted resources.";
-				}
 			}
 
 			return response;
 		}
+	}
+	
+	/**
+	 * Returns all the DataStores with a particular name, contained in any
+	 * workspace.
+	 * 
+	 * @param dsCatalog
+	 * @param name
+	 * @return 
+	 */
+	private static List<DataStoreInfo> getDatastoresForName(Catalog dsCatalog, String name) {
+		
+		ArrayList<DataStoreInfo> list = new ArrayList(1);
+		for (WorkspaceInfo w : dsCatalog.getWorkspaces()) {
+			DataStoreInfo ds = dsCatalog.getDataStoreByName(w, name);
+			if (ds != null) list.add(ds);
+		}
+		
+		return list;
 	}
 	
 	/**
@@ -370,7 +374,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 							if (currentTime - fileAge > maxAgeMs) {
 								
 								File dbfFile = new File(dbaseLocation);
-								response.deleted.add(GeoServerSparrowLayerSweeper.pruneDataStore(catalog, dsInfo, dbfFile));	
+								response.deleted.add(pruneDataStore(catalog, dsInfo, dbfFile));	
 								
 							} else {
 								SweepResponse.DataStoreResponse dsr = new SweepResponse.DataStoreResponse(wsInfo.getName(), dsName);
