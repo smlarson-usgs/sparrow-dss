@@ -56,7 +56,7 @@ public class SweepOldLayers implements SparrowWps, GeoServerProcess {
 					description="Sweep layers that are older than the specified number of minutes.  If unspecified, a default value is used, approx 24 hours.", 
 					min = 0, max = 1) Long maxAgeMinutes,
 			@DescribeParameter(name="workspaces", 
-					description="Optional.  One or more workspaces to sweep (how to spec more than one in request builder?)  If unspecified, the standard 'non-reusable' workspaces will be swept.", 
+					description="Optional.  One or more workspaces to sweep (separate w/ comma and/or spaces)  If unspecified, the standard 'non-reusable' workspaces will be swept.", 
 					min = 0) String[] workspaces,
 			@DescribeParameter(name="modelId", 
 					description="Optional.  If specified, only datastores and layers of this model will be swept.  This param and nameRegex are mutually exclusive.  Combined w/ the workspace name (or the default non-reusable workspaces)", 
