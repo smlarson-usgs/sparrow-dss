@@ -173,7 +173,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 							layer = dsCatalog.getLayerByName(layerName);
 
 							if (layer == null) {
-								response.resources.add(layer.getName());
+								response.resources.add(layerName.getLocalPart());
 								response.resourcesNotes.add("deleted layer");
 							} else {
 								response.resources.add(layer.getName());
