@@ -155,32 +155,72 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 			// 1) Get all resource names associated with this store (all layer names)
 
 			try {
-
-				for (ResourceInfo resource : dsCatalog.getResourcesByStore(dsInfo, ResourceInfo.class)) {
-
-					dsCatalog.detach(resource);
-					dsCatalog.remove(resource);
-					ResourceInfo followUp = dsCatalog.getResourceByStore(dsInfo, resource.getName(), ResourceInfo.class);
-					
-					if (followUp == null) {
-						response.resources.add(resource.getName());
-						response.resourcesNotes.add("deleted");
-					} else {
-						response.resources.add(resource.getName());
-						response.resourcesNotes.add("attempted to delete, but still present in catalog");
-					}
-
-				}
-
+				
+				//Attempt to delete related layers
 				if (da != null) {
+					List<Name> layerNames = da.getNames();
+					
+					for (Name layerName : layerNames) {
+
+						LayerInfo layer = dsCatalog.getLayerByName(layerName);
+						
+						
+						try {
+							
+							dsCatalog.detach(layer);
+							dsCatalog.remove(layer);
+							
+							layer = dsCatalog.getLayerByName(layerName);
+
+							if (layer == null) {
+								response.resources.add(layer.getName());
+								response.resourcesNotes.add("deleted layer");
+							} else {
+								response.resources.add(layer.getName());
+								response.resourcesNotes.add("attempted to delete layer, but still present in catalog");
+							}
+						} catch (IllegalArgumentException e) {
+							response.resources.add(layer.getName());
+							response.resourcesNotes.add("attempted to delete layer, but it caused an error");
+							response.err = e;
+						}
+						
+						
+
+
+					}
+					
 					// 8) Clean up the GeoTools cache (DataAccess Object dispose() method)
 					da.dispose();
 				}
 
-				// 9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
-				dsCatalog.detach(dsInfo);
-				
+				//Attempt to delete any other (?? what would that be??) resources
+				for (ResourceInfo resource : dsCatalog.getResourcesByStore(dsInfo, ResourceInfo.class)) {
+
+					try {
+						dsCatalog.detach(resource);
+						dsCatalog.remove(resource);
+						ResourceInfo followUp = dsCatalog.getResourceByStore(dsInfo, resource.getName(), ResourceInfo.class);
+
+						if (followUp == null) {
+							response.resources.add(resource.getName());
+							response.resourcesNotes.add("deleted resource");
+						} else {
+							response.resources.add(resource.getName());
+							response.resourcesNotes.add("attempted to delete resource, but still present in catalog");
+						}
+					} catch (IllegalArgumentException e) {
+						response.resources.add(resource.getName());
+						response.resourcesNotes.add("attempted to delete resource, but it caused an error");
+						response.err = e;
+					}
+
+				}
+
+
 				try {
+					// 9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
+					dsCatalog.detach(dsInfo);
 					dsCatalog.remove(dsInfo);	//can throw an exception if there are still undeleted resources
 				} catch (IllegalArgumentException ie) {
 					try {
