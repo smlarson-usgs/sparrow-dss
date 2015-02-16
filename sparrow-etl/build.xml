@@ -26,12 +26,12 @@
 			</target>
 			
 			<target name="reachAttribUploadSpecific" depends="reachAttribCtlTest" if="specificReachAttribCtl">
-				<echo>Load file ${mrb}/${constituent}/reach.txt into database table temp_enh_reach_attrib</echo>
+				<echo>Load file ${mrb}/${constituent}/reach_attrib.txt into database table temp_enh_reach_attrib</echo>
 				<exec executable="sqlldr" failonerror="true">
 					<arg value="${stream_network}/${stream_network_password}@${instance}"/>
-					<arg value="DATA=${dataDir}/${mrb}/${constituent}/reach.txt"/>
-					<arg value="BAD=${basedir}/reach.bad"/>
-					<arg value="DISCARD=${basedir}/reach.dsc"/>
+					<arg value="DATA=${dataDir}/${mrb}/${constituent}/reach_attrib.txt"/>
+					<arg value="BAD=${basedir}/reach_attrib.bad"/>
+					<arg value="DISCARD=${basedir}/reach_attrib.dsc"/>
 					<arg value="CONTROL=${basedir}/${mrb}/${constituent}/reachAttrib.ctl"/>
 				</exec>
 			</target>

@@ -3,7 +3,7 @@
 
 select
 enh_reach_id
-,63 enh_network_id
+,81 enh_network_id
 ,nom_reach_id
 ,identifier
 ,identifier full_identifier
