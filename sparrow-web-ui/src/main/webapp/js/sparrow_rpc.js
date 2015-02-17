@@ -1007,7 +1007,7 @@ function addDataLayer() {
 		//is config'ed to use the ones listed here for ref)
 		layerParams['customParams'] = {
 			tiled: "true"
-			//format_options: 'antialiasing:none;quantizer:octree;'
+			//No format options b/c cached layers handled automatically
 		};
 	} else {
 		layerParams['customParams'] = {
