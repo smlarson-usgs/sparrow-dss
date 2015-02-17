@@ -1006,8 +1006,8 @@ function addDataLayer() {
 		//options for a tile-cache layer (format_options ignored, but the server
 		//is config'ed to use the ones listed here for ref)
 		layerParams['customParams'] = {
-			tiled: "true"
-			//format_options: 'antialiasing:none;quantizer:octree;'
+			tiled: "true",
+			format_options: 'antialiasing:none;quantizer:octree;'
 		};
 	} else {
 		layerParams['customParams'] = {
