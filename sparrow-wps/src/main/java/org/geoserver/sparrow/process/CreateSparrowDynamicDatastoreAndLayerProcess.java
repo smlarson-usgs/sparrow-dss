@@ -74,6 +74,11 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 	private static final String JNDI_KEY_FOR_SHAPEFILE_DIRECTORY = "java:comp/env/shapefile-directory";
 	
 	/**
+	 * URL on which Geoserver can contact itself
+	 */
+	private static final String JNDI_KEY_FOR_GEOSERVER_INTERNAL_URL = "java:comp/env/geoserver-internal-url";
+	
+	/**
 	 * URL that this server can be contacted at.
 	 */
 	private static final String JNDI_KEY_FOR_GEOSERVER_PUBLIC_URL = "java:comp/env/geoserver-public-url";
@@ -105,7 +110,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		//Check to see if we can access the base shapefile directory
 		try {
 			baseShapefileDir = getBaseShapefileDirectory();
-			getWmsPath();
+			getPublicWmsPath();
 		} catch (Exception e) {
 			log.error("Configuration Error.", e);
 			throw e;
@@ -253,7 +258,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 					state.flowlineStyleUrlStr = state.flowlineStyleUrl.toExternalForm();	//normalize
 				} else {
 					//Assume we just have the sld params params
-					String url = getServerPath() + "/rest/sld"
+					String url = getLocalServerPath() + "/rest/sld"
 							+ "/workspace/" + NamingConventions.getFlowlineWorkspaceName(true) +
 							"/layer/" + NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId)+
 							"/reach.sld?" + state.flowlineStyleUrlStr;
@@ -275,7 +280,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 					state.catchStyleUrlStr = state.catchStyleUrl.toExternalForm();	//normalize
 				} else {
 					//Assume we just have the sld params params
-					String url = getServerPath() + "/rest/sld"
+					String url = getLocalServerPath() + "/rest/sld"
 							+ "/workspace/" + NamingConventions.getCatchmentWorkspaceName(true) +
 							"/layer/" + NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId) +
 							"/catch.sld?" + state.catchStyleUrlStr;
@@ -413,7 +418,7 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 			resp.setCatchLayerDefaultStyleName(catchStyleName);
 			//resp.setCatchLayerDefaultStyleName(NamingConventions.getCatchmentWorkspaceName(true) + ":" + catchStyleName);
 		}
-		resp.setEndpointUrl(getWmsPath());
+		resp.setEndpointUrl(getPublicWmsPath());
 		wrap.addEntity(resp);
 	}
 	
@@ -520,7 +525,27 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 	}
 	
-	protected final String getServerPath() throws Exception {
+	protected final String getLocalServerPath() throws Exception {
+		try {
+			String serverPath = (String)jndiTemplate.lookup(JNDI_KEY_FOR_GEOSERVER_INTERNAL_URL);
+
+			
+			if (serverPath.endsWith("/")) {
+				serverPath = serverPath.substring(0, serverPath.length() - 1);
+			}
+			
+			return serverPath;
+			
+		} catch(NamingException exception) {
+
+			String msg = "The configuration parameter '" + JNDI_KEY_FOR_GEOSERVER_INTERNAL_URL + "' is unset";
+
+			log.error(msg);
+			throw new Exception(msg, exception);
+		}
+	}
+	
+	protected final String getPublicServerPath() throws Exception {
 		try {
 			String serverPath = (String)jndiTemplate.lookup(JNDI_KEY_FOR_GEOSERVER_PUBLIC_URL);
 
@@ -540,8 +565,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 	}
 	
-	protected final String getWmsPath() throws Exception {
-		return getServerPath() + "/" + "wms";
+	protected final String getPublicWmsPath() throws Exception {
+		return getPublicServerPath() + "/" + "wms";
 	}
 	
 	/**
