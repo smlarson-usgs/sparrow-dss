@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-id-request
+  xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<!-- The user does not have a prediction context yet, so we use the model-id here -->
+	<model-id>22</model-id>
+	
+	<!-- Where the user clicked -->
+	<point lat="39.5" long="-76.68"/>
+	
+	<!-- Ask for just the info on the adjustments tab. -->
+	<content>
+		<adjustments/>
+	</content>
+	
+	<!-- Get the response back as XML -->
+	<response-format>
+		<mime-type>XML</mime-type>
+	</response-format>
+</sparrow-id-request>

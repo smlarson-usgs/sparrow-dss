@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<PredictionContext
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22">
+<!--
+MODEL 22
+Test the logical set and huc criteria
+-->
+		<adjustmentGroups conflicts="accumulate">
+			<reachGroup enabled="true" name="Group1">
+				<adjustment src="5" coef=".5"/>
+				<adjustment src="4" coef=".75"/>
+				<logicalSet>
+					<criteria attrib="huc8">11090104</criteria>
+					<!-- CONTAINS REACHES:
+						36347
+						36346
+						36344
+						36345
+					-->
+				</logicalSet>
+			</reachGroup>
+
+			<reachGroup enabled="true" name="Group2">
+				<adjustment src="1" coef="2"/>
+				<logicalSet>
+					<criteria attrib="huc8">12050002</criteria>
+					<!-- CONTAINS REACHES:
+						39529
+						39526
+						39528
+						39527
+					-->
+				</logicalSet>
+				<logicalSet>
+					<criteria attrib="huc8">12080001</criteria>
+					<!-- CONTAINS REACHES:
+						39966
+						39968
+						39967
+						39965
+					-->
+				</logicalSet>
+				<reach id="11861"/>	<!-- An additional added reach -->
+			</reachGroup>
+			<individualGroup enabled="true">
+				<reach id="39529">
+					<adjustment src="1" abs="99"/> <!-- Override a reach -->
+				</reach>
+				<reach id="11878">
+					<adjustment src="2" abs="88"/> <!-- Added reach, override a different source -->
+				</reach>
+			</individualGroup>
+		</adjustmentGroups>
+		<analysis>
+			<dataSeries>incremental</dataSeries>
+		</analysis>
+</PredictionContext>

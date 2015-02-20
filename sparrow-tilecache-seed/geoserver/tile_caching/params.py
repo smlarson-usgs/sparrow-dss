@@ -18,23 +18,3 @@ OVERLAY_WORKSPACES = ['huc8-overlay',
                       ]
 
 WORKSPACES = REUSABLE_WORKSPACES + OVERLAY_WORKSPACES
-
-
-DEV = {'GS_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver/rest',
-       'GWC_HOST': 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver/gwc/rest',
-       'USER': USER,
-       'PWD': PWD
-       }
-
-QA = {'GS_HOST': None,
-      'GWC_HOST': None,
-      'USER': None,
-      'PWD': None
-      }
-
-PROD = {
-	'GS_HOST': 'http://cidasdpdaspwgeo:8080/sparrowgeoserver/rest',
-	'GWC_HOST': 'http://cidasdpdaspwgeo:8080/sparrowgeoserver/gwc/rest',
-	'USER': USER,
-	'PWD': PWD
-	}
