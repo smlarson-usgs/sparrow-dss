@@ -1,0 +1,18 @@
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
+	<adjustmentGroups conflicts="accumulate | supersede">
+		<individualGroup enabled="true"></individualGroup>
+	</adjustmentGroups>
+	<analysis>
+		<select>
+			<dataSeries per="area">total</dataSeries>
+			<aggFunction per="area">avg</aggFunction>
+			<analyticFunction partition="HUC6">rank-desc</analyticFunction>
+		</select>
+		<limitTo>contributors | terminals | areaOfInterest</limitTo>
+		<groupBy>HUC8</groupBy>
+	</analysis>
+	<terminalReaches></terminalReaches>
+	<areaOfInterest></areaOfInterest>
+	<nominalComparison type="none"/>
+</PredictionContext>
