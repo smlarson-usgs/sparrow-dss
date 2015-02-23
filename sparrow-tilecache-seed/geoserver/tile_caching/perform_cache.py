@@ -9,14 +9,12 @@ from seed_request import get_ws_layers, get_layer_styles, execute_seed_request
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('tier', type=str)
 parser.add_argument('server_name', type=str)
 parser.add_argument('zoom_start', type=int)
 parser.add_argument('zoom_stop', type=int)
 parser.add_argument('threads', type=int)
 
 args = parser.parse_args()
-tier_name = args.tier.lower()
 server_name = args.server_name.lower()
 zoom_start = args.zoom_start
 zoom_stop = args.zoom_stop
