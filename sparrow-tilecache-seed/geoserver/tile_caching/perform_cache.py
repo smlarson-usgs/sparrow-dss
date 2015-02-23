@@ -4,7 +4,7 @@ Created on Jan 30, 2015
 @author: ayan
 '''
 import argparse
-from params import WORKSPACES
+from params import WORKSPACES, USER, PWD
 from seed_request import get_ws_layers, get_layer_styles, execute_seed_request
 
 
