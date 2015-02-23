@@ -23,8 +23,8 @@ threads = args.threads
 if zoom_start > zoom_stop:
     raise Exception('Starting zoom level cannot be larger than the ending zoom level.')
 
-spdss_gs_url = '{server_name}/rest'
-spdss_gwc_url = '{server_name}/gwc/rest'
+spdss_gs_url = '{server_name}/rest'.format(server_name=server_name)
+spdss_gwc_url = '{server_name}/gwc/rest'.format(server_name=server_name)
 USER = USER
 PWD = PWD
 
