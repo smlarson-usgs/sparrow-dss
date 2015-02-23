@@ -28,7 +28,7 @@ spdss_gwc_url = '{server_name}/gwc/rest'
 USER = USER
 PWD = PWD
 
-layers = get_ws_layers(SPDSS_GS_URL, USER, PWD, WORKSPACES)
+layers = get_ws_layers(spdss_gs_url, USER, PWD, WORKSPACES)
 lyr_with_styles = get_layer_styles(spdss_gs_url, USER, PWD, layers)
 seed_responses = execute_seed_request(spdss_gwc_url, USER, PWD, lyr_with_styles, 
                                       zoom_start=zoom_start, zoom_stop=zoom_stop, 
