@@ -145,7 +145,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                                   gridset_number=grid_number,
                                                   zoom_start=zoom_start, 
                                                   zoom_stop=zoom_stop,
-                                                  threads=threads
+                                                  threads=threads,
+                                                  seed_type='seed'
                                                   )
                 seed_request = sp_gwc.seed_request(seed_xml)
                 url_message = 'Request URL: {0}'.format(seed_request.url)
