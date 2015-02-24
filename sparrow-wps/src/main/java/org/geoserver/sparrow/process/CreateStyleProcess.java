@@ -77,12 +77,13 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 	public CreateStyleProcess(Catalog catalog) {
 		this.catalog = catalog;
 		
-		//Check to see if we can access the base shapefile directory
+		//init the data directory
 		try {
 			gsDataDirectory = ((GeoServerDataDirectory) GeoServerExtensions.bean("dataDirectory"));
 			gsDataDirectory.findDataRoot();
 		} catch (Exception e) {
-			log.error("Configuration Error.", e);
+			log.error("Configuration Error - GeoServerDataDirectory is null or unsuable", e);
+			throw new RuntimeException(e);
 		}
 	}
 	
