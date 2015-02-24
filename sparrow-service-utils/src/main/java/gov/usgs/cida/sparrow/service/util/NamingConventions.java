@@ -210,6 +210,36 @@ public class NamingConventions {
 	}
 	
 	/**
+	 * Provides a quick filter for styles to determine if they follow the naming
+	 * conventions of a default style for a reusable layer.
+	 * 
+	 * @param styleName
+	 * @return 
+	 */
+	public static boolean isLikelyReusableStyleName(String styleName) {
+		return 
+			styleName.matches("\\d+[NP]\\d+-" + FLOWLINE_DEFAULT_STYLE_SUFFIX) ||
+			styleName.matches("\\d+[NP]\\d+-" + CATCHMENT_DEFAULT_STYLE_SUFFIX);
+	}
+	
+	/**
+	 * Provides a more definitive filter to determine if a given style is (very)
+	 * likely to be the default style for the named reusable layer.
+	 * 
+	 * This is used to determine if the style is specific to the layer so that
+	 * it can be deleted when the layer is deleted.
+	 * 
+	 * @param styleName
+	 * @param layerName
+	 * @return 
+	 */
+	public static boolean isLikelyReusableStyleNameForLayer(String styleName, String layerName) {
+		return 
+			styleName.matches(layerName + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX) ||
+			styleName.matches(layerName + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX);
+	}
+	
+	/**
 	 * Converts an XML safe layer name back to its context ID.
 	 * 
 	 * @param encodedContextId encoded via convertContextIdToXMLSafeName

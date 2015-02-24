@@ -25,12 +25,11 @@ public class SweepResponse {
 		public String dsName = null;
 		public String wksName = null;
 		public boolean isDeleted = false;
-		public ArrayList<String> resourcesNotes = new ArrayList(0);
+		public ArrayList<Resource> resources = new ArrayList<>(0);
 		public boolean isDbfDeleted = false;
-		public String message = null;
+		public ArrayList<String> messages = new ArrayList<>(0);
 		public Long age = null;	//only valid if kept
 		public Exception err = null;
-		public ArrayList<String> resources = new ArrayList(0);	//only valid if deleted
 		
 		public DataStoreResponse() {}
 		
@@ -38,7 +37,40 @@ public class SweepResponse {
 			this.dsName = dsName;
 			this.wksName = wksName;
 		}
+		
+		public void addResource(Resource r) {
+			resources.add(r);
+		}
+		
+		public void addResource(String name, String note) {
+			resources.add(new Resource(name, note));
+		}
+		
+		public void addResource(String name, String note, Throwable t) {
+			resources.add(new Resource(name, note, t));
+		}
+		
+		public void addMessage(String msg) {
+			messages.add(msg);
+		}
 
+	}
+	
+	public static class Resource {
+		String name = null;
+		String note = null;
+		Throwable exception = null;
+		
+		public Resource(String name, String note) {
+			this.name = name;
+			this.note = note;
+		}
+		
+		public Resource(String name, String note, Throwable t) {
+			this.name = name;
+			this.note = note;
+			this.exception = t;
+		}
 	}
 	
 }

@@ -50,4 +50,31 @@ public class NamingConventionsTest {
 		assertFalse("51p721080".matches(NamingConventions.buildModelRegex(50)));
 		assertFalse("51n721080".matches(NamingConventions.buildModelRegex(50)));
 	 }
+	 
+	 @Test
+	 public void isLikelyReusableStyleNameTest() {
+		 assertTrue(NamingConventions.isLikelyReusableStyleName("123N123-flowline-default"));
+		 assertTrue(NamingConventions.isLikelyReusableStyleName("123P123-flowline-default"));
+		 assertTrue(NamingConventions.isLikelyReusableStyleName("123N123-catchment-default"));
+		 assertTrue(NamingConventions.isLikelyReusableStyleName("123P123-catchment-default"));
+		 
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("123N123-flowline-x"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("123N123-catchment-x"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("123N123-flowlineXX-default"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("123N123-catchmentX-default"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("123X123-catchment-default"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("N123-catchment-default"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleName("123N-catchment-default"));
+	 }
+	 
+	 @Test
+	 public void isLikelyReusableStyleNameForLayerTest() {
+		 assertTrue(NamingConventions.isLikelyReusableStyleNameForLayer("123N123-flowline-default", "123N123"));
+		 assertTrue(NamingConventions.isLikelyReusableStyleNameForLayer("123P123-flowline-default", "123P123"));
+		 assertTrue(NamingConventions.isLikelyReusableStyleNameForLayer("123N123-catchment-default", "123N123"));
+		 assertTrue(NamingConventions.isLikelyReusableStyleNameForLayer("123N123-catchment-default", "123N123"));
+		 
+		 assertFalse(NamingConventions.isLikelyReusableStyleNameForLayer("456N789-flowline-default", "123N123"));
+		 assertFalse(NamingConventions.isLikelyReusableStyleNameForLayer("123N123-X-default", "123N123"));
+	 }
 }

@@ -12,7 +12,7 @@
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
     </TestPlan>
     <hashTree>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Dev Server Configuration Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Dev Server Configuration Variables" enabled="false">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
@@ -144,7 +144,7 @@
           </elementProp>
           <elementProp name="GeoserverHost" elementType="Argument">
             <stringProp name="Argument.name">GeoserverHost</stringProp>
-            <stringProp name="Argument.value">${__P(GeoserverHost,cida-eros-sparrowprodgeo)}</stringProp>
+            <stringProp name="Argument.value">${__P(GeoserverHost,cidasdpdaspwgeo)}</stringProp>
             <stringProp name="Argument.desc">Geoserver host name</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
