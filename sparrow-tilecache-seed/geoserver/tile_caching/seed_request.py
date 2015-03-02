@@ -8,9 +8,10 @@ import datetime
 import logging
 from py_geoserver_rest_requests import GeoServerWorkspace, GeoWebCacheSetUp, GeoServerLayers
 from params import OVERLAY_WORKSPACES
+from utils import regex_matching
 
 
-def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces):
+def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None):
     """
     Get the layers belonging to a workspace.
     
@@ -18,6 +19,7 @@ def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces):
     :param str gs_user: geoserver username
     :param str gs_pwd: geoserver password
     :param list workspaces: list of geoserver workspaces
+    :param str model_number: model number of interest
     :return: list of tuples of form (workspace_name, [list of layers belonging to the workspace])
     :rtype: list
      
@@ -27,7 +29,7 @@ def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces):
         spdss_ws = GeoServerWorkspace(gs_url, gs_user, gs_pwd, workspace)
         ws_layers = spdss_ws.get_ws_layers()
         unique_ws_layers = list(set(ws_layers))
-        ws_results = (workspace, clean_layer_names(unique_ws_layers))
+        ws_results = (workspace, clean_layer_names(unique_ws_layers, model_number))
         all_results.append(ws_results)
     return all_results
 
@@ -187,9 +189,13 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
     return request_resps
             
 
-def clean_layer_names(layer_names):
+def clean_layer_names(layer_names, model_number=None):
     clean_names = []
     for layer_name in layer_names:
         layer_sans_ws_name = layer_name.split(':')[1]
         clean_names.append(layer_sans_ws_name)
-    return clean_names
+    if model_number is not None:
+        filtered_names = regex_matching(clean_names, model_number)
+    else:
+        filtered_names = clean_names
+    return filtered_names

@@ -4,7 +4,8 @@ Created on Jan 27, 2015
 @author: ayan
 '''
 import argparse
-from py_geoserver_rest_requests import GeoWebCacheSetUp    
+from py_geoserver_rest_requests import GeoWebCacheSetUp
+from params import USER, PWD    
 
 
 if __name__ == '__main__':
@@ -14,24 +15,16 @@ if __name__ == '__main__':
     """
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('tier', type=str)
+    parser.add_argument('server_name', type=str)
     args = parser.parse_args()
-    tier_name = args.tier.lower()
+    server_name = args.server_name.lower()
     
-    if tier_name == 'dev':
-        from params import DEV as param_values
-    elif tier_name == 'qa':
-        from params import QA as param_values
-    elif tier_name == 'prod':
-        from params import PROD as param_values
-    else:
-        raise Exception('Tier name not recognized')
         
-    GWC_URL = param_values['GWC_HOST']
-    USER = param_values['USER']
-    PWD = param_values['PWD']
+    USER = USER
+    PWD = PWD
+    gwc_url = '{server_name}/gwc/rest'.format(server_name=server_name)
     
-    sp_gwc = GeoWebCacheSetUp(GWC_URL, USER, PWD, None, None)
+    sp_gwc = GeoWebCacheSetUp(gwc_url, USER, PWD, None, None)
     # abort all seeding tasks
     abort = sp_gwc.abort_seed_request(kill_all=True)
     print(abort.status_code)
