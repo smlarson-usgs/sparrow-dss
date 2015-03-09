@@ -149,6 +149,35 @@
 			</modules>
 		</profile>
 		
+		
+		<!-- These two profiles are intended to be active with any of the above -->
+		<profile> <!-- Development build with NO javascript minification -->
+			<id>development</id>
+			<activation>
+				<property>
+					<name>sparrow.build.profile</name>
+					<value>development</value>
+				</property>
+			</activation>
+			<properties>
+				<deployment_profile>Development</deployment_profile>
+			</properties>
+		</profile>
+		
+		<profile> <!-- Production build, includes javascript minification -->
+			<id>production</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>sparrow.build.profile</name>
+					<value>production</value>
+				</property>
+			</activation>
+			<properties>
+				<deployment_profile>Release</deployment_profile>
+			</properties>
+		</profile>
+		
 	</profiles>
 
 	
@@ -159,8 +188,9 @@
 		<cargo.containerId>tomcat6x</cargo.containerId>
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
-		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+		<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
+		<buildTime>${maven.build.timestamp}</buildTime>
 		<sparrow.build.profile>production</sparrow.build.profile>
 		
 		<!-- GeoServer and GeoTools Version Numbers -->

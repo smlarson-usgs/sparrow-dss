@@ -69,11 +69,11 @@
 					</overlays>
 					<webResources> 
 						<webResource> 
-							<directory>${basedir}/src/main/webapp/data/www/</directory> 
+							<directory>${basedir}/src/main/webapp/data/www</directory> 
 							<includes> 
 								<include>version.txt</include>
 							</includes> 
-							<targetPath /> 
+							<targetPath>data/www</targetPath> 
 							<filtering>true</filtering> 
 						</webResource> 
 					</webResources> 
