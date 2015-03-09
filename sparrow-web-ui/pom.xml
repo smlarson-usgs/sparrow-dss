@@ -213,9 +213,6 @@
 			</activation>
 			<properties>
 				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
-				<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
-				<buildTime>${maven.build.timestamp}</buildTime>
-				<deployment_profile>Development</deployment_profile>
 			</properties>
 			<build>
 				<plugins>
@@ -260,9 +257,6 @@
 			</activation>
 			<properties>
 				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
-				<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
-				<buildTime>${maven.build.timestamp}</buildTime>
-				<deployment_profile>Release</deployment_profile>
 			</properties>
 			<build>
 				<plugins>
