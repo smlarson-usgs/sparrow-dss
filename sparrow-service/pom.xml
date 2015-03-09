@@ -71,17 +71,17 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<configuration>
 						<dependentWarExcludes>WEB-INF/lib/commons-lang-2.3.jar</dependentWarExcludes>
-			           <webResources> 
-			             <webResource> 
-				               <directory>${basedir}/src/main/webapp</directory> 
-				               <includes> 
-				                 <include>app-info.txt</include>
-								 <include>footer.jsp</include>
-				               </includes> 
-				               <targetPath /> 
-				               <filtering>true</filtering> 
-				             </webResource> 
-			           </webResources> 
+							<webResources> 
+								<webResource> 
+									<directory>${basedir}/src/main/webapp</directory> 
+									<includes> 
+										<include>version.txt</include>
+										<include>footer.jsp</include>
+									</includes> 
+									<targetPath /> 
+									<filtering>true</filtering> 
+								</webResource> 
+							</webResources> 
 					</configuration>
 				</plugin>
 			

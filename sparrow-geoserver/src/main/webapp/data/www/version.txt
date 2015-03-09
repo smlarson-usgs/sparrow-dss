@@ -1,0 +1,5 @@
+POM Version: ${pom.version}
+Build DateTime: ${timestamp}
+Deployment Profile: ${deployment_profile}
+GS Version: ${gs.version}
+GT Version: ${gt.version}
