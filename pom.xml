@@ -51,20 +51,59 @@
 	</developers>
 	
 	<profiles>
+		
+		<!--
+		Basic profile for use during development.
+		All modules included, but jmeter and integration tests are turned off.
+		-->
 		<profile>
-			<id>default-profile</id>
+			<id>development</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>sparrow.build.profile</name>
+					<value>development</value>
+				</property>
+			</activation>
+			<properties>
+				<run-integration-tests>false</run-integration-tests>
+				<jmeter-test-name>skip</jmeter-test-name>
+				<deployment_profile>Development</deployment_profile>
+			</properties>
+			
+			<modules>
+				<module>sparrow-service</module>
+				<module>sparrow-web-ui</module>
+				<module>sparrow-shared-ui</module>
+				<module>sparrow-datatable</module>
+				<module>sparrow-business</module>
+				<module>sparrow-validation</module>
+				<module>sparrow-shared-test</module>
+				<module>sparrow-business-integration-tests</module>
+				<module>sparrow-wps</module>
+				<module>sparrow-geoserver</module>
+                <module>sparrow-sld</module>
+				<module>sparrow-jmeter</module>
+			</modules>
+		</profile>
+		
+		<!--
+		Production build turns on JS and CSS minification.
+		-->
+		<profile>
+			<id>production</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>sparrow.build.profile</name>
+					<value>production</value>
+				</property>
 			</activation>
 			
 			<properties>
-				<!-- 
-					Turn off integration tests and jmeter tests by default.
-					On Jenkins, these are run as separate jobs b/c they are long running.
-				
-				-->
 				<run-integration-tests>false</run-integration-tests>
 				<jmeter-test-name>skip</jmeter-test-name>
+				<deployment_profile>Release</deployment_profile>
 			</properties>
 			
 			<modules>
@@ -147,35 +186,6 @@
 			<modules>
 				<module>sparrow-liquibase</module>
 			</modules>
-		</profile>
-		
-		
-		<!-- These two profiles are intended to be active with any of the above -->
-		<profile> <!-- Development build with NO javascript minification -->
-			<id>development</id>
-			<activation>
-				<property>
-					<name>sparrow.build.profile</name>
-					<value>development</value>
-				</property>
-			</activation>
-			<properties>
-				<deployment_profile>Development</deployment_profile>
-			</properties>
-		</profile>
-		
-		<profile> <!-- Production build, includes javascript minification -->
-			<id>production</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-				<property>
-					<name>sparrow.build.profile</name>
-					<value>production</value>
-				</property>
-			</activation>
-			<properties>
-				<deployment_profile>Release</deployment_profile>
-			</properties>
 		</profile>
 		
 	</profiles>
@@ -347,6 +357,11 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.7.0.201403182114</version>
                 </plugin>
+				<plugin>
+					<groupId>net.sf.alchim</groupId>
+					<artifactId>yuicompressor-maven-plugin</artifactId>
+					<version>0.7.1</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
         <plugins>
