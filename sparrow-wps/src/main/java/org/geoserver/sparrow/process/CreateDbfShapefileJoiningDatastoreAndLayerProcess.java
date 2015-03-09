@@ -395,6 +395,8 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 				for (ParameterFilter filter : state.parameterFilters) {
 					tileLayerInfo.addParameterFilter(filter);
 				}
+				
+				gwc.save(tileLayer);
 			}
 			
 			//The response object and its wrapper
