@@ -64,7 +64,7 @@ def get_layer_styles(gs_url, gs_user, gs_pwd, ws_layer_content):
 
 
 def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326', 
-                         tile_format='image/png8', grid_number=4326, zoom_start=0, 
+                         tile_format='image/png8', zoom_start=0, 
                          zoom_stop=3, threads=1, progress_check=5, exclude_layers=()):
     """
     Generate seeding xml and post it to Geoserver for each layer in a workspace.
@@ -144,7 +144,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                         logging.info(update_config_message)
                 seed_xml = sp_gwc.create_seed_xml(style=None,
                                                   tile_format=tile_format,
-                                                  gridset_number=grid_number,
+                                                  gridset_id=grid,
                                                   zoom_start=zoom_start, 
                                                   zoom_stop=zoom_stop,
                                                   threads=threads,
