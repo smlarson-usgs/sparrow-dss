@@ -203,7 +203,7 @@
 		</pluginManagement>
 	</build>
 	<profiles>
-		<profile> <!-- Development build with NO javascript minification -->
+		<profile>
 			<id>development</id>
 			<activation>
 				<property>
@@ -213,9 +213,6 @@
 			</activation>
 			<properties>
 				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
-				<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
-				<buildTime>${maven.build.timestamp}</buildTime>
-				<deployment_profile>Development</deployment_profile>
 			</properties>
 			<build>
 				<plugins>
@@ -260,9 +257,6 @@
 			</activation>
 			<properties>
 				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
-				<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
-				<buildTime>${maven.build.timestamp}</buildTime>
-				<deployment_profile>Release</deployment_profile>
 			</properties>
 			<build>
 				<plugins>
@@ -282,8 +276,7 @@
 								</goals>
 								<configuration>
 									<overwrite>true</overwrite>
-									<outputDirectory>${basedir}/target/minifiedWebapp
-									</outputDirectory>
+									<outputDirectory>${project.build.directory}/minifiedWebapp</outputDirectory>
 									<encoding>UTF-8</encoding>
 									<resources>
 										<resource>
@@ -294,8 +287,17 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- minify listed JSPs from the source folder (so we don't affect source 
-					controlled resources) -->
+<!--					<plugin>
+						<groupId>net.sf.alchim</groupId>
+						<artifactId>yuicompressor-maven-plugin</artifactId>
+						<configuration>
+							<insertNewLine>true</insertNewLine>
+							<gzip>true</gzip>
+							<nomunge>true</nomunge>
+							<statistics>true</statistics>
+							<failOnWarning>true</failOnWarning>
+						</configuration>
+					</plugin>-->
 					<plugin>
 						<groupId>gov.usgs.cida</groupId>
 						<artifactId>auto-minify-plugin</artifactId>
@@ -304,13 +306,13 @@
 							<execution>
 								<id>minifyInternal</id>
 								<configuration>
-									<sourceDirectory>${basedir}/target/minifiedWebapp</sourceDirectory>
+									<sourceDirectory>${project.build.directory}/minifiedWebapp</sourceDirectory>
 									<jsTarget>js/build</jsTarget>
 									<htmlFiles>
 										<param>map.jsp</param>
 									</htmlFiles>
 								</configuration>
-								<phase>prepare-package</phase>
+								<phase>process-resources</phase>
 								<goals>
 									<goal>minify-imports</goal>
 								</goals>
@@ -326,25 +328,30 @@
 							</manifest>
 							<webResources> 
 								<webResource> 
-									<directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
+									<directory>src/main/webapp/WEB-INF</directory> 
 									<includes> 
 										<include>web.xml</include> 
 									</includes> 
 									<targetPath>WEB-INF</targetPath> 
 									<filtering>true</filtering> 
 								</webResource> 
-								<webResource> 
-									<directory>${basedir}/target/minifiedWebapp</directory> 
+								<webResource>
+									<directory>src/main/webapp</directory>
 									<includes> 
 										<include>footer.jsp</include>
 									</includes> 
-									<targetPath /> 
 									<filtering>true</filtering>
 								</webResource> 
 								<webResource> 
-									<directory>${basedir}/target/minifiedWebapp/js/build</directory> 
+									<directory>${project.build.directory}/minifiedWebapp/js/build</directory> 
 									<targetPath>js/build</targetPath>
 								</webResource> 
+								<webResource> 
+									<directory>${project.build.directory}/minifiedWebapp</directory> 
+									<includes> 
+										<include>map.jsp</include>
+									</includes> 
+								</webResource>
 							</webResources> 
 						</configuration>
 					</plugin>

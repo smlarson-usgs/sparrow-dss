@@ -15,14 +15,16 @@
 
     <!-- Sparrow/USGS -->
     <link type="text/css" rel="stylesheet" href="http://www.usgs.gov/styles/common.css" />
-	<link type="text/css" rel="stylesheet" href="css/usgs_style_main.css" />
-	<link type="text/css" rel="stylesheet" href="css/custom.css" />
+	<link rel="stylesheet" href="css/usgs_style_main.css" />
+	<link rel="stylesheet" href="css/custom.css" />
 	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 
 	<%-- the minify plugin doesn't recognize the 'type' attribute, so that will prevent this one from being minified twice --%>
-  <script type="text/javascript" src="webjars/extjs/3.4.1.1/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="webjars/extjs/3.4.1.1/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="webjars/extjs/3.4.1.1/ext-all.js"></script>
-	<script type="text/javascript" src="js/ext_extensions/ext_ie_patch.js"></script>
+	
+	
+	<script src="js/ext_extensions/ext_ie_patch.js"></script>
 
 	<%-- John scrollable map framework --%>
 	<script src="scrollable_map/JMap-header.js"></script>
