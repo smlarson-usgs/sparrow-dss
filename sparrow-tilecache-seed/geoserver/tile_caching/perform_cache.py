@@ -20,8 +20,11 @@ server_name = args.server_name.lower()
 zoom_start = args.zoom_start
 zoom_stop = args.zoom_stop
 threads = args.threads
+
 if args.model_number:
     model_number = args.model_number
+elif args.model_number.lower() == 'none':
+    model_number = None
 else:
     model_number = None
 
