@@ -142,7 +142,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                                                                                                          )
                         print(update_config_message)
                         logging.info(update_config_message)
-                seed_xml = sp_gwc.create_seed_xml(style=style_name,
+                seed_xml = sp_gwc.create_seed_xml(style=None,
                                                   tile_format=tile_format,
                                                   gridset_number=grid_number,
                                                   zoom_start=zoom_start, 
@@ -150,6 +150,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                                   threads=threads,
                                                   seed_type='seed'
                                                   )
+                print(seed_xml)
                 seed_request = sp_gwc.seed_request(seed_xml)
                 url_message = 'Request URL: {0}'.format(seed_request.url)
                 status_code_message = 'Status: {0}'.format(seed_request.status_code)

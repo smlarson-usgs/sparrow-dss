@@ -15,11 +15,17 @@ if __name__ == '__main__':
     """
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('server_name', type=str)
+    parser.add_argument('--server_name', type=str)
     args = parser.parse_args()
-    server_name = args.server_name.lower()
+    try:
+        server_name = args.server_name.lower()
+    except AttributeError:
+        server_name = None
     
-        
+    if server_name:
+        server_name = server_name
+    else:
+        server_name = 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver'    
     USER = USER
     PWD = PWD
     gwc_url = '{server_name}/gwc/rest'.format(server_name=server_name)
