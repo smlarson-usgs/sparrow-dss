@@ -211,7 +211,6 @@ def clean_layer_names(layer_names, model_number=None):
     for layer_name in layer_names:
         layer_sans_ws_name = layer_name.split(':')[1]
         clean_names.append(layer_sans_ws_name)
-    print(clean_names)
     if model_number is not None:
         filtered_names = regex_matching(clean_names, model_number)
     else:
