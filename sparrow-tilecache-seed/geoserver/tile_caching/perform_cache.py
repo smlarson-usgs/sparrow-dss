@@ -40,6 +40,6 @@ layers = get_ws_layers(spdss_gs_url, USER, PWD, WORKSPACES, model_number)
 lyr_with_styles = get_layer_styles(spdss_gs_url, USER, PWD, layers)
 seed_responses = execute_seed_request(spdss_gwc_url, USER, PWD, lyr_with_styles, 
                                       zoom_start=zoom_start, zoom_stop=zoom_stop, 
-                                      threads=threads
+                                      threads=threads, progress_check=30
                                       )
 print(len(seed_responses))

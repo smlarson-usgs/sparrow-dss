@@ -6,9 +6,14 @@ Created on Jan 27, 2015
 import time
 import datetime
 import logging
+from requests.exceptions import ConnectionError
 from py_geoserver_rest_requests import GeoServerWorkspace, GeoWebCacheSetUp, GeoServerLayers
 from params import OVERLAY_WORKSPACES
 from utils import regex_matching
+
+
+class SuccessiveConnectionError(ConnectionError):
+    pass
 
 
 def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None):
@@ -157,7 +162,19 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                 print(status_code_message)
                 array_length = 1
                 while array_length > 0:
-                    status = sp_gwc.query_task_status()
+                    attempts = 0
+                    while attempts <= 3:
+                        try:
+                            status = sp_gwc.query_task_status()
+                            break
+                        except ConnectionError:
+                            print('Encountered a connection error.')
+                            if attempts == 3:  # only try a total of 4 times
+                                connection_error_message = 'Encountered a connection error 3 times. Aborting script.' 
+                                print(connection_error_message)
+                                raise SuccessiveConnectionError
+                            attempts += 1
+                            time.sleep(progress_check)
                     print(datetime.datetime.now())
                     status_message = '{workspace}:{layer} - {progress}'.format(workspace=ws_name, 
                                                                                layer=layer_name, 
