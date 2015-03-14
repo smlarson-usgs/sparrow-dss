@@ -216,6 +216,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                     time.sleep(progress_check)
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
                 complete_dt = str(datetime.datetime.now())
+                # keep track of the layers that have already been cached
+                # save time by checking this database when re-running after a failure
                 db.insert_data(workspace=ws_name, layer=layer_name, complete_datetime=complete_dt)
             logging.info(finished)
             request_resps.append(seed_request)
