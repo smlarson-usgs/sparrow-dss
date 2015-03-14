@@ -112,11 +112,12 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
     
     # setup some basic logging
     db = SqliteDB()
-    try:
-        db.destroy_db()
-    except:
-        pass
-    db.create_db()
+    if not latest_is_failure:
+        try:
+            db.destroy_db()
+        except:
+            pass
+        db.create_db()
     logging.basicConfig(filename='seed_log.log', 
                         filemode='w', 
                         level=logging.INFO, 
