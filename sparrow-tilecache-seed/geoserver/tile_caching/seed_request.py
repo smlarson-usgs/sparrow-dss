@@ -10,13 +10,14 @@ from requests.exceptions import ConnectionError
 from py_geoserver_rest_requests import GeoServerWorkspace, GeoWebCacheSetUp, GeoServerLayers
 from params import OVERLAY_WORKSPACES
 from utils import regex_matching
+from sqlite_db import SqliteDB
 
 
 class SuccessiveConnectionError(ConnectionError):
     pass
 
 
-def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None):
+def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None, latest_is_failure=False):
     """
     Get the layers belonging to a workspace.
     
@@ -34,7 +35,16 @@ def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None):
         spdss_ws = GeoServerWorkspace(gs_url, gs_user, gs_pwd, workspace)
         ws_layers = spdss_ws.get_ws_layers()
         unique_ws_layers = list(set(ws_layers))
-        ws_results = (workspace, clean_layer_names(unique_ws_layers, model_number))
+        cleaned_layers = clean_layer_names(unique_ws_layers, model_number)
+        if latest_is_failure:
+            db = SqliteDB()
+            query_results = db.query_db(workspace=workspace)
+            already_cached_layers = [query_dict['layer'] for query_dict in query_results]
+            layers_to_be_cached = [layer for layer in cleaned_layers if layer not in already_cached_layers]
+            layer_list = layers_to_be_cached
+        else:
+            layer_list = cleaned_layers
+        ws_results = (workspace, clean_layer_names(layer_list, model_number))
         all_results.append(ws_results)
     return all_results
 
@@ -70,7 +80,8 @@ def get_layer_styles(gs_url, gs_user, gs_pwd, ws_layer_content):
 
 def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326', 
                          tile_format='image/png8', zoom_start=0, 
-                         zoom_stop=3, threads=1, progress_check=5, exclude_layers=()):
+                         zoom_stop=3, threads=1, progress_check=5, exclude_layers=(),
+                         latest_is_failure=False):
     """
     Generate seeding xml and post it to Geoserver for each layer in a workspace.
     The starting zoom level defaults to 0.
@@ -100,6 +111,12 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
     # sparrow-flowline-reusable:51N2043963353 - 6.67 GB... need more disk quota with zoom_stop=10
     
     # setup some basic logging
+    db = SqliteDB()
+    try:
+        db.destroy_db()
+    except:
+        pass
+    db.create_db()
     logging.basicConfig(filename='seed_log.log', 
                         filemode='w', 
                         level=logging.INFO, 
@@ -194,6 +211,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                     array_length = len(long_array)
                     time.sleep(progress_check)
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
+                complete_dt = str(datetime.datetime.now())
+                db.insert_data(workspace=ws_name, layer=layer_name, complete_datetime=complete_dt)
             logging.info(finished)
             request_resps.append(seed_request)
     tile_counts = []
