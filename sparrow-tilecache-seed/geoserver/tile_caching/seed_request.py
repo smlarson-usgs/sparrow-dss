@@ -35,13 +35,16 @@ def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None, latest
         spdss_ws = GeoServerWorkspace(gs_url, gs_user, gs_pwd, workspace)
         ws_layers = spdss_ws.get_ws_layers()
         unique_ws_layers = list(set(ws_layers))
-        cleaned_layers = clean_layer_names(unique_ws_layers, model_number)
+        cleaned_layers = clean_layer_names(unique_ws_layers, model_number)  # full list of layers
         if latest_is_failure:
             db = SqliteDB()
-            query_results = db.query_db(workspace=workspace)
-            already_cached_layers = [query_dict['layer'] for query_dict in query_results]
-            layers_to_be_cached = [layer for layer in cleaned_layers if layer not in already_cached_layers]
-            layer_list = layers_to_be_cached
+            try:
+                query_results = db.query_db(workspace=workspace)
+                already_cached_layers = [query_dict['layer'] for query_dict in query_results]  # layers that have already been cached
+                layers_to_be_cached = [layer for layer in cleaned_layers if layer not in already_cached_layers]
+                layer_list = layers_to_be_cached  # list of layers that haven't been cached because of a previous script exception
+            except:  # probably means the database doesn't exist
+                layer_list = cleaned_layers
         else:
             layer_list = cleaned_layers
         ws_results = (workspace, layer_list)
@@ -213,6 +216,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                     time.sleep(progress_check)
                 finished = 'Finished - {workspace}:{layer}'.format(workspace=ws_name, layer=layer_name)
                 complete_dt = str(datetime.datetime.now())
+                # keep track of the layers that have already been cached
+                # save time by checking this database when re-running after a failure
                 db.insert_data(workspace=ws_name, layer=layer_name, complete_datetime=complete_dt)
             logging.info(finished)
             request_resps.append(seed_request)
