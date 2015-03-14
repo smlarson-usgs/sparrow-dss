@@ -44,7 +44,7 @@ def get_ws_layers(gs_url, gs_user, gs_pwd, workspaces, model_number=None, latest
             layer_list = layers_to_be_cached
         else:
             layer_list = cleaned_layers
-        ws_results = (workspace, clean_layer_names(layer_list, model_number))
+        ws_results = (workspace, layer_list)
         all_results.append(ws_results)
     return all_results
 
