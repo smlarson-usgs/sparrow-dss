@@ -13,6 +13,7 @@ parser.add_argument('server_name', type=str, help='Name of the server GeoServer 
 parser.add_argument('zoom_start', type=int, help='Starting zoom level')
 parser.add_argument('zoom_stop', type=int, help='Ending zoom level')
 parser.add_argument('threads', type=int, help='Number of threads used for caching')
+parser.add_argument('is_latest_failure', type=str, help='Was the last caching attempt successful?')
 parser.add_argument('--model_number', type=str, help="Model number to be cached")
 
 args = parser.parse_args()
@@ -20,6 +21,12 @@ server_name = args.server_name.lower()
 zoom_start = args.zoom_start
 zoom_stop = args.zoom_stop
 threads = args.threads
+is_latest_failure = args.is_latest_failure
+
+if is_latest_failure.lower() == 'true':
+    latest_is_failure = True
+else:
+    latest_is_failure = False
 
 
 try:
@@ -40,7 +47,7 @@ spdss_gwc_url = '{server_name}/gwc/rest'.format(server_name=server_name)
 USER = USER
 PWD = PWD
 
-layers = get_ws_layers(spdss_gs_url, USER, PWD, WORKSPACES, model_number)
+layers = get_ws_layers(spdss_gs_url, USER, PWD, WORKSPACES, model_number, latest_is_failure=latest_is_failure)
 lyr_with_styles = get_layer_styles(spdss_gs_url, USER, PWD, layers)
 seed_responses = execute_seed_request(spdss_gwc_url, USER, PWD, lyr_with_styles, 
                                       zoom_start=zoom_start, zoom_stop=zoom_stop, 
