@@ -120,6 +120,8 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
             db.destroy_db()
         except:
             pass
+        # create a new database if the last script run worked
+        # otherwise append to the existing database
         db.create_db()
     logging.basicConfig(filename='seed_log.log', 
                         filemode='w', 
