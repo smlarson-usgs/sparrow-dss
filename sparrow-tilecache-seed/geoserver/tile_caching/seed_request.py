@@ -197,7 +197,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                 print(connection_error_message)
                                 raise SuccessiveConnectionError
                             attempts += 1
-                            time.sleep(progress_check)
+                            time.sleep(progress_check*2)  # provide sometime for the server to respond
                     print(datetime.datetime.now())
                     status_message = '{workspace}:{layer} - {progress}'.format(workspace=ws_name, 
                                                                                layer=layer_name, 
