@@ -59,14 +59,3 @@ class SqliteDB(object):
 
     def close_db(self):
         self.connection.close()
-
-
-if __name__ == '__main__':
-    DB_PATH = '/Users/Andrew/Desktop/expt/sparrow.db'
-    sql3 = SqliteDB(db_path=DB_PATH)
-    sql3.create_db()
-    sql3.insert_data('sparrow-catchments', '34N3902903', '03/14/2015 11:48')
-    query_result = sql3.query_db('sparrow-catchments')
-    print(query_result)
-    sql3.close_db()
-    sql3.destroy_db()
