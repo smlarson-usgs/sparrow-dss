@@ -189,12 +189,16 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                     while attempts <= 3:
                         try:
                             status = sp_gwc.query_task_status()
+                            attempts = 0  # reset attempts to 0
                             break
                         except ConnectionError:
-                            print('Encountered a connection error.')
+                            conn_err_message = 'Encountered a connection error ({0}).'.format(attempts)
+                            print(conn_err_message)
+                            
                             if attempts == 3:  # only try a total of 4 times
                                 connection_error_message = 'Encountered a connection error 3 times. Aborting script.' 
                                 print(connection_error_message)
+                                logging.info(connection_error_message)
                                 raise SuccessiveConnectionError
                             attempts += 1
                             time.sleep(progress_check*2)  # provide sometime for the server to respond
