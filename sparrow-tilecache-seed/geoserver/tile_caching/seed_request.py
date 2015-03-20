@@ -194,9 +194,9 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                         except ConnectionError:
                             conn_err_message = 'Encountered a connection error ({0}).'.format(attempts)
                             print(conn_err_message)
-                            
+                            logging.info(conn_err_message)
                             if attempts == 3:  # only try a total of 4 times
-                                connection_error_message = 'Encountered a connection error 3 times. Aborting script.' 
+                                connection_error_message = 'Encountered a connection error {0} times. Aborting script.'.format(attempts) 
                                 print(connection_error_message)
                                 logging.info(connection_error_message)
                                 raise SuccessiveConnectionError
