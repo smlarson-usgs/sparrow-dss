@@ -59,6 +59,8 @@ elif workspaces == 'resusable':
     from params import REUSABLE_WORKSPACES as WORKSPACES
 elif workspaces == 'overlays':
     from params import OVERLAY_WORKSPACES as WORKSPACES
+else:
+    raise Exception('Workspaces were not specified.')
 
 layers = get_ws_layers(spdss_gs_url, USER, PWD, WORKSPACES, model_number, latest_is_failure=latest_is_failure)
 lyr_with_styles = get_layer_styles(spdss_gs_url, USER, PWD, layers)
