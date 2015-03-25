@@ -14,7 +14,6 @@ FLOWLINE_WORKSPACES = ['sparrow-flowline-reusable']
 REUSABLE_WORKSPACES = CATCHMENT_WORKSPACES + FLOWLINE_WORKSPACES
 
 OVERLAY_WORKSPACES = ['huc8-overlay',
-                      'catchment-overlay',
                       'reach-overlay'
                       ]
 
