@@ -15,6 +15,7 @@ parser.add_argument('zoom_stop', type=int, help='Ending zoom level')
 parser.add_argument('threads', type=int, help='Number of threads used for caching')
 parser.add_argument('is_latest_failure', type=str, help='Was the last caching attempt successful?')
 parser.add_argument('workspaces', type=str, help='Workspace to cache layers from')
+parser.add_argument('seed_type', type=str, help='seed, reseed, or truncate a tile cache')
 parser.add_argument('--model_number', type=str, help="Model number to be cached")
 
 args = parser.parse_args()
@@ -24,6 +25,7 @@ zoom_stop = args.zoom_stop
 threads = args.threads
 is_latest_failure = args.is_latest_failure
 workspaces = args.workspaces.lower()
+seed_type = args.seed_type.lower()
 
 if is_latest_failure.lower() == 'true':
     latest_is_failure = True
@@ -67,6 +69,7 @@ lyr_with_styles = get_layer_styles(spdss_gs_url, USER, PWD, layers)
 seed_responses = execute_seed_request(spdss_gwc_url, USER, PWD, lyr_with_styles, 
                                       zoom_start=zoom_start, zoom_stop=zoom_stop, 
                                       threads=threads, progress_check=30, 
-                                      latest_is_failure=latest_is_failure
+                                      latest_is_failure=latest_is_failure,
+                                      seed_type=seed_type
                                       )
 print(len(seed_responses))
