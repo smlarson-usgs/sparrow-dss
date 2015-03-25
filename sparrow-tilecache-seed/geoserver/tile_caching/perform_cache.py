@@ -4,7 +4,7 @@ Created on Jan 30, 2015
 @author: ayan
 '''
 import argparse
-from params import WORKSPACES, USER, PWD
+from params import USER, PWD
 from seed_request import get_ws_layers, get_layer_styles, execute_seed_request
 
 
@@ -14,6 +14,7 @@ parser.add_argument('zoom_start', type=int, help='Starting zoom level')
 parser.add_argument('zoom_stop', type=int, help='Ending zoom level')
 parser.add_argument('threads', type=int, help='Number of threads used for caching')
 parser.add_argument('is_latest_failure', type=str, help='Was the last caching attempt successful?')
+parser.add_argument('workspaces', type=str, help='Workspace to cache layers from')
 parser.add_argument('--model_number', type=str, help="Model number to be cached")
 
 args = parser.parse_args()
@@ -22,6 +23,7 @@ zoom_start = args.zoom_start
 zoom_stop = args.zoom_stop
 threads = args.threads
 is_latest_failure = args.is_latest_failure
+workspaces = args.workspaces.lower()
 
 if is_latest_failure.lower() == 'true':
     latest_is_failure = True
@@ -46,6 +48,19 @@ spdss_gs_url = '{server_name}/rest'.format(server_name=server_name)
 spdss_gwc_url = '{server_name}/gwc/rest'.format(server_name=server_name)
 USER = USER
 PWD = PWD
+
+if workspaces == 'all':
+    from params import WORKSPACES as WORKSPACES
+elif workspaces == 'catchment':
+    from params import CATCHMENT_WORKSPACES as WORKSPACES
+elif workspaces == 'flowline':
+    from params import FLOWLINE_WORKSPACES as WORKSPACES
+elif workspaces == 'resusable':
+    from params import REUSABLE_WORKSPACES as WORKSPACES
+elif workspaces == 'overlays':
+    from params import OVERLAY_WORKSPACES as WORKSPACES
+else:
+    raise Exception('Workspaces were not specified.')
 
 layers = get_ws_layers(spdss_gs_url, USER, PWD, WORKSPACES, model_number, latest_is_failure=latest_is_failure)
 lyr_with_styles = get_layer_styles(spdss_gs_url, USER, PWD, layers)
