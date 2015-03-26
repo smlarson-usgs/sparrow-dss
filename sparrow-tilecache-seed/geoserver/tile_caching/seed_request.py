@@ -194,6 +194,7 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                             print(abort_message)
                             logging.info(abort_message)
                             raise SuccessiveConnectionError
+                        time.sleep(progress_check*2)
                 url_message = 'Request URL: {0}'.format(seed_request.url)
                 status_code_message = 'Status: {0}'.format(seed_request.status_code)
                 print(url_message)
