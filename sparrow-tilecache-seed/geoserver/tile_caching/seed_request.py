@@ -178,7 +178,23 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                                   threads=threads,
                                                   seed_type=seed_type
                                                   )
-                seed_request = sp_gwc.seed_request(seed_xml)
+                seed_request_attempts = 0
+                while seed_request_attempts < 4:
+                    try:
+                        seed_request = sp_gwc.seed_request(seed_xml)
+                        seed_request_attempts = 0
+                        break
+                    except ConnectionError:
+                        seed_request_attempts += 1
+                        seed_request_connection_error = 'Encountered a connection error ({0}).'.format(seed_request_attempts)
+                        print(seed_request_connection_error)
+                        logging.info(seed_request_connection_error)
+                        if seed_request_attempts == 3:
+                            abort_message = 'Encountered a connection error {0} times. Aborting script.'.format(seed_request_attempts) 
+                            print(abort_message)
+                            logging.info(abort_message)
+                            raise SuccessiveConnectionError
+                        time.sleep(progress_check*2)
                 url_message = 'Request URL: {0}'.format(seed_request.url)
                 status_code_message = 'Status: {0}'.format(seed_request.status_code)
                 print(url_message)
@@ -186,12 +202,13 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                 array_length = 1
                 while array_length > 0:
                     attempts = 0
-                    while attempts <= 3:
+                    while attempts < 4:
                         try:
                             status = sp_gwc.query_task_status()
                             attempts = 0  # reset attempts to 0
                             break
                         except ConnectionError:
+                            attempts += 1
                             conn_err_message = 'Encountered a connection error ({0}).'.format(attempts)
                             print(conn_err_message)
                             logging.info(conn_err_message)
@@ -200,7 +217,6 @@ def execute_seed_request(gwc_url, gs_user, gs_pwd, cache_data, grid='EPSG:4326',
                                 print(connection_error_message)
                                 logging.info(connection_error_message)
                                 raise SuccessiveConnectionError
-                            attempts += 1
                             time.sleep(progress_check*2)  # provide sometime for the server to respond
                     print(datetime.datetime.now())
                     status_message = '{workspace}:{layer} - {progress}'.format(workspace=ws_name, 
