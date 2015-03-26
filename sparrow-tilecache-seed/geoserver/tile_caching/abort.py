@@ -25,7 +25,8 @@ if __name__ == '__main__':
     if server_name:
         server_name = server_name
     else:
-        server_name = 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver'    
+        #server_name = 'http://cida-eros-sparrowdev.er.usgs.gov:8081/sparrowgeoserver'
+        server_name =  'http://cidasdpdaspwgeo:8080/sparrowgeoserver'
     USER = USER
     PWD = PWD
     gwc_url = '{server_name}/gwc/rest'.format(server_name=server_name)
