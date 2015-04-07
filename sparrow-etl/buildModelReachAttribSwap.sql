@@ -24,7 +24,7 @@ alter table model_reach_attrib_swap drop constraint model_rch_attrib_swp_reach_f
 
 alter table model_reach_attrib_swap add constraint model_rch_attrib_swp_reach_fk foreign key (model_reach_id) references model_reach_swap (model_reach_id);
 
-insert into model_reach_attrib_swap (model_reach_id, reach_name, meanq, meanv, catch_area, reach_length, huc2, huc4, huc6, huc8, shore_reach, term_trans, term_estuary, term_nonconnect, edaname, edacode, huc2_name, huc4_name, huc6_name, huc8_name, sparrow_model_id_partition, tot_Upstream_area)
+insert into model_reach_attrib_swap (model_reach_id, reach_name, meanq, meanv, catch_area, reach_length, huc2, huc4, huc6, huc8, shore_reach, term_trans, term_estuary, term_nonconnect, edaname, edacode, huc2_name, huc4_name, huc6_name, huc8_name, sparrow_model_id_partition, tot_Upstream_area, tot_contrib_area)
 select a.model_reach_id, a.reach_name, a.meanq, a.meanv, a.catch_area, a.reach_length, a.huc2, a.huc4, a.huc6, a.huc8,
        a.shore_reach, a.term_trans, a.term_estuary, a.term_nonconnect, a.edaname, a.edacode, 
        huc2_lkp.name,
@@ -39,6 +39,7 @@ select a.model_reach_id, a.reach_name, a.meanq, a.meanv, a.catch_area, a.reach_l
                nvl(temp_ancil.meanv, enh_reach_attrib.meanv) meanv,
                nvl(temp_ancil.sqkm, enh_reach_attrib.catch_area) catch_area,
                nvl(temp_ancil.demtarea, enh_reach_attrib.cum_catch_area) tot_upstream_area,
+               nvl(temp_ancil.contrib_area, enh_reach_attrib.contrib_area) tot_contrib_area,
                nvl(temp_ancil.length_m, enh_reach_attrib.reach_length) reach_length,
                case 
                  when temp_ancil.huc8 is null 
