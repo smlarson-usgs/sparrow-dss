@@ -11,12 +11,20 @@ TRAILING NULLCOLS
 ,hydseq "nvl(:hydseq,0)"
 ,sqkm
 ,demtarea
+
 ,meanq
 ,delivery_target filler
 ,staid filler
 ,rchtype
 ,termflag
 ,pname
+
+,length_m
 ,headflag
+
 ,del_frac filler
+,mean_del_frac filler
+,se_del_frac filler
+,ci_lo_del_frac filler
+,ci_hi_del_frac filler
 )

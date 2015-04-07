@@ -30,4 +30,5 @@ TRAILING NULLCOLS
 ,se_del_frac filler
 ,ci_lo_del_frac filler
 ,ci_hi_del_frac filler
+,contrib_area ":demtarea"
 )
