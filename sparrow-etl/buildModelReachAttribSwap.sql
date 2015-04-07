@@ -39,7 +39,7 @@ select a.model_reach_id, a.reach_name, a.meanq, a.meanv, a.catch_area, a.reach_l
                nvl(temp_ancil.meanv, enh_reach_attrib.meanv) meanv,
                nvl(temp_ancil.sqkm, enh_reach_attrib.catch_area) catch_area,
                nvl(temp_ancil.demtarea, enh_reach_attrib.cum_catch_area) tot_upstream_area,
-               nvl(temp_ancil.contrib_area, enh_reach_attrib.contrib_area) tot_contrib_area,
+               temp_ancil.contrib_area tot_contrib_area,
                nvl(temp_ancil.length_m, enh_reach_attrib.reach_length) reach_length,
                case 
                  when temp_ancil.huc8 is null 
