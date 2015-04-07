@@ -32,7 +32,8 @@ select a.model_reach_id, a.reach_name, a.meanq, a.meanv, a.catch_area, a.reach_l
        huc6_lkp.name,
        huc8_lkp.name,
        :model_id,
-       a.tot_upstream_area
+       a.tot_upstream_area,
+       a.tot_contrib_area
   from (select model_reach_swap.model_reach_id,
                nvl(temp_ancil.pname, enh_reach_attrib.reach_name) reach_name,
                nvl(temp_ancil.meanq, enh_reach_attrib.meanq) meanq,
