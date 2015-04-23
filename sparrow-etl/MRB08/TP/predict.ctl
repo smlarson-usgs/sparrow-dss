@@ -5,44 +5,24 @@ INTO TABLE "SPARROW_DSS"."TEMP_PREDICT"
 FIELDS TERMINATED BY X'9'
 TRAILING NULLCOLS
 (mrb_id
-,headflag
-,termflag
-,pname
-,rr filler
-,huc8 filler
-,huc6 filler
-,edacode filler
-,edaname filler
+,pname filler
 ,rchtype filler
-,rchtot filler
-,meanv filler
-,length_m filler
-,station_id filler
-,station_name filler
-,basin_delineation filler
-,ex_calib filler
-,code_finalcomb_huc4estuary filler
-,sqkm_revtofullpolygon filler
-,demtarea_revtosqkm filler
-,fullpolygon_notinmodel filler
-,local_id filler
-,std_id filler
-,new_or_modified filler
-,termrchforeda filler
-,demtarea
-,sqkm filler
-,meanq
-,arcnum ":arcid"
-,fnode
-,tnode
-,hydseq
-,frac
-,iftran
-,delivery_target
-,ls_weight
-,staidnum filler
-,load_a_66500 filler
-,pload_total
+,headflag filler
+,termflag filler
+,staid filler
+,demtarea filler
+,demiarea filler
+,meanq filler
+,arcid filler
+,fnode filler
+,tnode filler
+,hydseq filler
+,frac filler
+,iftran filler
+,delivery_target filler
+,ls_weight2 filler
+,TP_LOAD_02 filler
+,PLOAD_TOTAL
 ,PLOAD_TPBACK filler
 ,PLOAD_PCS_P filler
 ,PLOAD_CONC_AG_P filler
@@ -72,108 +52,147 @@ TRAILING NULLCOLS
 ,PLOAD_INC_FOREST_KM2 filler
 ,PLOAD_INC_PLANTED_KM2 filler
 ,PLOAD_INC_MANURE_P filler
-,res_decay filler
-,del_frac filler
-,mean_pload_total filler
-,se_pload_total filler
-,ci_lo_pload_total filler
-,ci_hi_pload_total filler
-,mean_pload_01 filler
-,se_pload_01 filler
-,ci_lo_pload_kgp_02_v2 filler
-,ci_hi_pload_kgp_02_v2 filler
-,mean_pload_02 filler
-,se_pload_02 filler
-,ci_lo_pload_lc2_sqkm filler
-,ci_hi_pload_lc2_sqkm filler
-,mean_pload_03 filler
-,se_pload_03 filler
-,ci_lo_pload_pnat_v17 filler
-,ci_hi_pload_pnat_v17 filler
-,mean_pload_04
-,se_pload_04
-,ci_lo_pload_pmines_v17 filler
-,ci_hi_pload_pmines_v17 filler
-,mean_pload_05
-,se_pload_05
-,ci_lo_pload_mant_p filler
-,ci_hi_pload_mant_p filler
-,mean_pload_06
-,se_pload_06
-,ci_lo_pload_lc8_sqkm filler
-,ci_hi_pload_lc8_sqkm filler
-,mean_pload_nd_total filler
-,se_pload_nd_total filler
-,ci_lo_pload_nd_total filler
-,ci_hi_pload_nd_total filler
-,mean_pload_nd_kgp_02_v2 filler
-,se_pload_nd_kgp_02_v2 filler
-,ci_lo_pload_nd_kgp_02_v2 filler
-,ci_hi_pload_nd_kgp_02_v2 filler
-,mean_pload_nd_lc2_sqkm filler
-,se_pload_nd_lc2_sqkm filler
-,ci_lo_pload_nd_lc2_sqkm filler
-,ci_hi_pload_nd_lc2_sqkm filler
-,mean_pload_nd_pnat_v17 filler
-,se_pload_nd_pnat_v17 filler
-,ci_lo_pload_nd_pnat_v17 filler
-,ci_hi_pload_nd_pnat_v17 filler
-,mean_pload_nd_pmines_v17 filler
-,se_pload_nd_pmines_v17 filler
-,ci_lo_pload_nd_pmines_v17 filler
-,ci_hi_pload_nd_pmines_v17 filler
-,mean_pload_nd_mant_p filler
-,se_pload_nd_mant_p filler
-,ci_lo_pload_nd_mant_p filler
-,ci_hi_pload_nd_mant_p filler
-,mean_pload_nd_lc8_sqkm filler
-,se_pload_nd_lc8_sqkm filler
-,ci_lo_pload_nd_lc8_sqkm filler
-,ci_hi_pload_nd_lc8_sqkm filler
-,mean_pload_inc_total
-,se_pload_inc_total
-,ci_lo_pload_inc_total filler
-,ci_hi_pload_inc_total filler
-,mean_pload_inc_01
-,se_pload_inc_01
-,ci_lo_pload_inc_kgp_02_v2 filler
-,ci_hi_pload_inc_kgp_02_v2 filler
-,mean_pload_inc_02
-,se_pload_inc_02
-,ci_lo_pload_inc_lc2_sqkm filler
-,ci_hi_pload_inc_lc2_sqkm filler
-,mean_pload_inc_03
-,se_pload_inc_03
-,ci_lo_pload_inc_pnat_v17 filler
-,ci_hi_pload_inc_pnat_v17 filler
-,mean_pload_inc_04
-,se_pload_inc_04
-,ci_lo_pload_inc_pmines_v17 filler
-,ci_hi_pload_inc_pmines_v17 filler
-,mean_pload_inc_05
-,se_pload_inc_05
-,ci_lo_pload_inc_mant_p filler
-,ci_hi_pload_inc_mant_p filler
-,mean_pload_inc_06
-,se_pload_inc_06
-,ci_lo_pload_inc_lc8_sqkm filler
-,ci_hi_pload_inc_lc8_sqkm filler
-,mean_res_decay filler
-,se_res_decay filler
-,ci_lo_res_decay filler
-,ci_hi_res_decay filler
-,mean_del_frac filler
-,se_del_frac filler
-,ci_lo_del_frac filler
-,ci_hi_del_frac filler
+,RES_DECAY filler
+,DEL_FRAC filler
+,MEAN_PLOAD_TOTAL
+,SE_PLOAD_TOTAL
+,ci_lo_PLOAD_TOTAL filler
+,ci_hi_PLOAD_TOTAL filler
+,MEAN_PLOAD_01
+,SE_PLOAD_01
+,ci_lo_PLOAD_TPBACK filler
+,ci_hi_PLOAD_TPBACK filler
+,MEAN_PLOAD_02
+,SE_PLOAD_02
+,ci_lo_PLOAD_PCS_P filler
+,ci_hi_PLOAD_PCS_P filler
+,MEAN_PLOAD_03
+,SE_PLOAD_03
+,ci_lo_PLOAD_CONC_AG_P filler
+,ci_hi_PLOAD_CONC_AG_P filler
+,MEAN_PLOAD_04
+,SE_PLOAD_04
+,ci_lo_PLOAD_MAN_P filler
+,ci_hi_PLOAD_MAN_P filler
+,MEAN_PLOAD_05
+,SE_PLOAD_05
+,ci_lo_PLOAD_UNCONF_P filler
+,ci_hi_PLOAD_UNCONF_P filler
+,MEAN_PLOAD_06
+,SE_PLOAD_06
+,ci_lo_PLOAD_DEVLAND_KM2 filler
+,ci_hi_PLOAD_DEVLAND_KM2 filler
+,MEAN_PLOAD_07
+,SE_PLOAD_07
+,ci_lo_PLOAD_FOREST_KM2 filler
+,ci_hi_PLOAD_FOREST_KM2 filler
+,MEAN_PLOAD_08
+,SE_PLOAD_08
+,ci_lo_PLOAD_PLANTED_KM2 filler
+,ci_hi_PLOAD_PLANTED_KM2 filler
+,MEAN_PLOAD_09
+,SE_PLOAD_09
+,ci_lo_PLOAD_MANURE_P filler
+,ci_hi_PLOAD_MANURE_P filler
+,MEAN_PLOAD_10
+,SE_PLOAD_10
+,ci_lo_PLOAD_ND_TOTAL filler
+,ci_hi_PLOAD_ND_TOTAL filler
+,MEAN_PLOAD_11
+,SE_PLOAD_11
+,ci_lo_PLOAD_ND_TPBACK filler
+,ci_hi_PLOAD_ND_TPBACK filler
+,MEAN_PLOAD_12
+,SE_PLOAD_12
+,ci_lo_PLOAD_ND_PCS_P filler
+,ci_hi_PLOAD_ND_PCS_P filler
+,MEAN_PLOAD_13
+,SE_PLOAD_13
+,ci_lo_PLOAD_ND_CONC_AG_P filler
+,ci_hi_PLOAD_ND_CONC_AG_P filler
+,MEAN_PLOAD_14
+,SE_PLOAD_14
+,ci_lo_PLOAD_ND_MAN_P filler
+,ci_hi_PLOAD_ND_MAN_P filler
+,MEAN_PLOAD_15
+,SE_PLOAD_15
+,ci_lo_PLOAD_ND_UNCONF_P filler
+,ci_hi_PLOAD_ND_UNCONF_P filler
+,MEAN_PLOAD_16
+,SE_PLOAD_16
+,ci_lo_PLOAD_ND_DEVLAND_KM2 filler
+,ci_hi_PLOAD_ND_DEVLAND_KM2 filler
+,MEAN_PLOAD_17
+,SE_PLOAD_17
+,ci_lo_PLOAD_ND_FOREST_KM2 filler
+,ci_hi_PLOAD_ND_FOREST_KM2 filler
+,MEAN_PLOAD_18
+,SE_PLOAD_18
+,ci_lo_PLOAD_ND_PLANTED_KM2 filler
+,ci_hi_PLOAD_ND_PLANTED_KM2 filler
+,MEAN_PLOAD_19
+,SE_PLOAD_19
+,ci_lo_PLOAD_ND_MANURE_P filler
+,ci_hi_PLOAD_ND_MANURE_P filler
+,MEAN_PLOAD_INC_TOTAL
+,SE_PLOAD_INC_TOTAL
+,ci_lo_PLOAD_INC_TOTAL filler
+,ci_hi_PLOAD_INC_TOTAL filler
+,MEAN_PLOAD_INC_01
+,SE_PLOAD_INC_01
+,ci_lo_PLOAD_INC_TPBACK filler
+,ci_hi_PLOAD_INC_TPBACK filler
+,MEAN_PLOAD_INC_02
+,SE_PLOAD_INC_02
+,ci_lo_PLOAD_INC_PCS_P filler
+,ci_hi_PLOAD_INC_PCS_P filler
+,MEAN_PLOAD_INC_03
+,SE_PLOAD_INC_03
+,ci_lo_PLOAD_INC_CONC_AG_P filler
+,ci_hi_PLOAD_INC_CONC_AG_P filler
+,MEAN_PLOAD_INC_04
+,SE_PLOAD_INC_04
+,ci_lo_PLOAD_INC_MAN_P filler
+,ci_hi_PLOAD_INC_MAN_P filler
+,MEAN_PLOAD_INC_05
+,SE_PLOAD_INC_05
+,ci_lo_PLOAD_INC_UNCONF_P filler
+,ci_hi_PLOAD_INC_UNCONF_P filler
+,MEAN_PLOAD_INC_06
+,SE_PLOAD_INC_06
+,ci_lo_PLOAD_INC_DEVLAND_KM2 filler
+,ci_hi_PLOAD_INC_DEVLAND_KM2 filler
+,MEAN_PLOAD_INC_07
+,SE_PLOAD_INC_07
+,ci_lo_PLOAD_INC_FOREST_KM2 filler
+,ci_hi_PLOAD_INC_FOREST_KM2 filler
+,MEAN_PLOAD_INC_08
+,SE_PLOAD_INC_08
+,ci_lo_PLOAD_INC_PLANTED_KM2 filler
+,ci_hi_PLOAD_INC_PLANTED_KM2 filler
+,MEAN_PLOAD_INC_09
+,SE_PLOAD_INC_09
+,ci_lo_PLOAD_INC_MANURE_P filler
+,ci_hi_PLOAD_INC_MANURE_P filler
+,MEAN_RES_DECAY filler
+,SE_RES_DECAY filler
+,ci_lo_RES_DECAY filler
+,ci_hi_RES_DECAY filler
+,MEAN_DEL_FRAC filler
+,SE_DEL_FRAC filler
+,ci_lo_DEL_FRAC filler
+,ci_hi_DEL_FRAC filler
 ,total_yield filler
 ,inc_total_yield filler
 ,concentration filler
 ,map_del_frac filler
-,sh_kgp_02_v2 filler
-,sh_lc2_sqkm filler
-,sh_pnat_v17 filler
-,sh_pmines_v17 filler
-,sh_mant_p filler
-,sh_lc8_sqkm filler
+,sh_TPback filler
+,sh_PCS_p filler
+,sh_conc_ag_p filler
+,sh_Man_P filler
+,sh_UNCONF_p filler
+,sh_devland_km2 filler
+,sh_forest_km2 filler
+,sh_planted_km2 filler
+,sh_manure_p filler
 )
