@@ -38,6 +38,23 @@
 	
 	<target name="reachAttribUpload" depends="reachAttribUploadSpecific"/>
 	
+	<target name="edaCtlTest">
+				<available file="${basedir}/${mrb}/${constituent}/eda.ctl" property="specificEdaCtl"/>
+			</target>
+			
+			<target name="edaUploadSpecific" depends="edaCtlTest" if="specificEdaCtl">
+				<echo>Load file ${mrb}/${constituent}/eda.txt into database table TEMP_NHD_ESTUARY_GRP</echo>
+				<exec executable="sqlldr" failonerror="true">
+					<arg value="${stream_network}/${stream_network_password}@${instance}"/>
+					<arg value="DATA=${dataDir}/${mrb}/${constituent}/eda.txt"/>
+					<arg value="BAD=${basedir}/eda.bad"/>
+					<arg value="DISCARD=${basedir}/eda.dsc"/>
+					<arg value="CONTROL=${basedir}/${mrb}/${constituent}/eda.ctl"/>
+				</exec>
+			</target>
+		
+		<target name="edaUpload" depends="edaUploadSpecific"/>
+	
 	<target name="ancilCtlTest">
 		<available file="${basedir}/${mrb}/${constituent}/ancil.ctl" property="specificAncilCtl"/>
 	</target>
