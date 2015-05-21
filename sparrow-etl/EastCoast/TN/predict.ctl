@@ -4,23 +4,30 @@ TRUNCATE
 INTO TABLE "SPARROW_DSS"."TEMP_PREDICT"
 FIELDS TERMINATED BY X'9'
 TRAILING NULLCOLS
-(mrb_id 
-,MRB filler
-,HUC8 filler
+(mrb_id
+,MRB  filler
 ,reachcode_comb filler
-,EstuaryGroup filler
-,EstuaryCode filler
-,NOAA_targetonly filler
+,huc8 filler
+,headflag filler
+,termflag filler
+,GNIS_NAME filler
+,MAVELU filler
+,EstTarget_Code filler
+,EstTarget_Name filler
 ,ReachTOT filler
 ,ReachType filler
 ,WBRchCd filler
+,length_m filler
+,local_id filler
+,std_id filler
+,new_or_modified filler
+,hydseq filler
 ,tot_area filler
 ,inc_area filler
 ,mean_flow filler
 ,arcid filler
 ,fnode filler
 ,tnode filler
-,hydseq filler
 ,frac filler
 ,iftran filler
 ,target filler
@@ -75,7 +82,7 @@ TRAILING NULLCOLS
 ,SE_PLOAD_03
 ,ci_lo_PLOAD_PT_MUN_NWENG filler
 ,ci_hi_PLOAD_PT_MUN_NWENG filler
-,MEAN_PLOAD_04
+,MEAN_PLOAD_04 
 ,SE_PLOAD_04
 ,ci_lo_PLOAD_PT_MUN_DELHUD filler
 ,ci_hi_PLOAD_PT_MUN_DELHUD filler
@@ -99,44 +106,44 @@ TRAILING NULLCOLS
 ,SE_PLOAD_09
 ,ci_lo_PLOAD_MANUREALL filler
 ,ci_hi_PLOAD_MANUREALL filler
-,MEAN_PLOAD_10
-,SE_PLOAD_10
+,MEAN_PLOAD_ND_TOTAL filler
+,SE_PLOAD_ND_TOTAL filler
 ,ci_lo_PLOAD_ND_TOTAL filler
 ,ci_hi_PLOAD_ND_TOTAL filler
-,MEAN_PLOAD_11
-,SE_PLOAD_11
+,MEAN_PLOAD_ND_PT_MUN_SMJ filler
+,SE_PLOAD_ND_PT_MUN_SMJ filler
 ,ci_lo_PLOAD_ND_PT_MUN_SMJ filler
 ,ci_hi_PLOAD_ND_PT_MUN_SMJ filler
-,MEAN_PLOAD_12
-,SE_PLOAD_12
+,MEAN_PLOAD_ND_PT_MUN_CB filler
+,SE_PLOAD_ND_PT_MUN_CB filler
 ,ci_lo_PLOAD_ND_PT_MUN_CB filler
 ,ci_hi_PLOAD_ND_PT_MUN_CB filler
-,MEAN_PLOAD_13
-,SE_PLOAD_13
+,MEAN_PLOAD_ND_PT_MUN_NWENG filler
+,SE_PLOAD_ND_PT_MUN_NWENG filler
 ,ci_lo_PLOAD_ND_PT_MUN_NWENG filler
 ,ci_hi_PLOAD_ND_PT_MUN_NWENG filler
-,MEAN_PLOAD_14
-,SE_PLOAD_14
+,MEAN_PLOAD_ND_PT_MUN_DELHUD filler
+,SE_PLOAD_ND_PT_MUN_DELHUD filler
 ,ci_lo_PLOAD_ND_PT_MUN_DELHUD filler
 ,ci_hi_PLOAD_ND_PT_MUN_DELHUD filler
-,MEAN_PLOAD_15
-,SE_PLOAD_15
+,MEAN_PLOAD_ND_CMAQ2002KG filler
+,SE_PLOAD_ND_CMAQ2002KG filler
 ,ci_lo_PLOAD_ND_CMAQ2002KG filler
 ,ci_hi_PLOAD_ND_CMAQ2002KG filler
-,MEAN_PLOAD_16
-,SE_PLOAD_16
+,MEAN_PLOAD_ND_URBLAND_SN filler
+,SE_PLOAD_ND_URBLAND_SN filler
 ,ci_lo_PLOAD_ND_URBLAND_SN filler
 ,ci_hi_PLOAD_ND_URBLAND_SN filler
-,MEAN_PLOAD_17
-,SE_PLOAD_17
+,MEAN_PLOAD_ND_FERTROTATION filler
+,SE_PLOAD_ND_FERTROTATION filler
 ,ci_lo_PLOAD_ND_FERTROTATION filler
 ,ci_hi_PLOAD_ND_FERTROTATION filler
-,MEAN_PLOAD_18
-,SE_PLOAD_18
+,MEAN_PLOAD_ND_FERT_OTHER filler
+,SE_PLOAD_ND_FERT_OTHER filler
 ,ci_lo_PLOAD_ND_FERT_OTHER filler
 ,ci_hi_PLOAD_ND_FERT_OTHER filler
-,MEAN_PLOAD_19
-,SE_PLOAD_19
+,MEAN_PLOAD_ND_MANUREALL filler
+,SE_PLOAD_ND_MANUREALL filler
 ,ci_lo_PLOAD_ND_MANUREALL filler
 ,ci_hi_PLOAD_ND_MANUREALL filler
 ,MEAN_PLOAD_INC_TOTAL
@@ -199,6 +206,5 @@ TRAILING NULLCOLS
 ,sh_UrbLand_SN filler
 ,sh_FertRotation filler
 ,sh_Fert_other filler
-,sh_ManureAll
- filler
+,sh_ManureAll filler
 )
