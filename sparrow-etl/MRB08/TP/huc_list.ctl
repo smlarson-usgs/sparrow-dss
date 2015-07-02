@@ -11,6 +11,6 @@ TRAILING NULLCOLS
 ,huc_4 filler
 ,huc_6 filler
 ,huc8_int 
-,huc8_char
+,huc8_char ":huc_int"
 ,huc_name filler
 )
