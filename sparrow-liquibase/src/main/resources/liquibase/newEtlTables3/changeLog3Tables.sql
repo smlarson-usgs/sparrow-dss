@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+    
+--logicalFilePath: changeLog3Tables.sql
+
 --changeset drsteini:tables3a
 create table etl_parameters
 (mrb							varchar2(40 char)							constraint nn_etl_parameters_pk_a not null

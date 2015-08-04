@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+    
+--logicalFilePath: changeLog2Tables.sql
+
 --changeset drsteini:tables2a
 create table model_reach
 (model_reach_id					number(9)                   			constraint nn_model_reach_pk not null

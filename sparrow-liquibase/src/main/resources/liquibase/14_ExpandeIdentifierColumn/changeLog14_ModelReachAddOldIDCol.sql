@@ -1,6 +1,8 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
+  
+--logicalFilePath: changeLog14_ModelReachAddOldIDCol.sql
 
 --changeset kmschoep:addColumnOld_Identifier
 ALTER TABLE MODEL_REACH ADD (OLD_IDENTIFIER number(10,0));

@@ -1,7 +1,11 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
+
  
+--logicalFilePath: changeLog2Data.sql
+
+
 -- changeset drsteini:data2a
 insert into model_reach select * from model_reach_old;
 --rollback delete from model_reach;

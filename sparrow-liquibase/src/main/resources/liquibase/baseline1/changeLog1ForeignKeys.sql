@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
  
+--logicalFilePath: changeLog1ForeignKeys.sql
+
 --changeset drsteini:foreignKeys1a
 alter table model_reach add constraint model_reach_enh_reach_fk foreign key (enh_reach_id) references stream_network.enh_reach (enh_reach_id);
 --rollback alter table model_reach drop constraint model_reach_enh_reach_fk;

@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+       
+--logicalFilePath: changeLog1Types.sql
+
 --changeset drsteini:types1a 
 CREATE OR REPLACE TYPE SPARROW_DSS.MV_DATELIST as TABLE of DATE;
 --rollback DROP TYPE SPARROW_DSS.MV_DATELIST;

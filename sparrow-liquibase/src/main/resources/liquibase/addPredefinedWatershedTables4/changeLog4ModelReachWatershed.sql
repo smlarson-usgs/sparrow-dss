@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+--logicalFilePath: changeLog4ModelReachWatershed.sql
+
 --changeset lmurphy:watershed4a
 alter table model_reach_watershed rename to model_reach_watershed_old;
 --rollback alter table model_reach_watershed_old rename to model_reach_watershed;

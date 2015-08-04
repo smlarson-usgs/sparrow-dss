@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+    
+--logicalFilePath: changeLog1Sequences.sql
+
 --changeset drsteini:sequences1a
 create sequence model_reach_seq
   start with 1

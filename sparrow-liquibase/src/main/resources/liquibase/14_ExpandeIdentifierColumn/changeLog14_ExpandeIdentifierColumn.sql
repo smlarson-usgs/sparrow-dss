@@ -1,6 +1,8 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
+  
+--logicalFilePath: changeLog14_ExpandeIdentifierColumn.sql
 
 --changeset eeverman:alterIdColumnToTenDigits
 ALTER TABLE MODEL_REACH MODIFY (IDENTIFIER number(10,0));

@@ -1,5 +1,9 @@
 --liquibase formatted sql
 
+       
+--logicalFilePath: changeLog15_model_54_55_upd.sql
+
+
 --changeset kmschoep:update_themeName
 UPDATE sparrow_model
 SET theme_name = 'chesa_nhd'

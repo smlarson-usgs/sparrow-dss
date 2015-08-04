@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+   
+--logicalFilePath: changeLog3Master.sql
+
 --changeset drsteini:idx3a
 create index model_reach_swap_enh_reach_fk on model_reach_swap(enh_reach_id);
 --rollback drop index model_reach_swap_enh_reach_fk;

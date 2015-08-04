@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+  
+--logicalFilePath: changeLog3ForeignKeys.sql
+
 --changeset drsteini:fks3a
 alter table model_reach_swap add constraint model_reach_swap_enh_reach_fk foreign key (enh_reach_id) references stream_network.enh_reach (enh_reach_id);
 --rollback alter table model_reach_swap drop constraint model_reach_swap_enh_reach_fk;

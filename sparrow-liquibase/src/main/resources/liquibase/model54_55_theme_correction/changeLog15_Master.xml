@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
-	logicalFilePath="model54_55_theme_correction/changeLog15_Master.xml"> 
+	logicalFilePath="changeLog15_Master.xml"> 
 
 	<preConditions>
 		<dbms type="oracle" />

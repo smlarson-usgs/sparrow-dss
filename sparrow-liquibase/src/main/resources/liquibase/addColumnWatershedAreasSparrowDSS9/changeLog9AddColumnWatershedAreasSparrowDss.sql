@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+--logicalFilePath: changeLog9AddColumnWatershedAreasSparrowDss.sql
+
 --changeset lmurphy:addcolumnsa
 ALTER TABLE MODEL_REACH_ATTRIB ADD (TOT_CONTRIB_AREA  NUMBER(16,6));
 --rollback alter table model_reach_attrib drop column tot_contrib_area;

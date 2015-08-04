@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+   
+--logicalFilePath: changeLog2Renames.sql
+
 --changeset drsteini:renames2a
 alter table model_reach rename to model_reach_old;
 --rollback alter table model_reach_old rename to model_reach;

@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+--logicalFilePath: changeLog14AddGeomViewSparrowDss.sql
+
 --changeset lmurphy:addviewa
 CREATE OR REPLACE FORCE VIEW SPARROW_DSS.MODEL_GEOM_25_VW
 (

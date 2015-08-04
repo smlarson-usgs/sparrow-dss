@@ -2,6 +2,8 @@
 
 --This is for the stream_network schema
 
+--logicalFilePath: changeLog14_StreamNetworkUpdIDwFullID.sql
+
 --changeset kmschoep:ERupdateIDENTIFIERwithFULL_IDENTIFIER
 UPDATE ENH_REACH
 SET IDENTIFIER = TO_NUMBER(FULL_IDENTIFIER)

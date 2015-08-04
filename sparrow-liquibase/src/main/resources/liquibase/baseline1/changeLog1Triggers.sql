@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+      
+--logicalFilePath: changeLog1Triggers.sql
+
 --changeset drsteini:triggers1a endDelimiter:/ splitStatements:false
 create or replace trigger model_reach_auto_id_trig
   before insert on model_reach
