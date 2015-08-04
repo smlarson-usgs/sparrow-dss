@@ -4,7 +4,7 @@
 
 --logicalFilePath: changeLog14_StreamNetworkUpdIDwFullID.sql
 
---changeset kmschoep:ERupdateIDENTIFIERwithFULL_IDENTIFIER
+--changeset kmschoep:ERupdateIDENTIFIERwithFULL_IDENTIFIER2
 UPDATE ENH_REACH
 SET IDENTIFIER = TO_NUMBER(FULL_IDENTIFIER)
 WHERE

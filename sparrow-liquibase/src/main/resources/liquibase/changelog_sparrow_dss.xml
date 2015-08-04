@@ -11,7 +11,6 @@
 		<runningAs username="SPARROW_DSS" />
 	</preConditions>
 	
-	<include file="baseline1/changeLog1Master.xml" relativeToChangelogFile="true" />
 	<include file="convertToPartitioned2/changeLog2Master.xml" relativeToChangelogFile="true" />
 	<include file="newEtlTables3/changeLog3Master.xml" relativeToChangelogFile="true" />
 	<include file="addPredefinedWatershedTables4/changeLog4Master.xml" relativeToChangelogFile="true" />

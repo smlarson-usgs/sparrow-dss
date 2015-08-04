@@ -6,7 +6,7 @@
 --logicalFilePath: changeLog16Tables.sql
 
 
---changeset kmschoep:tables16a
+--changeset kmschoep:tables16a1
 create table temp_enh_reach
 (
   enh_reach_id     number(10),
@@ -34,7 +34,7 @@ noparallel
 monitoring;
 --rollback drop table temp_enh_reach;
 
---changeset kmschoep:tables16b
+--changeset kmschoep:tables16b2
 create table temp_enh_reach_attrib
 (
   enh_reach_id     number(10)           ,
@@ -60,7 +60,7 @@ noparallel
 monitoring;
 --rollback drop table temp_enh_reach_attrib;
 
---changeset kmschoep:add_col_enh_reach
+--changeset kmschoep:add_col_enh_reach2
 alter table enh_reach add (mrb_no number);
 --rollback select 'cannot drop col from compressed table' from dual;
 
