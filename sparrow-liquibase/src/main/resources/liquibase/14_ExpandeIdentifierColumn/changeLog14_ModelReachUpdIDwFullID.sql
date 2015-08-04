@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+--logicalFilePath: changeLog14_ModelReachUpdIDwFullID.sql
+
 --changeset kmschoep:updateIDENTIFIERwithFULL_IDENTIFIER
 UPDATE SPARROW_DSS.MODEL_REACH
 SET IDENTIFIER = TO_NUMBER(FULL_IDENTIFIER)

@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+--logicalFilePath: changeLog13AddPartition.sql
+
 --changeset lmurphy:addpartitiona
 alter table model_reach add partition sparrow_model_25 VALUES (25)
 --rollback alter table model_reach drop partition sparrow_model_25;

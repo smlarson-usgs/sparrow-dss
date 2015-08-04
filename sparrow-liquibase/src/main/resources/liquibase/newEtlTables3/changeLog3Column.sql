@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+
+--logicalFilePath: changeLog3Column.sql
+
 --changeset lmurphy:column3a
 ALTER TABLE MODEL_CALIB_SITES
 RENAME COLUMN SPARROW_MODEL_ID TO SPARROW_MODEL_ID_PARTITION;

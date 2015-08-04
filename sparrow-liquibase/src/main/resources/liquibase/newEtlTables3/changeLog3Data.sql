@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
  
+--logicalFilePath: changeLog3Data.sql
+
 --changeset drsteini:data3a
 --(mrb, constituent, number_of_sources, iteration, sparrow_model_id, enh_network_id)
 insert into etl_parameters values ('National','TN', 10, 0, 22, 22);

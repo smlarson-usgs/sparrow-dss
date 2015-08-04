@@ -1,6 +1,8 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
+   
+--logicalFilePath: changeLog1Indexes.sql
 
 --changeset drsteini:indexs1a
 insert into user_sdo_geom_metadata

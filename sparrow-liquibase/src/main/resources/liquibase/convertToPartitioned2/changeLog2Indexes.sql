@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+  
+--logicalFilePath: changeLog2Indexes.sql
+
 --changeset drsteini:indexs2a
 create index calib_site_geom_i on model_calib_sites(site_geom) indextype is mdsys.spatial_index;
 --rollback drop index calib_site_geom_i;

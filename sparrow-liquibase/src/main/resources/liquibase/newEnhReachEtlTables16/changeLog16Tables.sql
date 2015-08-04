@@ -2,6 +2,10 @@
 
 --This is for the stream_network schema
  
+       
+--logicalFilePath: changeLog16Tables.sql
+
+
 --changeset kmschoep:tables16a
 create table temp_enh_reach
 (

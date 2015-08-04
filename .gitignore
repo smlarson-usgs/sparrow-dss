@@ -20,3 +20,5 @@
 .settings
 sparrow-wps/target/
 *.pyc
+/sparrow-web-ui/src/main/webapp/META-INF/context.xml
+/sparrow-service/nb-configuration.xml

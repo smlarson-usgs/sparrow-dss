@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+--logicalFilePath: changeLog12AddColumnTempSourceSparrowDss.sql
+
 --changeset lmurphy:addcolumnsa
 ALTER TABLE TEMP_SRC ADD (SRC16  NUMBER);
 --rollback alter table temp_src drop column src16;

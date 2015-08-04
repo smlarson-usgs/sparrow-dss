@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+  
+--logicalFilePath: changeLog1Functions.sql
+
 --changeset drsteini:functions1a endDelimiter:/ splitStatements:false
 CREATE OR REPLACE function SPARROW_DSS.get_median_point(
 	geom SDO_GEOMETRY

@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+        
+--logicalFilePath: changeLog1Views.sql
+
 --changeset drsteini:views1a
 CREATE OR REPLACE FORCE VIEW SPARROW_DSS.MODEL_ATTRIB_VW
 (

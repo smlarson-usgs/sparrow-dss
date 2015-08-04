@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+     
+--logicalFilePath: changeLog1Tables.sql
+
 --changeset drsteini:tables1a
 create table model_calib_sites
 (model_reach_id					number										not null

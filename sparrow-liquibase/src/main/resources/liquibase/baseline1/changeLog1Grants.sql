@@ -1,7 +1,9 @@
 --liquibase formatted sql
 
 --This is for the sparrow_dss schema
- 
+   
+--logicalFilePath: changeLog1Grants.sql
+
 --changeset drsteini:grants1a
 grant select on model_calib_sites to sparrow_dss_ro;
 --rollback revoke select on model_calib_sites from sparrow_dss_ro;

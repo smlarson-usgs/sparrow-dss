@@ -82,7 +82,7 @@
 				<module>sparrow-business-integration-tests</module>
 				<module>sparrow-wps</module>
 				<module>sparrow-geoserver</module>
-                <module>sparrow-sld</module>
+				<module>sparrow-sld</module>
 				<module>sparrow-jmeter</module>
 			</modules>
 		</profile>
@@ -117,7 +117,7 @@
 				<module>sparrow-business-integration-tests</module>
 				<module>sparrow-wps</module>
 				<module>sparrow-geoserver</module>
-                <module>sparrow-sld</module>
+				<module>sparrow-sld</module>
 				<module>sparrow-jmeter</module>
 			</modules>
 		</profile>
@@ -172,6 +172,7 @@
 				<module>sparrow-shared-test</module>
 				<module>sparrow-business-integration-tests</module>
 				<module>sparrow-jmeter</module>
+				<module>sparrow-liquibase</module>
 			</modules>
 		</profile>
 		
@@ -194,7 +195,7 @@
 	<properties>
 		<war.dir>src/main/webapp</war.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<cargo.containerId>tomcat6x</cargo.containerId>
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
@@ -207,20 +208,20 @@
 		<gs.version>2.4.5</gs.version>
 		<gt.version>10.5</gt.version>
 
-        <!-- Sonar -->
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
-        <sonar.language>java</sonar.language>
+		<!-- Sonar -->
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
+		<sonar.language>java</sonar.language>
 	</properties>
 	
 	<scm>
 		<connection>scm:git:https://github.com/USGS-CIDA/sparrow-dss.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/USGS-CIDA/sparrow-dss.git</developerConnection>
 		<url>https://github.com/USGS-CIDA/sparrow-dss</url>
-	  <tag>sparrow-parent-2.0.0-RC1</tag>
-  </scm>
+		<tag>sparrow-parent-2.0.0-RC1</tag>
+	</scm>
 	
 	<distributionManagement>
 		<repository>
@@ -352,11 +353,11 @@
 						<argLine>-Xmx1024m</argLine>
 					</configuration>
 				</plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.0.201403182114</version>
-                </plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.7.0.201403182114</version>
+				</plugin>
 				<plugin>
 					<groupId>net.sf.alchim</groupId>
 					<artifactId>yuicompressor-maven-plugin</artifactId>
@@ -364,29 +365,29 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pre-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>pre-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
-    <dependencyManagement>
+	<dependencyManagement>
 		<dependencies>
 			
 			<!-- Geoserver related -->
@@ -658,17 +659,17 @@
 			</dependency>
             
 			<!-- IDE Integration -->
-            <dependency>
-                <groupId>org.jacoco</groupId>
-                <artifactId>org.jacoco.agent</artifactId>
-                <classifier>runtime</classifier>
-                <version>0.7.0.201403182114</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jacoco</groupId>
+				<artifactId>org.jacoco.agent</artifactId>
+				<classifier>runtime</classifier>
+				<version>0.7.0.201403182114</version>
+				<scope>test</scope>
+			</dependency>
             
 		</dependencies>
 	</dependencyManagement>
-  <modules>
-    <module>sparrow-service-utils</module>
-  </modules>
+	<modules>
+		<module>sparrow-service-utils</module>
+	</modules>
 </project>

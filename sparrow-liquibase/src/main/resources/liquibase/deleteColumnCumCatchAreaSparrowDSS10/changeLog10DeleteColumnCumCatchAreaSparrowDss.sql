@@ -2,6 +2,8 @@
 
 --This is for the sparrow_dss schema
 
+    
+--logicalFilePath: changeLog10DeleteColumnCumCatchAreaSparrowDss.sql
 
 
 --changeset lmurphy:deletecolumna
