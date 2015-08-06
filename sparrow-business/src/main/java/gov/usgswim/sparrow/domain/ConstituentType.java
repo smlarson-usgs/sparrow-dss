@@ -14,7 +14,7 @@ public enum ConstituentType implements NamedEnum<ConstituentType> {
 	TOTAL_PHOSPHORUS("Phosphorus", null, new BigDecimal(".01")),
 	TOTAL_DISSOLVED_SOLIDS("Total Dissolved Solids", null, new BigDecimal("10")),
 	SUSPENDED_SEDIMENT("Suspended Sediment", null, new BigDecimal(".001")),
-	ORGANIC_CARBON("Organic Carbon", null, null);
+	ORGANIC_CARBON("Organic Carbon", null, new BigDecimal(".01"));
 	
 
 
