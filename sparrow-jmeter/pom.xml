@@ -109,7 +109,7 @@
 			<plugin>
 				<groupId>com.lazerycode.jmeter</groupId>
 				<artifactId>jmeter-maven-plugin</artifactId>
-				<version>1.10.0</version>
+				<version>1.10.1</version>
 				<executions>
 					<execution>
 						<id>jmeter-tests</id>
@@ -152,9 +152,6 @@
 								<GeoserverPort>${GeoserverPort}</GeoserverPort>
 								<GeoserverContextPath>${GeoserverContextPath}</GeoserverContextPath>
 								<MaxNumberOfModelsToRun>${MaxNumberOfModelsToRun}</MaxNumberOfModelsToRun>
-								<MapCatch>${MapCatch}</MapCatch>
-								<MapReach>${MapReach}</MapReach>
-								<RandomizeContexts>${RandomizeContexts}</RandomizeContexts>
 								<GeonetworkHost>${GeonetworkHost}</GeonetworkHost>
 								<GeonetworkPort>${GeonetworkPort}</GeonetworkPort>
 								<GeonetworkContextPath>${GeonetworkContextPath}</GeonetworkContextPath>
@@ -164,33 +161,6 @@
 					</execution>
 				</executions>
 			</plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
-                <version>1.0-beta-3</version>
-                <executions>
-                    <execution>
-                        <phase>${run-in-phase&gt;}</phase>
-                        <goals>
-                            <goal>transform</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <transformationSets>
-                        <transformationSet>
-                            <dir>${project.build.directory}/jmeter-reports</dir>
-                            <stylesheet>extras/jmeter-results-detail-report_21.xsl</stylesheet>
-                            <outputDir>${project.build.directory}/site/jmeter-results</outputDir>
-                            <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                                    <targetExtension>html</targetExtension>
-                                </fileMapper>
-                            </fileMappers>
-                        </transformationSet>
-                    </transformationSets>
-                </configuration>
-            </plugin>
 		</plugins>
 	</build>
 </project>

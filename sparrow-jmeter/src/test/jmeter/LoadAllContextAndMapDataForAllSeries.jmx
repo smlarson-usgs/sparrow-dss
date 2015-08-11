@@ -12,7 +12,7 @@
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
     </TestPlan>
     <hashTree>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Dev Server Configuration Variables" enabled="false">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Dev Server Configuration Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
@@ -68,19 +68,19 @@
           </elementProp>
           <elementProp name="MapCatch" elementType="Argument">
             <stringProp name="Argument.name">MapCatch</stringProp>
-            <stringProp name="Argument.value">${__P(MapCatch, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapCatch, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, catchments are mapped.  Otherwise, reahes are mapped.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="MapReach" elementType="Argument">
             <stringProp name="Argument.name">MapReach</stringProp>
-            <stringProp name="Argument.value">${__P(MapReach, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapReach, false)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, reaches are mapped.  Otherwise, reahes are mapped.</stringProp>
           </elementProp>
           <elementProp name="MapStaticLayers" elementType="Argument">
             <stringProp name="Argument.name">MapStaticLayers</stringProp>
-            <stringProp name="Argument.value">${__P(MapStaticLayers, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapStaticLayers, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, the reference only layers are requested, such as reach overlay, calibration sites and catchment overlay.  False by default.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -118,7 +118,7 @@
         <stringProp name="TestPlan.comments">How many users and how many of each map each user requests.</stringProp>
       </Arguments>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Prod Server Configuration Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Prod Server Configuration Variables" enabled="false">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
@@ -174,19 +174,19 @@
           </elementProp>
           <elementProp name="MapCatch" elementType="Argument">
             <stringProp name="Argument.name">MapCatch</stringProp>
-            <stringProp name="Argument.value">${__P(MapCatch, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapCatch, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, catchments are mapped.  Otherwise, reahes are mapped.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="MapReach" elementType="Argument">
             <stringProp name="Argument.name">MapReach</stringProp>
-            <stringProp name="Argument.value">${__P(MapReach, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapReach, false)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, reaches are mapped.  Otherwise, reahes are mapped.</stringProp>
           </elementProp>
           <elementProp name="MapStaticLayers" elementType="Argument">
             <stringProp name="Argument.name">MapStaticLayers</stringProp>
-            <stringProp name="Argument.value">${__P(MapStaticLayers, true)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapStaticLayers, false)}</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, the reference only layers are requested, such as reach overlay, calibration sites and catchment overlay.  False by default.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
