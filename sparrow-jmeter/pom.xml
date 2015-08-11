@@ -13,22 +13,6 @@
 	
 	<name>Sparrow JMeter</name>
 
-<!--	<repositories>
-		<repository>
-			<id>nexus</id>
-			<name>CIDA Nexus</name>
-			<url>http://internal.cida.usgs.gov/maven/content/groups/public/</url>
-		</repository>
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-	</repositories>-->
-
 	<pluginRepositories>
        <pluginRepository>
             <id>Maven JMeter Plugin</id>
@@ -64,16 +48,16 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>LoadAllContextAndMapData</id>
+			<id>LoadAllContextsForAllSeries</id>
 			<activation>
 				<property>
 					<name>jmeter-test-name</name>
-					<value>LoadAllContextAndMapData</value>
+					<value>LoadAllContextsForAllSeries</value>
 				</property>
 			</activation>
 			<properties>
 				<run-in-phase>verify</run-in-phase>
-				<jMeterTestFile>LoadAllContextAndMapData.jmx</jMeterTestFile>
+				<jMeterTestFile>LoadAllContextsForAllSeries.jmx</jMeterTestFile>
 			</properties>
 		</profile>
 		<profile>
@@ -109,7 +93,7 @@
 			<plugin>
 				<groupId>com.lazerycode.jmeter</groupId>
 				<artifactId>jmeter-maven-plugin</artifactId>
-				<version>1.10.0</version>
+				<version>1.10.1</version>
 				<executions>
 					<execution>
 						<id>jmeter-tests</id>
@@ -152,9 +136,6 @@
 								<GeoserverPort>${GeoserverPort}</GeoserverPort>
 								<GeoserverContextPath>${GeoserverContextPath}</GeoserverContextPath>
 								<MaxNumberOfModelsToRun>${MaxNumberOfModelsToRun}</MaxNumberOfModelsToRun>
-								<MapCatch>${MapCatch}</MapCatch>
-								<MapReach>${MapReach}</MapReach>
-								<RandomizeContexts>${RandomizeContexts}</RandomizeContexts>
 								<GeonetworkHost>${GeonetworkHost}</GeonetworkHost>
 								<GeonetworkPort>${GeonetworkPort}</GeonetworkPort>
 								<GeonetworkContextPath>${GeonetworkContextPath}</GeonetworkContextPath>
@@ -164,33 +145,6 @@
 					</execution>
 				</executions>
 			</plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
-                <version>1.0-beta-3</version>
-                <executions>
-                    <execution>
-                        <phase>${run-in-phase&gt;}</phase>
-                        <goals>
-                            <goal>transform</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <transformationSets>
-                        <transformationSet>
-                            <dir>${project.build.directory}/jmeter-reports</dir>
-                            <stylesheet>extras/jmeter-results-detail-report_21.xsl</stylesheet>
-                            <outputDir>${project.build.directory}/site/jmeter-results</outputDir>
-                            <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                                    <targetExtension>html</targetExtension>
-                                </fileMapper>
-                            </fileMappers>
-                        </transformationSet>
-                    </transformationSets>
-                </configuration>
-            </plugin>
 		</plugins>
 	</build>
 </project>
