@@ -23,7 +23,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sparrow-sld</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>gov.usgs.cida.geoserver</groupId>
 			<artifactId>geoserver</artifactId>
@@ -39,6 +39,16 @@
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>querylayer</artifactId>
 			<version>${gs.version}</version>
+		 <exclusions>
+		  <exclusion>
+		   <groupId>org.geotools</groupId>
+		   <artifactId>gt-main</artifactId>
+		  </exclusion>
+		  <exclusion>
+		   <groupId>org.geotools</groupId>
+		   <artifactId>gt-api</artifactId>
+		  </exclusion>
+		 </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>gov.usgs.cida.glri</groupId>
