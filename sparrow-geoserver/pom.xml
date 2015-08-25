@@ -41,12 +41,8 @@
 			<version>${gs.version}</version>
 		 <exclusions>
 		  <exclusion>
-		   <groupId>org.geotools</groupId>
-		   <artifactId>gt-main</artifactId>
-		  </exclusion>
-		  <exclusion>
-		   <groupId>org.geotools</groupId>
-		   <artifactId>gt-api</artifactId>
+		   <groupId>org.geoserver</groupId>
+		   <artifactId>main</artifactId>
 		  </exclusion>
 		 </exclusions>
 		</dependency>
