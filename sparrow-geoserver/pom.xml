@@ -36,6 +36,11 @@
 			<version>${gs.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>querylayer</artifactId>
+			<version>${gs.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>gov.usgs.cida.glri</groupId>
 			<artifactId>multi-dbf-datastore</artifactId>
 		</dependency>
