@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -48,7 +49,7 @@ public class SmartXMLPropertiesTest {
 	};
 
 	// Complete list of list keys for the document
-	static final String [] listKeySet = {"friends", "eats"};
+	static final String [] listKeySet = {"eats", "friends"};
 
 
 	static String TEST_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -149,6 +150,7 @@ public class SmartXMLPropertiesTest {
 	public void testListKeySet() {
 		Set<String> listKeys = props.listKeySet();
 		String[] retrievedKeys = listKeys.toArray(new String[0]);
+		Arrays.sort(retrievedKeys);
 		assertArrayEquals(listKeySet, retrievedKeys);
 	}
 
