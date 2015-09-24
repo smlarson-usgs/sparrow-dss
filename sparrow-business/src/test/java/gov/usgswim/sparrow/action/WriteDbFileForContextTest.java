@@ -3,7 +3,9 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 import java.io.IOException;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -11,6 +13,11 @@ import org.junit.Test;
  * @author eeverman
  */
 public class WriteDbFileForContextTest {
+	
+	@Before
+	public void before() {
+		SharedApplication.getInstance().getConfiguration().remove("data-export-directory");
+	}
 	
 	@Test
 	public void testGetDefaultDataDirectoryWithoutSysprops() throws IOException {
