@@ -197,8 +197,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<cargo.containerId>tomcat6x</cargo.containerId>
-		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
-		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
+		<cida.maven.url>http://cida.usgs.gov/maven</cida.maven.url>
 		<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<buildTime>${maven.build.timestamp}</buildTime>
