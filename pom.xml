@@ -198,6 +198,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<cargo.containerId>tomcat6x</cargo.containerId>
 		<cida.maven.url>http://cida.usgs.gov/maven</cida.maven.url>
+		<cida.maven.url.internal>http://internal.cida.usgs.gov/maven</cida.maven.url.internal>
 		<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<buildTime>${maven.build.timestamp}</buildTime>
@@ -226,12 +227,12 @@
 		<repository>
 			<id>cida-sparrow-dss-releases</id>
 			<name>CIDA Sparrow DSS Releases</name>
-			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-releases</url>
+			<url>${cida.maven.url.internal}/content/repositories/cida-sparrow-dss-releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>cida-sparrow-dss-snapshots</id>
 			<name>CIDA Sparrow DSS Snapshots</name>
-			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-snapshots</url>
+			<url>${cida.maven.url.internal}/content/repositories/cida-sparrow-dss-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 	
@@ -257,7 +258,7 @@
 		<repository>
 			<id>cida-public</id>
 			<name>CIDA Public Nexus</name>
-			<url>http://cida.usgs.gov/maven/cida-public/</url>
+			<url>${cida.maven.url}/cida-public/</url>
 		</repository>
 		<repository>
 			<id>boundless</id>
