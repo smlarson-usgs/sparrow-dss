@@ -238,10 +238,9 @@
 	
 	<repositories>
 		<repository>
-			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
-			<id>cida-releases</id>
-			<layout>default</layout>
-			<name>Cida Releases - Release Shared Libraries</name>
+			<id>cida-public</id>
+			<name>CIDA Public Nexus</name>
+			<url>${cida.maven.url}/cida-public</url>
 		</repository>
 		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
@@ -254,11 +253,6 @@
 		<repository>
 			<id>cida-opengeo</id>
 			<url>${cida.maven.url}/content/repositories/opengeo/</url>
-		</repository>
-		<repository>
-			<id>cida-public</id>
-			<name>CIDA Public Nexus</name>
-			<url>${cida.maven.url}/cida-public/</url>
 		</repository>
 		<repository>
 			<id>boundless</id>
