@@ -1,16 +1,19 @@
 package gov.usgswim.sparrow;
 
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
-import java.util.HashSet;
-import java.util.Set;
-
 import gov.usgs.cida.proxy.ProxyServlet;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 
 public class SparrowProxyServlet extends ProxyServlet {
+	protected static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SparrowProxyServlet.class);
 	private HashSet<String> ignoredHeaderNames;
 	
 	public static final String HTTP_SET_COOKIE_NAME = "set-cookie";
@@ -41,7 +44,7 @@ public class SparrowProxyServlet extends ProxyServlet {
 	@Override
 	protected DynamicReadOnlyProperties initializeProperties(ServletConfig config) {
 		Map<String, String> servletParamMap = readServletInitParams(config);
-		Map<String, String> contextParamMap = new HashMap();
+		Map<String, String> contextParamMap = new HashMap<>();
 		
 		//Popuplate the context params
 		Enumeration contextParams = config.getServletContext().getInitParameterNames();
@@ -57,7 +60,11 @@ public class SparrowProxyServlet extends ProxyServlet {
 		
 		// DynamicReadOnlyProperties is used to perform any needed dynamic property substitution of ${} with nesting
 		DynamicReadOnlyProperties props = new DynamicReadOnlyProperties(contextParamMap);
-		props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+		try {
+			props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+		} catch (NamingException ex) {
+			log.error("Could not add JNDI contexts. This may cause the application to not function correctly", ex);
+		}
 		return props;
 	}
 
