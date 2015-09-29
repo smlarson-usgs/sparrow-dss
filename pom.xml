@@ -240,7 +240,7 @@
 		<repository>
 			<id>cida-public</id>
 			<name>CIDA Public Nexus</name>
-			<url>https://cida.usgs.gov/maven/cida-public</url>
+			<url>${cida.maven.url}/cida-public</url>
 		</repository>
 		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
