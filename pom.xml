@@ -238,6 +238,16 @@
 	
 	<repositories>
 		<repository>
+			<url>${cida.maven.url}/maven/cida-public-snapshots/</url>
+			<id>cida-public-snapshots</id>
+			<name>Cida Snapshots</name>
+		</repository>
+		<repository>
+			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
+			<id>cida-public-releases</id>
+			<name>Cida Releases - Release Shared Libraries</name>
+		</repository>
+		<repository>
 			<id>cida-public</id>
 			<name>CIDA Public Nexus</name>
 			<url>${cida.maven.url}/cida-public</url>
