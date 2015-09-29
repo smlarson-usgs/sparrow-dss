@@ -373,7 +373,7 @@ public class GeoNetworkXSLTProxy extends ProxyServlet {
 		ByteArrayOutputStream traceOut = new ByteArrayOutputStream();
 		
 		try {
-			byte[] buf = new byte[BLKSIZ];
+			byte[] buf = new byte[BLOCK_SIZE];
 			int size;
 		
 			while ((size = src.read(buf)) > -1) {

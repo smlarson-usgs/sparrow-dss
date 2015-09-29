@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>generic_proxy</artifactId>
-			<version>1.1.8</version>
+			<version>1.2.0</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
@@ -92,10 +92,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>3.3</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
@@ -287,17 +287,6 @@
 							</execution>
 						</executions>
 					</plugin>
-<!--					<plugin>
-						<groupId>net.sf.alchim</groupId>
-						<artifactId>yuicompressor-maven-plugin</artifactId>
-						<configuration>
-							<insertNewLine>true</insertNewLine>
-							<gzip>true</gzip>
-							<nomunge>true</nomunge>
-							<statistics>true</statistics>
-							<failOnWarning>true</failOnWarning>
-						</configuration>
-					</plugin>-->
 					<plugin>
 						<groupId>gov.usgs.cida</groupId>
 						<artifactId>auto-minify-plugin</artifactId>
