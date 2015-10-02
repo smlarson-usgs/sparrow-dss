@@ -105,7 +105,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 			this.prunedWorkspaces = envPrunedWorkspaces.split(",");
 		}
 
-		if (this.prunedWorkspaces.length != 0) {
+		if (null != this.prunedWorkspaces && this.prunedWorkspaces.length != 0) {
 			this.sweeperThread = new Thread(new SparrowSweeper(this.catalog, this.maxAge, this.prunedWorkspaces, this.runEveryMs), "sweeper-thread");
 			this.sweeperThread.start();
 		} else {

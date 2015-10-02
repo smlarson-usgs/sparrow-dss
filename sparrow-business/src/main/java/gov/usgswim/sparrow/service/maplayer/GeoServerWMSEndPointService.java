@@ -1,26 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.usgswim.sparrow.service.maplayer;
 
 import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.XML;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
-import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
-import gov.usgswim.sparrow.action.CreateGeoserverLayer;
-import gov.usgswim.sparrow.action.WriteDbfFileForContext;
-import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.SharedApplication;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

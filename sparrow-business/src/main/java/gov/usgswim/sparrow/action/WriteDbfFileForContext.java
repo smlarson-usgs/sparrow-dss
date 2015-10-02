@@ -45,21 +45,21 @@ public class WriteDbfFileForContext extends Action<File> {
 		this.context = context;
 	}
     
-         protected WriteDbfFileForContext() {
-             // Created for testing
-         }
+	protected WriteDbfFileForContext() {
+		// Created for testing
+	}
 
 	@Override
 	protected void initFields() throws Exception {
 		File dataDir = getDataDirectory();
                     
-                    if (!dataDir.exists()) {
-                        Files.createDirectories(dataDir.toPath());
-                    }
+		if (!dataDir.exists()) {
+			Files.createDirectories(dataDir.toPath());
+		}
         
 		dataColumn = context.getDataColumn().getColumnData();
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
-		outputFile = new File(dataDir, NamingConventions.convertContextIdToXMLSafeName(context.getModelID().intValue(), context.getId()) + ".dbf");
+		outputFile = getDbfFile();
 		outputFile.createNewFile();
 		
 		DataSeriesType type = context.getAnalysis().getDataSeries();
@@ -126,6 +126,20 @@ public class WriteDbfFileForContext extends Action<File> {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Provides a file pointer to the DBF file on disk. 
+	 * 
+	 * The DBF file may or may not exist. Callers of this function should use 
+	 * File object's exist() method to test whether it does. This function is used
+	 * primarily to allow callers to decide whether to write a new DBF file or 
+	 * skip 
+	 * 
+	 * @return a File pointer to the location of the DBF file on disk
+	 */
+	public File getDbfFile() {
+		return new File(getDataDirectory(), NamingConventions.convertContextIdToXMLSafeName(context.getModelID().intValue(), context.getId()) + ".dbf");
 	}
 
 }
