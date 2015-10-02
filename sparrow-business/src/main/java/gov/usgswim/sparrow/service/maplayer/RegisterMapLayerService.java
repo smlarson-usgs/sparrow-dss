@@ -1,20 +1,17 @@
 package gov.usgswim.sparrow.service.maplayer;
 
 import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.XML;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
 import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
-import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.OK;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.action.CreateGeoserverLayer;
 import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
-import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
-
 import java.io.IOException;
 import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,9 +55,12 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 				throw new Exception("The context for the id '" + contextId + "' cannot be found");
 			}
 			
-			//Write the data column of the context to disk
+			//Write the data column of the context to disk if it does not yet exist
 			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context);
-			File dbfFile = writeDbfFile.run();
+			File dbfFile = writeDbfFile.getDbfFile();
+			if (!dbfFile.exists()) {
+				dbfFile = writeDbfFile.run();
+			}
 			
 			//Register the data plus the shapefile w/ GeoServer as a layer
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile, projectedSrs);
