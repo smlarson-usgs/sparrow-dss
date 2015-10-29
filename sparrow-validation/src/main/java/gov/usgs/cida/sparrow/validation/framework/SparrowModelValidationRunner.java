@@ -125,6 +125,7 @@ public class SparrowModelValidationRunner {
 				System.out.println("Run canceled.");
 			}
 		}
+		
 		if (continueRun) continueRun = runner.initSystemConfig();		//Logging system is now configured (which log4j file to load)
 		if (continueRun) continueRun = runner.initLoggingConfig();		//Now do test configuraiton of logging
 		
@@ -466,31 +467,30 @@ public class SparrowModelValidationRunner {
 	
 	protected boolean initSystemConfig() {
 		
-		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
-		System.setProperty(LifecycleListener.APP_MODE_KEY, "validation");
+		SharedApplication.getInstance().getConfiguration().put(LifecycleListener.APP_ENV_KEY, "local");
+		SharedApplication.getInstance().getConfiguration().put(LifecycleListener.APP_MODE_KEY, "validation");
 		
 		
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().put(
 				"gov.usgswim.sparrow.cachefactory.PredictDataFactory.ACTION_IMPLEMENTATION_CLASS",
 				"gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile");
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().put(
 				"gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile.FETCH_FROM_DB_IF_NO_LOCAL_FILE",
 				"true");
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().put(
 				"gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile.DATA_DIRECTORY",
 				cacheDirectory);
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().put(
 				"gov.usgswim.sparrow.action.PredictionContextHandler.DISABLE_DB_ACCESS",
 				"true");
 
 				
 		//Tell JNDI config to not expect JNDI props
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().put(
 				"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT",
 				"true");
 		
-		System.setProperty(LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES, "true");
-		
+		SharedApplication.getInstance().getConfiguration().put(LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES, "true");
 		
 		lifecycle.contextInitialized(null, true);
 		
