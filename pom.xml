@@ -244,15 +244,15 @@
 		</repository>
 		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
-			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-thirdparty</url>
+			<url>${cida.maven.url.internal}/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</repository>
 		<repository>
 			<id>cida-thirdparty</id>
-			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+			<url>${cida.maven.url.internal}/content/repositories/cida-thirdparty</url>
 		</repository>
 		<repository>
 			<id>cida-opengeo</id>
-			<url>${cida.maven.url}/content/repositories/opengeo/</url>
+			<url>${cida.maven.url.internal}/content/repositories/opengeo/</url>
 		</repository>
 		<repository>
 			<id>boundless</id>
@@ -275,11 +275,11 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>cida-sparrow-dss-thirdparty</id>
-			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-thirdparty</url>
+			<url>${cida.maven.url.internal}/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>cida-thirdparty</id>
-			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+			<url>${cida.maven.url.internal}/content/repositories/cida-thirdparty</url>
 		</pluginRepository>
 	</pluginRepositories>
 
