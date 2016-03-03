@@ -247,8 +247,12 @@
 			<url>${cida.maven.url.internal}/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</repository>
 		<repository>
-			<id>cida-thirdparty</id>
+			<id>cida-internal-thirdparty</id>
 			<url>${cida.maven.url.internal}/content/repositories/cida-thirdparty</url>
+		</repository>
+		<repository>
+			<id>cida-internal-releases</id>
+			<url>${cida.maven.url.internal}/content/repositories/cida-releases</url>
 		</repository>
 		<repository>
 			<id>cida-opengeo</id>
@@ -439,7 +443,7 @@
 			<dependency>
 				<groupId>gov.usgs.cida.glri</groupId>
 				<artifactId>multi-dbf-datastore</artifactId>
-				<version>1.1.0.1-SNAPSHOT</version>
+				<version>1.1.0.0</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>gt-shapefile</artifactId>
