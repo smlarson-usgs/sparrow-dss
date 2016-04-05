@@ -157,9 +157,9 @@ public class CreateViewForLayer {
         int twoDigits = context.getModelID().intValue(); //our models are one digit short of long
         LOGGER.info("The two digit ModelId is:" + twoDigits);
             
-        String viewLayerName = "catchment-" + getDbfNameWithModelNbr(context);
-        String rNetwork = MODEL_REGION.from(twoDigits).riverNet + "_catch"; //catch, flow or huc8 options 
-        String regGeomType = "net.geom::geometry(MultiPolygon, 4326) AS geom "; //catch
+        String viewLayerName = null;
+        String rNetwork = null;
+        String regGeomType = null;
         
         if (isFlow)
         {
@@ -180,10 +180,10 @@ public class CreateViewForLayer {
         
         String dbfTableName = getDbfTableName(getDbfNameWithModelNbr(context)); //model_52N12312323
         LOGGER.info("The dbf table that will join: " + dbfTableName);
+        LOGGER.info("___________________________________________");
         
         String sql = getViewSql(viewLayerName, dbfTableName, rNetwork, regGeomType);
         LOGGER.info("CreateView sql:" + sql);
-        LOGGER.info("___________________________________________");
         
         
         if (connection == null)
@@ -215,7 +215,6 @@ public class CreateViewForLayer {
         sql.append("net.gid, ");
         sql.append("net.source, ");
         sql.append(regGeomType);
-      //  sql.append("net.geom::geometry(MultiPolygon, 4326) AS geom ");  // <-- line will need to change for flows
         sql.append("FROM ");
         sql.append(PostgresDAO.getSCHEMA_NAME_SPARROW_OVERLAY());
         sql.append(".");
@@ -224,7 +223,7 @@ public class CreateViewForLayer {
         sql.append(PostgresDAO.getSCHEMA_NAME_SPARROW_OVERLAY());
         sql.append(".");
         sql.append(riverNetworkTableName);  //exp national_e2rf1_flow
-        sql.append(" net WHERE dbf.identifier = net.identifier; ");  //does this need a commit?
+        sql.append(" net WHERE dbf.identifier = net.identifier; ");  
 
         String result = sql.toString();
         LOGGER.info("Attempting to create view of dbf with shape file : " + result);
