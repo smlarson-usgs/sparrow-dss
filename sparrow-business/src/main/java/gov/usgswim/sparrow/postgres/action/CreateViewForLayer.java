@@ -63,6 +63,9 @@ public class CreateViewForLayer {
         if (dbfFile.exists())
         {
             result = dbfFile.canRead();
+            dbfFile.setReadable(true);
+            dbfFile.setWritable(true);
+            dbfFile.setExecutable(true);
         }
         
         return result;
@@ -72,7 +75,7 @@ public class CreateViewForLayer {
      * @param mydb null unless you are testing
      * // example: ("/bin/sh", "-n", "-c", "shp2pgsql dbfName.dbf | psql -d mydb -U sparrow_model_output_user"); //will take a List<String> too
      */
-    private String getProcessCommand(PredictionContext context, String mydb)
+    protected String getProcessCommand(PredictionContext context, String mydb)
     {
         if (mydb == null)
          mydb = PostgresDAO.getDB_NAME_MODEL_OUTPUT();
@@ -88,6 +91,7 @@ public class CreateViewForLayer {
         sb.append("\"-n\"");
         sb.append(", ");
         sb.append("\"-c\"");
+          sb.append(", ");
         sb.append(" ");
         sb.append("\"shp2pgsql ");
         sb.append(dbfPath);
