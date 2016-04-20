@@ -1,284 +1,237 @@
 package gov.usgswim.sparrow.postgres.action;
 
-import gov.usgs.cida.sparrow.service.util.NamingConventions;
-import gov.usgswim.sparrow.action.WriteDbfFileForContext;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.domain.PredictionContext;
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * Take a corresponding dbf file and join it to its river region to create a
- * view later exposed in GeoServer as a layer.
+ * Rather than write a dbf file out, this writes a row out to the postgres
+ * model_output table.
  *
  * @author smlarson
  */
-public class CreateViewForLayer {
+public class CreateViewForLayer extends Action<List> {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CreateViewForLayer.class);
-    protected final PostgresDAO pgDao = new PostgresDAO();
-    
-    public CreateViewForLayer() {
-       
-    }
 
-    // uses a process builder to invoke shp2pgsql
+    private int model_nbr;
+    private int identifier;
+    private double value;
+    private int model_output_id;
+    // private Date dateTime;  //sql date? this should be a timestamp #TODO#
+    private HashMap modelOutputValueMap;
+    // private PredictionContext context;
+
     /**
      *
-     * @param dbfFile File that represents the model output
-     * @param context All the state needed to run a prediction
-     * @param mydb null unless you are testing
-     * @throws IOException
+     * @param context
+     * @param map consists of the dbf_identifier as the key and a double as a
+     * value
      */
-    public void createTableFromDbf(File dbfFile, PredictionContext context, String mydb) throws IOException, InterruptedException {
-        // takes the dbf and via a Java process, invokes shp2pgsql which transforms
-        // the dbf into a postgres table, named with the 10 digit hash and the model ID
-        String command = getProcessCommand(context, mydb);
-        LOGGER.info("createTableFromDBF: ProcessBuilder recieved this command: " + command);
-        
-        if(isFileReadable(context))
-        {
-            ProcessBuilder pb = new ProcessBuilder(command);
-            Process p = pb.start();  //throws IOException ...need to add logging
-            int errCode = p.waitFor();
-            LOGGER.info("Any process errors? " + (errCode == 0 ? "No" : "YES"));
-        }
-        else {
-           LOGGER.info("Dbf file with this ID is not readable:" + context.getModelID().toString());
-        }
+    public CreateViewForLayer(PredictionContext context, HashMap map) {
+        init(context, map);
     }
-    
-    //checks the file to make sure its not null and is accessible 
-    private boolean isFileReadable(PredictionContext context)
+
+    private void init(PredictionContext context, HashMap map) //int identifier, double dbfValue)
     {
-        boolean result = false;
-        WriteDbfFileForContext dbfFileWriter = new WriteDbfFileForContext(context);
-        File dbfFile = dbfFileWriter.getDbfFile();
-        LOGGER.info("Dbf file path: " + dbfFile.getPath());
-        
-        if (dbfFile.exists())
-        {
-            result = dbfFile.canRead();
-            dbfFile.setReadable(true);
-            dbfFile.setWritable(true);
-            dbfFile.setExecutable(true);
-        }
-        
-        return result;
+        this.model_nbr = context.getModelID().intValue();  //two digits typically
+        this.modelOutputValueMap = map; //map key is an integer 81017, map value is a double 39120.7
+        this.model_output_id = context.getId();  // 776208324  -no prefix, can be negative. Was the dbf ID.
+
     }
+
+    //#TODO# add validate method
     /**
-     * @param context All the state needed to run a prediction
-     * @param mydb null unless you are testing
-     * // example: ("/bin/sh", "-n", "-c", "shp2pgsql dbfName.dbf | psql -d mydb -U sparrow_model_output_user"); //will take a List<String> too
+     * Take the former dbf output and insert it into a Postgres table, 
+     * then create the view by joining to the river network shape file.
+     * Later the view is exposed as a layer in Geoserver.
+     * @return boolean true if Inserted 1 row successfully
+     * @throws java.lang.Exception
      */
-    protected String getProcessCommand(PredictionContext context, String mydb)
-    {
-        if (mydb == null)
-         mydb = PostgresDAO.getDB_NAME_MODEL_OUTPUT();
-        String dbUser = PostgresDAO.getDBUser();
-        String dbHost = PostgresDAO.getDBHost();
-        String dbPort = PostgresDAO.getDBPort();
-        String dbfName = getDbfNameWithModelNbr(context);  //50n776208324 on test context
-        String dbfPath = "/Users/smlarson/sparrow/data/" ;  //for testing without a context lookup
+    @Override
+    public List doAction() throws Exception {
+
+        List result = new ArrayList();
         
-        StringBuilder sb = new StringBuilder(); // add quotes too \"
-        sb.append("\"/bin/sh\"");  
-        sb.append(", ");
-        sb.append("\"-n\"");
-        sb.append(", ");
-        sb.append("\"-c\"");
-          sb.append(", ");
-        sb.append(" ");
-        sb.append("\"shp2pgsql ");
-        sb.append(dbfPath);
-        sb.append(dbfName); // location of dbf file
-        sb.append(".dbf ");
-        sb.append("| psql -d ");
-        sb.append(mydb); 
-        sb.append(" -U ");
-        sb.append(dbUser);
-                sb.append(" -h ");
-        sb.append(dbHost);
-        sb.append(" -p ");
-        sb.append(dbPort);
-        sb.append("\""); 
-          // also psql -d gisdatabase –U username –h hostname –p port -f parcels.sql <will force a prompt for the pwd> -f is filename 
-          // page with the diff options you can pass to shp http://www.bostongis.com/pgsql2shp_shp2pgsql_quickguide.bqg  -u user, -P pwd, -n only import dbf file -T tablespace, -X tablespace for index
-          // -k keep case ??,         
-        return sb.toString();
+        insertModelOutputRow(this.modelOutputValueMap);
+        createViews(); // theres always 2 views created: one for catchment, the other for flows (aka reaches).
+
+        return result; //somthing from the select like the modelregion
+
     }
-    
-    // Typically two views are created for each dbf: catchment and a flow (aka reach)
+
     /**
-     * This method assumed you have already created the dbf table in postgres.
-     * @param context All the state needed to run a prediction
-     * @param connection A Postgres db connection. If null, will lookup from JNDI. For testing purposes.
-     * @return base view name (without the catchment or flow) ie 22n1220785281
-     * @throws java.sql.SQLException
+     *
+     * @return Timestamp a current UTC sql timestamp
      */
-    public String createModelOutputViews(PredictionContext context, Connection connection) throws SQLException {
-        
-        String baseViewName = null;
-        LOGGER.info("createModelOutputViews: The context has this modelId:" + context.getModelID() + " and this ID: " + context.getId());
+    public static Timestamp getUTCNowAsSQLTimestamp() {
 
-        createView(context, connection, false);
-        baseViewName = createView(context, connection, true);
-
-        return baseViewName;
+        Instant now = Instant.now();
+        Timestamp currentTimestamp = Timestamp.from(now);
+        return currentTimestamp;
     }
 
-    // this will give the int part with the modelNbr+P||N prefix too
-    private String getDbfNameWithModelNbr(PredictionContext context)
-    {
-        int modelId = context.getModelID().intValue();
-        int dbfHash = context.getId(); 
+    /**
+     * As the dbf writer would write to a file, this inserts rows into a table.
+     * Parms: $MODEL_NBR$, $IDENTIFIER$, $VALUE$, $MODEL_OUTPUT_ID$,
+     * $LAST_UPDATE$
+     *
+     * @param map
+     * @throws java.lang.Exception
+     */
+    public void insertModelOutputRow(HashMap map) throws Exception {
+        Timestamp now = getUTCNowAsSQLTimestamp(); //2016-04-20 08:26:26.345
         
-        return NamingConventions.convertContextIdToXMLSafeName(modelId, dbfHash); //gets everything but the .dbf 
-    }
-    
-    // this will give the int part with the modelNbr+P||N prefix too
-    private String getDbfTableName(String dbfNameWithModelNbr)
-    {
-        StringBuilder sb= new StringBuilder();
-        sb.append("model_");
-        sb.append(dbfNameWithModelNbr);
+        // for test purposes...hard coded map values
+        Integer keyTest = 10810;
+        Double valueTest = 15083.9;
         
-        return sb.toString(); 
-    }
-    
-    // The view layer name will be exposed in geoserver as the layer name which 
-    // is currently the modelNbr+N or P+dbf9digits. Until the view is
-    // exposed as a layer in the WMS, the concept of catchment or flow must be captured with the name.
-    // flow-22n1220785281 with either flow- or catchment- acting as a prefix to the dbfId.
-    // Later, the flow- will be removed during the pub of the layer to keep with the former naming conventions.
-    private String createView(PredictionContext context, Connection connection, boolean isFlow) throws SQLException {
+        map.put(keyTest, valueTest);
+        map.put(keyTest+2, valueTest+20);
+        map.put(keyTest+4, valueTest+30);
 
-        LOGGER.info("___________________________________________");
-        int twoDigits = context.getModelID().intValue(); //our models are one digit short of long
-        LOGGER.info("The two digit ModelId is:" + twoDigits);
+        //get the values out of the map, each set requires an insert statement
+        Map<String, Object> paramMap = new HashMap<>();// this map is for sql parms
+        paramMap.put("MODEL_NBR", this.model_nbr);
+        paramMap.put("MODEL_OUTPUT_ID", this.model_output_id);
+        paramMap.put("LAST_UPDATE", now); // check to see if this is formated #TODO#
+        
+        Set set = map.keySet();
+        Iterator it = set.iterator();
+        
+        while (it.hasNext()){
             
-        String viewLayerName = null;
-        String rNetwork = null;
-        String regGeomType = null;
+        int key = (int)it.next();
+        double value = (double)map.get(key);
         
-        if (isFlow)
-        {
-            regGeomType = "net.geom::geometry(MultiLineString, 4326) AS geom "; //flow geom type MultiLine
-            viewLayerName = "flow-" + getDbfNameWithModelNbr(context);
-            rNetwork = MODEL_REGION.from(twoDigits).riverNet + "_flow";
+        paramMap.put("IDENTIFIER", key);  //iterate thru the map to get the id value
+        paramMap.put("VALUE", value);
+        
+        PreparedStatement insertSqlps = getPostgresPSFromPropertiesFile("InsertModelOutputRow", null, paramMap);
+        LOGGER.info("Postgres insert sql: " + insertSqlps.toString());
+        insertSqlps.executeUpdate();
+        }//close while
+        
+    }
+    
+    //performance enhancement
+    private void performBatchInsert(PreparedStatement sql) throws SQLException{
+        int rowsInserted = 0;
+        try{
+            rowsInserted = sql.executeUpdate();
         }
-        else
-        {
-          viewLayerName = "catchment-" + getDbfNameWithModelNbr(context);
-          rNetwork = MODEL_REGION.from(twoDigits).riverNet + "_catch"; //catch, flow or huc8 options 
-          regGeomType = "net.geom::geometry(MultiPolygon, 4326) AS geom "; //catch  
+        finally{
+            //close the transaction?
+            LOGGER.info("Quantity of rows inserted in model_output: " + rowsInserted);
         }
+        //PreparedStatement insertSqlps = getPostgresPSFromPropertiesFile("InsertModelOutputRow", null, paramMap);
         
-        LOGGER.info("The view layer name is:" + viewLayerName);
-        LOGGER.info("The dbf will join to region: " + rNetwork);
-        LOGGER.info("The dbf view has geomType " + regGeomType);
-        
-        String dbfTableName = getDbfTableName(getDbfNameWithModelNbr(context)); //model_52N12312323
-        LOGGER.info("The dbf table that will join: " + dbfTableName);
-        LOGGER.info("___________________________________________");
-        
-        String sql = getViewSql(viewLayerName, dbfTableName, rNetwork, regGeomType);
-        LOGGER.info("CreateView sql:" + sql);
-        
-        
-        if (connection == null)
-            connection = pgDao.getConnection();  // performs JNDI lookup that requires a container is running etc
-        final PreparedStatement st = connection.prepareStatement(sql);
+//        String query = "INSERT INTO table (id, name, value) VALUES (?, ?, ?)";
+//        PreparedStatement ps = connection.prepareStatement(query);            
+//        for (Record record : records) {
+//            ps.setInt(1, record.id);
+//            ps.setString(2, record.name);
+//            ps.setInt(3, record.value);
+//            ps.addBatch();
+//        }
+//            ps.executeBatch();
+        }
+
+    // will want to use a transaction and insert all at once - many inserts for one dbf (roughly 12,000)
+    // Insert the rows into the model output table. There will be many rows
+    // with the same model_output_id and model
+    public void createViews() throws Exception {
+        List tables = getTableNames(this.model_nbr);
+
+        createView(getCatchViewParams(tables.get(0).toString())); //catcment
+        createView(getFlowViewParams(tables.get(1).toString())); //flow or reach
+
+    }
+    
+    // Parms : VIEW_LAYER_NAME, GEOMTYPE, RIVER_NETWORK_TABLE_NAME, DBF_ID
+    // Build filtering parameters and retrieve the queries from properties
+    private Map getCatchViewParams(String tableName) {
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        String catchGeom = "net.geom ::geometry(MultiPolygon, 4326)";
+
+        paramMap.put("VIEW_LAYER_NAME", "\"catch_" + this.model_output_id + "\"");
+        paramMap.put("GEOMTYPE", catchGeom);
+        paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
+        paramMap.put("DBF_ID", this.model_output_id); //this.model_output_id);
+
+        return paramMap;
+    }
+
+    private Map getFlowViewParams(String tableName) {
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        String flowGeom = "net.geom ::geometry(MultiLineString, 4326)";
+
+        paramMap.put("VIEW_LAYER_NAME", "\"flow_" + this.model_output_id + "\"");
+        paramMap.put("GEOMTYPE", flowGeom);
+        paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName); //tables.get(1));
+        paramMap.put("DBF_ID", this.model_output_id);
+
+        return paramMap;
+    }
+
+    private void createView(Map paramMap) throws Exception {
+        // Note: can not use a prepared statement for DDL queries
+        String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);
+        LOGGER.info("Postgres view created from: " + sql);
+        Statement statement = getPostgresStatement();
+        statement.executeUpdate(getPostgresSqlFromPropertiesFile("CreateView", null, paramMap));
+    }
+
+    /**
+     *
+     * @param modelNbr $MODEL_NBR$ a two digit number
+     * @return a list of table names, one for catch at index 0, the other for
+     * flow
+     */
+    public List getTableNames(int modelNbr) throws Exception {
+        List result = new ArrayList();
+
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("MODEL_NBR", modelNbr);
+        PreparedStatement tableName = getPostgresPSFromPropertiesFile("GetTableNames", null, paramMap);
+        LOGGER.info("GetTableName w/prepared statement: " + tableName.toString());
+        ResultSet rset = null;
 
         try {
-            st.execute();  //this returns a boolean; false if the rs is an update count as expected   st.execute(sql); 
+            rset = tableName.executeQuery();
+            addResultSetForAutoClose(rset);
+
+            while (rset.next()) {
+                result.add(0, rset.getString("catch_table_name"));
+                result.add(1, rset.getString("flow_table_name"));
+            }
+
         } finally {
-            LOGGER.info("Closing connection CreateViewForLayer.createView.");
-            st.close();
+            // rset can be null if there is an sql error. 
+            if (rset != null) {
+                rset.close();
+            }
         }
-
-        return viewLayerName;
-    }
-
-    private String getViewSql(String viewLayerName, String dbfTableName, String riverNetworkTableName, String regGeomType) {
-        StringBuilder sql = new StringBuilder();
-              
-        sql.append("CREATE OR REPLACE VIEW ");
-        sql.append(PostgresDAO.getSCHEMA_NAME_SPARROW_OVERLAY());
-        sql.append(".");
-        sql.append("\"");
-        sql.append(viewLayerName);
-        sql.append("\"");
-        sql.append(" AS ");
-        sql.append("SELECT dbf.identifier AS \"IDENTIFIER\", ");
-        sql.append("dbf.value as \"VALUE\", "); //capitalized to match styles already created
-        sql.append("net.gid, ");
-        sql.append("net.source, ");
-        sql.append(regGeomType);
-        sql.append("FROM ");
-        sql.append(PostgresDAO.getSCHEMA_NAME_SPARROW_OVERLAY());
-        sql.append(".");
-        sql.append(dbfTableName);  //exp model_22n1220785281
-        sql.append(" dbf, ");
-        sql.append(PostgresDAO.getSCHEMA_NAME_SPARROW_OVERLAY());
-        sql.append(".");
-        sql.append(riverNetworkTableName);  //exp national_e2rf1_flow
-        sql.append(" net WHERE dbf.identifier = net.identifier; ");  
-
-        String result = sql.toString();
-        LOGGER.info("Attempting to create view of dbf with shape file : " + result);
-
+        LOGGER.info("Using catch table name: " + result.get(0) + " for model:" + modelNbr);
+        LOGGER.info(" and flow table name: " + result.get(1));
+        // execute the prepared statement for the flow also ...todo
         return result;
     }
-    
-    //22,23,24,25, 30,35,36,37,38,41,42,43,44
-    public enum MODEL_REGION {
-        model22(22, "national_e2rf1"),
-        model23(23, "national_e2rf1"),
-        model24(24, "national_e2rf1"),
-        model25(25, "national_mrb_e2rf1"),
-        model30(30, "national_e2rf1"),
-        model35(35, "mrb05_mrbe2rf1"),
-        model36(36, "mrb05_mrbe2rf1"),
-        model37(37, "marb_mrbe2rf1"),
-        model38(38, "marb_mrbe2rf1"),
-        model41(41, "mrb03_mrbe2rf1"),
-        model42(42, "mrb03_mrbe2rf1"),
-        model43(43, "mrb07_mrbe2rf1"),
-        model44(44, "mrb07_mrbe2rf1"),
-        model49(49, "mrb02_mrbe2rf1"),
-        model50(50, "mrb02_mrbe2rf1"),
-        model51(51, "mrb01_nhd"),
-        model52(52, "mrb01_nhd"),
-        model53(53, "national_e2rf1"),
-        model54(54, "chesa_nhd"),
-        model55(55, "chesa_nhd"),
-        model57(57, "mrb04_mrbe2rf1"),
-        model58(58, "mrb04_mrbe2rf1"),
-        unknown(-1, "unknown");
 
-        private final int value;
-        public final String riverNet;
-
-        private MODEL_REGION(int value, String riverNet) {
-            this.value = value;
-            this.riverNet = riverNet;
-        }
-
-        public static MODEL_REGION from(int modelId) {
-            for (MODEL_REGION model : MODEL_REGION.values()) {
-                if (model.value == modelId) {
-                    return model;
-                }
-
-            }
-            return unknown;
-        }  // reference it like this to get the string back- MODEL_NBR.from(22).name(); 
-
+    @Override
+    public Long getModelId() {
+        return (new Long(model_nbr));
     }
-
 }

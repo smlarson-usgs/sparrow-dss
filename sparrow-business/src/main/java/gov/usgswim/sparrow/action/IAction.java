@@ -52,7 +52,7 @@ public interface IAction<R extends Object> {
 	 * @return
 	 * @throws Exception
 	 */
-	public R run(Connection readOnlyConnection, Connection readWriteConnection) throws Exception;
+	public R run(Connection readOnlyConnection, Connection readWriteConnection, Connection postgresConnection) throws Exception;
 	
 	/**
 	 * Returns the model ID for this operation, if applicable.

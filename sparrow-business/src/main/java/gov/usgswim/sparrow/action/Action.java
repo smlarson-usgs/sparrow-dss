@@ -72,11 +72,17 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	/** A read-write connection that will be closed when the action completes */
 	private Connection rwConn = null;
 
+	/** A read-write connection that will be closed when the action completes */
+	private Connection pgConn = null; //#TODO# need to add close process into transaction
+
 	/** true if the read-only db connection was passed in, thus should not be closed */
 	private boolean externallyOwnedROConn = false;
 
 	/** true if the read-write db connection was passed in, thus should not be closed */
 	private boolean externallyOwnedRWConn = false;
+        
+        /** true if the read-write db connection was passed in, thus should not be closed */
+	private boolean externallyOwnedPostgresConn = false;
 
 	private long startTime;		//Time the action starts
 
@@ -126,7 +132,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	}
 
 	@Override
-	public R run(Connection readOnlyConnection, Connection readWriteConnection)
+	public R run(Connection readOnlyConnection, Connection readWriteConnection, Connection postgresConnection)
 			throws Exception {
 		if (readOnlyConnection != null) {
 			externallyOwnedROConn = true;
@@ -137,7 +143,10 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			externallyOwnedRWConn = true;
 			rwConn = readWriteConnection;
 		}
-
+                if (postgresConnection != null) {
+                    externallyOwnedPostgresConn = true;
+                    pgConn = readWriteConnection;
+                }
 		return run();
 	}
 	
@@ -384,6 +393,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			//Close the connections, if not null
 			if (! externallyOwnedROConn) close(roConn);
 			if (! externallyOwnedRWConn) close(rwConn);
+                        if (! externallyOwnedPostgresConn) close(pgConn);
 		} finally {
 			invocation.finish();
 		}
@@ -450,7 +460,17 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 		return rwConn;
 	}
+	protected Connection getPostgresRWConnection() throws SQLException {
+		if (pgConn == null) {
+			pgConn = SharedApplication.getInstance().getPostgresConnection();
+		} else {
+			if (pgConn.isClosed()) {
+				pgConn = SharedApplication.getInstance().getPostgresConnection();
+			}
+		}
 
+		return pgConn;
+	}
 	/**
 	 * Returns a new read-only prepared statement using the passed sql.
 	 * This statement and its connection is guaranteed to be closed regardless
@@ -508,7 +528,27 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 		return st;
 	}
+        
+        // default is type forward in postgres - no extra code needed.
+        /**
+         * 
+         * @param sql The SQL statement which may contain the parms
+         * @return A JDBC PreparedStatement which will be auto-closed at Action completion.
+         * @throws SQLException 
+         */
+	protected PreparedStatement getPostgresRWPreparedStatement(String sql) throws SQLException {
+		Connection conn = getPostgresRWConnection();
 
+		PreparedStatement st =
+			conn.prepareStatement(sql);
+
+		st.setFetchSize(200);
+
+		addStatementForAutoClose(st);
+
+		return st;
+	}
+        
 	/**
 	 * Creates a read-only PreparedStatement with named parameter substitutions.
 	 *
@@ -569,7 +609,50 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		//Let the other method do the magic
 		return getRWPSFromString(sql, params);
 	}
+        
+        public PreparedStatement getPostgresPSFromPropertiesFile(
+                String name, Class<?> clazz, Map<String, Object> params)
+                        throws Exception {
 
+		//Get the text from the properties file
+		String sql = getText(name, (clazz != null)? clazz : this.getClass());
+		if(null == sql){
+			throw new NameNotFoundException("No query named '" + name + "' was not found in the specified properties file.");
+		}
+		//Let the other method do the magic
+		return getPostgresPSFromString(sql, params);
+	}
+        
+        // used for Postgres DDL sql (create views and tables). Geoserver needs views to publish as layers.
+        protected Statement getPostgresStatement() throws SQLException {
+                Statement statement = null;
+                
+                Connection conn = getPostgresRWConnection();
+                statement = conn.createStatement();
+                statement.setFetchSize(200);
+
+		addStatementForAutoClose(statement);
+                return statement;
+        }
+        
+        // typically used in conjection with the getPostgresStatement to create views / DDL
+        /**
+         * 
+         * @param name Name of the query within the properties file
+         * @param clazz Finds the properties file by replacing the . with / (implies that every props also has a matching class name)
+         * @param params will replace the parms specified in the properties file surrounded by the @ symbol
+         * @return Sql string with all the parms replaced
+         * @throws Exception 
+         */
+        public String getPostgresSqlFromPropertiesFile(
+                String name, Class<?> clazz, Map<String, Object> params)
+                        throws Exception {
+                
+                String viewSqltext = getText(name, (clazz != null)? clazz : this.getClass());
+                SQLString temp = processSql(viewSqltext, params);
+      
+                return temp.sql.toString();
+        }
 	/**
 	 * Creates a prepared statement from a SQL string (possibly with named params).
 	 *
@@ -643,7 +726,26 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 		return statement;
 	}
+        
+	protected PreparedStatement getPostgresPSFromString(
+			String sql, Map<String, Object> params)
+			throws Exception {
 
+		PreparedStatement statement = null;
+
+		//Go through in order and get the variables, replace with question marks.
+		SQLString temp = processSql(sql, params);
+		sql = temp.sql.toString();
+
+		statement = getPostgresRWPreparedStatement(sql);
+
+		//Add now before assigning params (may bomb during assignment)
+		addStatementForAutoClose(statement);
+
+		assignParameters(statement, temp, params);
+
+		return statement;
+	}
 	/**
 	 * Assigns the passed parameters to the PreparedStatement.
 	 * The parameters are passed in two forms:  sqlString contains the parameters

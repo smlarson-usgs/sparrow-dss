@@ -73,6 +73,17 @@ public class SharedApplication  {
 	//Number of times a connection has been requested
 	private int roConnectionRequestCount = 0;
 
+        private static final String POSTGRES_JNDI_DS_NAME = "java:comp/env/jdbc/postgres";
+        private DataSource pgDatasource;
+	private boolean pgLookupFailed = false;
+        /**
+	 * Keys to lookup a read-write Postgres db connection information in system properties.
+	 * This is primarily for testing or running locally.
+	 */
+	public static final String POSTGRES_DB_USER_KEY = "postgres_dbuser"; //sparrow_model_output_user
+	public static final String POSTGRES_DB_PASS_KEY = "postgres_dbpass"; //
+	public static final String POSTGRES_DB_URL_KEY = "postgres_dburl"; //"jdbc:postgresql://127.0.0.1:5432/sparrow_dss";//local db name...not prod
+        
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = PredictContext.name();
 	
@@ -260,7 +271,24 @@ public class SharedApplication  {
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;
 	}
+        
+	private static Connection getPostgresConnectionFromCommandLineParams() throws SQLException {
+		//connection = DriverManager.getConnection(dbUrl, dbuser, dbpass);
+		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty(POSTGRES_DB_USER_KEY);
+		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty(POSTGRES_DB_PASS_KEY);
+		String url = SharedApplication.getInstance().getConfiguration().getProperty(POSTGRES_DB_URL_KEY);
+		Connection connection;
+                try {
+                    Class.forName("org.postgresql.Driver");
 
+                } catch (ClassNotFoundException e) {
+
+                log.info("Where is your PostgreSQL JDBC Driver? "
+                    + "Include in your library path via maven!");
+                }
+		connection = DriverManager.getConnection(url, dbuser, dbpass);
+		return connection;
+	}
 	// ================
 	// INSTANCE METHODS
 	// ================
@@ -299,6 +327,35 @@ public class SharedApplication  {
 		return findRWConnection();
 	}
 
+	public Connection getPostgresConnection() throws SQLException {
+		return findPostgresConnection();
+	}
+        
+	private Connection findPostgresConnection() throws SQLException {
+		synchronized (this) {
+			if (pgDatasource == null && ! rwLookupFailed) {
+				try {
+					Locale.setDefault(Locale.US);
+					Context ctx = new InitialContext();
+					pgDatasource = (DataSource) ctx.lookup(POSTGRES_JNDI_DS_NAME);
+					log.info("Looking up Postgres connection: " + pgDatasource );
+
+				} catch (Exception e) {
+					rwLookupFailed = true;
+				}
+			}
+
+			if (pgDatasource != null) {
+				return pgDatasource.getConnection();
+			}
+		}
+
+                   log.info("Getting Postgres connection from driver manager.");
+		//if we fall through from above, fetching from cmd line does
+		//not need to be sync'ed
+		return getPostgresConnectionFromCommandLineParams(); 
+	}
+        
 	private Connection findRWConnection() throws SQLException {
 		synchronized (this) {
 			if (rwDatasource == null && ! rwLookupFailed) {
