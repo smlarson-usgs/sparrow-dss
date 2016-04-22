@@ -27,12 +27,8 @@ public class CreateViewForLayer extends Action<List> {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CreateViewForLayer.class);
 
     private int model_nbr;
-    private int identifier;
-    private double value;
     private int model_output_id;
-    // private Date dateTime;  //sql date? this should be a timestamp #TODO#
     private HashMap modelOutputValueMap;
-    // private PredictionContext context;
 
     /**
      *
@@ -52,21 +48,20 @@ public class CreateViewForLayer extends Action<List> {
 
     }
 
-    //#TODO# add validate method
+    //#TODO# add validate method - makes sure the map is not empty
     /**
-     * Take the former dbf output and insert it into a Postgres table, 
-     * then create the view by joining to the river network shape file.
-     * Later the view is exposed as a layer in Geoserver.
+     * Take the former dbf output and insert it into a Postgres table, then
+     * create the view by joining to the river network shape file. Later the
+     * view is exposed as a layer in Geoserver.
+     *
      * @return boolean true if Inserted 1 row successfully
      * @throws java.lang.Exception
      */
     @Override
     public List doAction() throws Exception {
 
-        List result = new ArrayList();
-        
         insertModelOutputRow(this.modelOutputValueMap);
-        createViews(); // theres always 2 views created: one for catchment, the other for flows (aka reaches).
+        List result = createViews(); // always create two views: one for catchment, the other for flows (aka reaches).
 
         return result; //somthing from the select like the modelregion
 
@@ -93,51 +88,81 @@ public class CreateViewForLayer extends Action<List> {
      */
     public void insertModelOutputRow(HashMap map) throws Exception {
         Timestamp now = getUTCNowAsSQLTimestamp(); //2016-04-20 08:26:26.345
-        
-        // for test purposes...hard coded map values
-        Integer keyTest = 10810;
-        Double valueTest = 15083.9;
-        
-        map.put(keyTest, valueTest);
-        map.put(keyTest+2, valueTest+20);
-        map.put(keyTest+4, valueTest+30);
 
-        //get the values out of the map, each set requires an insert statement
-        Map<String, Object> paramMap = new HashMap<>();// this map is for sql parms
-        paramMap.put("MODEL_NBR", this.model_nbr);
-        paramMap.put("MODEL_OUTPUT_ID", this.model_output_id);
-        paramMap.put("LAST_UPDATE", now); // check to see if this is formated #TODO#
-        
-        Set set = map.keySet();
-        Iterator it = set.iterator();
-        
-        while (it.hasNext()){
-            
-        int key = (int)it.next();
-        double value = (double)map.get(key);
-        
-        paramMap.put("IDENTIFIER", key);  //iterate thru the map to get the id value
-        paramMap.put("VALUE", value);
-        
-        PreparedStatement insertSqlps = getPostgresPSFromPropertiesFile("InsertModelOutputRow", null, paramMap);
-        LOGGER.info("Postgres insert sql: " + insertSqlps.toString());
-        insertSqlps.executeUpdate();
-        }//close while
-        
-    }
-    
-    //performance enhancement
-    private void performBatchInsert(PreparedStatement sql) throws SQLException{
-        int rowsInserted = 0;
-        try{
-            rowsInserted = sql.executeUpdate();
+        if (!exists()) { // if the model_output_id is not found on the model_output table, perform the insert
+            //get the values out of the map, each set requires an insert statement
+            Map<String, Object> paramMap = new HashMap<>();// this map is for sql parms
+            paramMap.put("MODEL_NBR", this.model_nbr);
+            paramMap.put("MODEL_OUTPUT_ID", this.model_output_id);
+            paramMap.put("LAST_UPDATE", now); // check to see if this is formatted #TODO# ISO_8601 2007-04-05T12:30
+
+            Set set = map.keySet();
+            Iterator it = set.iterator();
+
+            while (it.hasNext()) {
+
+                int key = (int) it.next();
+                double value = (double) map.get(key);
+
+                paramMap.put("IDENTIFIER", key);  //iterate thru the map to get the id value
+                paramMap.put("VALUE", value);
+
+                PreparedStatement insertSqlps = getPostgresPSFromPropertiesFile("InsertModelOutputRow", null, paramMap);
+                //LOGGER.info("Postgres insert sql: " + insertSqlps.toString());
+                insertSqlps.executeUpdate();
+            }
         }
-        finally{
+        else {
+            LOGGER.info("Insert for model_output_id: " + this.model_output_id + " will not be performed. Already exists on model_output table.");
+        }
+    }
+
+    // if the quantity returned is greater than zero, return true 
+    private boolean exists() throws Exception {
+        //checks to see if the model_ouput has already been inserted for the first record
+        //assumption is that the dbf id would be different if any of the data in the rows was different
+        //and therefore doesnt require an upsert
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("MODEL_OUTPUT_ID", this.model_output_id);
+        
+        PreparedStatement sql = getPostgresPSFromPropertiesFile("SelectExists", null, paramMap);
+        LOGGER.info("Check existence with: " + sql.toString());
+        ResultSet rset = null;
+        int quantity = 0;
+
+        try {
+            rset = sql.executeQuery();
+            addResultSetForAutoClose(rset);
+
+            while (rset.next()) {
+                quantity = rset.getInt(1);
+            }
+
+        } finally {
+            // rset can be null if there is an sql error. 
+            if (rset != null) {
+                rset.close();
+            }
+        }
+        LOGGER.info("Quantity of model_id rows for this model output id before insert: " + quantity);
+
+        return (quantity > 0);
+    }
+
+    // will want to use a transaction and insert all at once - many inserts for one dbf (roughly 12,000) if possible with sparrow persistence.
+    // Insert the rows into the model output table. 
+    // There will be many rows with the same model_output_id and model
+    //performance enhancement
+    private void performBatchInsert(PreparedStatement sql) throws SQLException {
+        int rowsInserted = 0;
+        try {
+            rowsInserted = sql.executeUpdate();
+        } finally {
             //close the transaction?
             LOGGER.info("Quantity of rows inserted in model_output: " + rowsInserted);
         }
         //PreparedStatement insertSqlps = getPostgresPSFromPropertiesFile("InsertModelOutputRow", null, paramMap);
-        
+
 //        String query = "INSERT INTO table (id, name, value) VALUES (?, ?, ?)";
 //        PreparedStatement ps = connection.prepareStatement(query);            
 //        for (Record record : records) {
@@ -147,19 +172,18 @@ public class CreateViewForLayer extends Action<List> {
 //            ps.addBatch();
 //        }
 //            ps.executeBatch();
-        }
+    }
 
-    // will want to use a transaction and insert all at once - many inserts for one dbf (roughly 12,000)
-    // Insert the rows into the model output table. There will be many rows
-    // with the same model_output_id and model
-    public void createViews() throws Exception {
+    public List createViews() throws Exception {
+        List<String> viewNames = new ArrayList();
         List tables = getTableNames(this.model_nbr);
 
-        createView(getCatchViewParams(tables.get(0).toString())); //catcment
-        createView(getFlowViewParams(tables.get(1).toString())); //flow or reach
+        viewNames.add(createView(getCatchViewParams(tables.get(0).toString()))); //catchment
+        viewNames.add(createView(getFlowViewParams(tables.get(1).toString()))); //flow or reach
 
+        return viewNames;
     }
-    
+
     // Parms : VIEW_LAYER_NAME, GEOMTYPE, RIVER_NETWORK_TABLE_NAME, DBF_ID
     // Build filtering parameters and retrieve the queries from properties
     private Map getCatchViewParams(String tableName) {
@@ -186,12 +210,13 @@ public class CreateViewForLayer extends Action<List> {
         return paramMap;
     }
 
-    private void createView(Map paramMap) throws Exception {
+    private String createView(Map paramMap) throws Exception {
         // Note: can not use a prepared statement for DDL queries
         String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);
         LOGGER.info("Postgres view created from: " + sql);
         Statement statement = getPostgresStatement();
         statement.executeUpdate(getPostgresSqlFromPropertiesFile("CreateView", null, paramMap));
+        return (String) paramMap.get("VIEW_LAYER_NAME");
     }
 
     /**
@@ -226,7 +251,7 @@ public class CreateViewForLayer extends Action<List> {
         }
         LOGGER.info("Using catch table name: " + result.get(0) + " for model:" + modelNbr);
         LOGGER.info(" and flow table name: " + result.get(1));
-        // execute the prepared statement for the flow also ...todo
+
         return result;
     }
 

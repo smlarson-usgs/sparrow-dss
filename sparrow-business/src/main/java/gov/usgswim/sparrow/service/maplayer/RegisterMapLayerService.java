@@ -7,10 +7,13 @@ import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.action.CreateGeoserverLayer;
 import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.postgres.action.CreateViewForLayer;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,16 +57,25 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			if (context == null) {
 				throw new Exception("The context for the id '" + contextId + "' cannot be found");
 			}
+			             
+			//Write the data column of the context  if it does not yet exist
+			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context); //TODO SPDSSII-28 write the row to the postgres table model_output
+                        HashMap dbfValuesMap = writeDbfFile.run();
+//			File dbfFile = writeDbfFile.getDbfFile(); //remove after test
+//			if (!dbfFile.exists()) {
+//				dbfFile = writeDbfFile.run();
+//			}
 			
-			//Write the data column of the context to disk if it does not yet exist
-			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context);
-			File dbfFile = writeDbfFile.getDbfFile();
-			if (!dbfFile.exists()) {
-				dbfFile = writeDbfFile.run();
-			}
-			
+                        // replacing the dbf joiner...
+                      // HashMap dbfValuesMap = getModelOutputValues(context);
+                       // HashMap dbfValuesMap = new HashMap();
+                        CreateViewForLayer cvlAction = new CreateViewForLayer(context, dbfValuesMap);  //this will need the name of the layers or view names returned for the CreateGeoserverLayer??                    
+                        List viewNames = cvlAction.run();
+
+
+                File dbfFile = new File("Remove after ","dbf file writer test");  //fake remove
 			//Register the data plus the shapefile w/ GeoServer as a layer
-			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile, projectedSrs);
+			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, viewNames, projectedSrs);
 			String wpsResponse = cglAction.run();
 			
 			if (cglAction.getException() != null) {

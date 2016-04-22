@@ -73,7 +73,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	private Connection rwConn = null;
 
 	/** A read-write connection that will be closed when the action completes */
-	private Connection pgConn = null; //#TODO# need to add close process into transaction
+	private Connection pgConn = null; 
 
 	/** true if the read-only db connection was passed in, thus should not be closed */
 	private boolean externallyOwnedROConn = false;

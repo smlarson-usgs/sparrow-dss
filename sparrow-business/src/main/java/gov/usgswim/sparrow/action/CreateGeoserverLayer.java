@@ -8,6 +8,8 @@ import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
+import java.net.URL;
+import java.util.List;
 import javax.naming.NamingException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -38,7 +40,8 @@ public class CreateGeoserverLayer extends Action<String> {
 	
 	//User init
 	private final PredictionContext context;
-	private final File dbfFile;
+	//private final File dbfFile;
+        private final List viewNames;
 	private final String projectedSrs;
 	
 	
@@ -57,12 +60,14 @@ public class CreateGeoserverLayer extends Action<String> {
 	 * Constructs the action w/ all needed parameters
 	 * 
 	 * @param context A prediction context to construct the map layer for
+         * @param viewNames - list with both the catch and flow view name 
 	 * @param dbfFile Reference to a DBF file that contains ID and value columns.
 	 * @param projectedSrs A fully qualified name of an SRS to project to.  If unspecified, GeoServer will default to.
 	 */
-	public CreateGeoserverLayer(PredictionContext context, File dbfFile, String projectedSrs) {
+	public CreateGeoserverLayer(PredictionContext context, List viewNames, String projectedSrs) {
 		this.context = context;
-		this.dbfFile = dbfFile;
+		//this.dbfFile = dbfFile;
+                this.viewNames = viewNames;
 		this.projectedSrs = projectedSrs;
 	}
 	
@@ -72,7 +77,7 @@ public class CreateGeoserverLayer extends Action<String> {
 		ModelRequestCacheKey mrk = new ModelRequestCacheKey(context.getModelID(), false, false, false);
 		SparrowModel model = SharedApplication.getInstance().getModelMetadata(mrk).get(0);
 		shapefileFileName = model.getThemeName();
-		idFieldInShapeFileAndDbfFile = model.getEnhNetworkIdColumn();
+		idFieldInShapeFileAndDbfFile = model.getEnhNetworkIdColumn();  //example: 
 		isReusable = context.isLikelyReusable();
 		
 		if (isReusable) {
@@ -103,11 +108,17 @@ public class CreateGeoserverLayer extends Action<String> {
 			addValidationError("Context cannot be null");
 		}
 		
-		if (dbfFile == null) {
-			addValidationError("DBF File cannot be null");
-		} else if (! dbfFile.exists()) {
-			addValidationError("DBF must exist");
-		}
+                if (viewNames == null || viewNames.isEmpty()) {
+                    addValidationError("View names cannot be missing.");
+                } else if (viewNames.size() < 2) { // quantity of views created should always be 2  
+                    addValidationError("A view name is missing. Must have both a catch and a flow view. Shapefile is: " + this.shapefileFileName + "with context id: " + this.context.getId());
+                }
+                     
+//		if (dbfFile == null) {
+//			addValidationError("DBF File cannot be null");
+//		} else if (! dbfFile.exists()) {
+//			addValidationError("DBF must exist");
+//		}
 		
 		
 		//We need to access these params to check if they exist, so we'll
@@ -140,12 +151,12 @@ public class CreateGeoserverLayer extends Action<String> {
 //	
 	@Override
 	public String doAction() throws Exception {
-
+    URL fakeUrl = new URL("http://fakeTestUrl.com/");    
 		String xmlReq = this.getTextWithParamSubstitution("template",
 				"contextId", context.getId().toString(), 
 				"modelId", context.getModelID().toString(),
 				"coverageName", shapefileFileName, 
-				"dbfFilePath", dbfFile.getAbsolutePath(), 
+				"dbfFilePath", fakeUrl,//dbfFile.getAbsolutePath(), // #TODO# remove and replace with postgres ref SPDSSII-28
 				"idFieldInDbf", idFieldInShapeFileAndDbfFile,
 				"projectedSrs", (projectedSrs == null)?"":projectedSrs,
 				"isReusable", Boolean.toString(isReusable),
@@ -172,7 +183,7 @@ public class CreateGeoserverLayer extends Action<String> {
 		uriBuild.addParameter("service", "wps");
 		uriBuild.addParameter("version", "1.0.0");
 		uriBuild.addParameter("request", "execute");
-		uriBuild.addParameter("identifier", "dss:CreateSparrowDynamicDatastoreAndLayerProcess");
+		uriBuild.addParameter("identifier", "dss:CreateSparrowDynamicDatastoreAndLayerProcess"); //SPDSSII-28 may change
 		
 
 		

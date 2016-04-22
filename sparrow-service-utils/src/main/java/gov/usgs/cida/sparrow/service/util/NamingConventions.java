@@ -66,6 +66,16 @@ public class NamingConventions {
 		}
 		
 	}
+       
+        public static String getFullFlowlineLayerPostgresName(int modelId, int contextId, boolean reusable) {
+		if (reusable) {
+			return "postgres-ws" + ":" + "reusable_flow_" + contextId;
+		} else {
+			return "postgres-ws" + ":" + "flow_" + contextId;
+		}
+		
+	}
+        
 	
 	/**
 	 * Creates a name for the layer that does not start with a number, so that
@@ -87,6 +97,13 @@ public class NamingConventions {
 		}
 	}
 	
+        public static String getFullCatchmentLayerPostgresName(int modelId, int contextId, boolean reusable) {
+		if (reusable) {
+			return "postgres-ws" + ":" + "reuseable_catch_" + contextId;
+		} else {
+			return "postgres-ws" + ":" + "catch_" + contextId;
+		}
+	}
 	/**
 	 * Returns the complete namespace (with the http://water.usgs.gov... prefix)
 	 * for flowline layers.  A different namespace is used if the layer is deemed

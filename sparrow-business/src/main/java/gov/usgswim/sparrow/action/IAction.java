@@ -49,6 +49,7 @@ public interface IAction<R extends Object> {
 	 * should call doAction on subclasses.
 	 * @param readOnlyConnection
 	 * @param readWriteConnection
+         * @param postgresConnection
 	 * @return
 	 * @throws Exception
 	 */
