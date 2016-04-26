@@ -20,31 +20,48 @@ public class NamingConventions {
 	
 	/** Base namespace for the entire app, as used on GeoServer */
 	public static final String APP_SPATIAL_NAMESPACE = "http://water.usgs.gov/nawqa/sparrow/dss/spatial";
-	
+        
+        /** Base namespace for the entire postgres db, as used on GeoServer */
+        public static final String POSTGRES_SPATIAL_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + "postgres";  //#TODO# verify this is needed
+
+    // **  geoserver allows for a single datastore that has many workspaces...should these be postgres schemas? geoserver schema is a table
+        
 	/** Short Geoserver workspace name for flowline (reach) layers */
 	public static final String FLOWLINE_WORKSPACE_NAME = "sparrow-flowline";
-	
+        /** Short Geoserver workspace name for flowline (reach) layers */
+	public static final String POSTGRES_FLOWLINE_WORKSPACE_NAME = "postgres-sparrow-flowline";
+        
 	/** Full Geoserver namespace for flowline (reach) layers */
 	public static final String FLOWLINE_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + FLOWLINE_WORKSPACE_NAME;
-	
+	public static final String POSTGRES_FLOWLINE_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + POSTGRES_FLOWLINE_WORKSPACE_NAME;
+        // http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres/postgres-sparrow-flowline
+        
 	/** Short Geoserver workspace name for flowline (reach) layers that are deemed to be reusable */
 	public static final String FLOWLINE_REUSABLE_WORKSPACE_NAME = "sparrow-flowline" + "-" + REUSABLE_SUFFIX;
+	public static final String POSTGRES_FLOWLINE_REUSABLE_WORKSPACE_NAME = "postgres-sparrow-flowline" + "-" + REUSABLE_SUFFIX;
 	
 	/** Full Geoserver namespace for flowline (reach) layers that are deemed to be reusable */
 	public static final String FLOWLINE_REUSABLE_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + FLOWLINE_REUSABLE_WORKSPACE_NAME;
+	public static final String POSTGRES_FLOWLINE_REUSABLE_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + POSTGRES_FLOWLINE_REUSABLE_WORKSPACE_NAME;
+        // http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres-sparrow-flowline-reusable
 	
 	/** short Geoserver workspace name for catchment layers */
 	public static final String CATCHMENT_WORKSPACE_NAME = "sparrow-catchment";
-	
+	public static final String POSTGRES_CATCHMENT_WORKSPACE_NAME = "postgres-sparrow-catchment";
+        
 	/** full Geoserver namespace catchment layers */
 	public static final String CATCHMENT_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + CATCHMENT_WORKSPACE_NAME;
-	
+	public static final String POSTGRES_CATCHMENT_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + POSTGRES_CATCHMENT_WORKSPACE_NAME;
+        //http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres-sparrow-catchment
+        
 	/** short Geoserver workspace name for catchment layers */
 	public static final String CATCHMENT_REUSABLE_WORKSPACE_NAME = "sparrow-catchment" + "-" + REUSABLE_SUFFIX;
+	public static final String POSTGRES_CATCHMENT_REUSABLE_WORKSPACE_NAME = "postgres-sparrow-catchment" + "-" + REUSABLE_SUFFIX;
 	
 	/** full Geoserver namespace catchment layers */
 	public static final String CATCHMENT_REUSABLE_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + CATCHMENT_REUSABLE_WORKSPACE_NAME;
-	
+        public static final String POSTGRES_CATCHMENT_REUSABLE_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + POSTGRES_CATCHMENT_REUSABLE_WORKSPACE_NAME;
+	//http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres-sparrow-catchment-reusable
 	/**
 	 * Creates a name for the layer that does not start with a number, so that
 	 * is it safe to use an an XML element name.
@@ -58,20 +75,20 @@ public class NamingConventions {
 	 * @param reusable If true, the reusable workspace name is used.
 	 * @return The layer name, prefixed with the appropriate workspace name.
 	 */
-	public static String getFullFlowlineLayerName(int modelId, int contextId, boolean reusable) {
-		if (reusable) {
-			return FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
-		} else {
-			return FLOWLINE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
-		}
-		
-	}
+//	public static String getFullFlowlineLayerName(int modelId, int contextId, boolean reusable) {
+//		if (reusable) {
+//			return FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + contextId;
+//		} else {
+//			return FLOWLINE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
+//		}            
+//		
+//	}
        
-        public static String getFullFlowlineLayerPostgresName(int modelId, int contextId, boolean reusable) {
+        public static String getPostgresFullFlowlineLayerName(int modelId, int contextId, boolean reusable) {
 		if (reusable) {
-			return "postgres-ws" + ":" + "reusable_flow_" + contextId;
+			return POSTGRES_FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + getFlowLayerName(contextId);//"postgres-ws" + ":" + "reusable_flow_" + contextId;
 		} else {
-			return "postgres-ws" + ":" + "flow_" + contextId;
+			return POSTGRES_FLOWLINE_WORKSPACE_NAME + ":" + getFlowLayerName(contextId);//"postgres-ws" + ":" + "flow_" + contextId;
 		}
 		
 	}
@@ -89,19 +106,19 @@ public class NamingConventions {
 	 * @param reusable If true, the reusable workspace name is used.
 	 * @return The layer name, prefixed with the appropriate workspace name.
 	 */
-	public static String getFullCatchmentLayerName(int modelId, int contextId, boolean reusable) {
-		if (reusable) {
-			return CATCHMENT_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
-		} else {
-			return CATCHMENT_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
-		}
-	}
+//	public static String getFullCatchmentLayerName(int modelId, int contextId, boolean reusable) {
+//		if (reusable) {
+//			return CATCHMENT_REUSABLE_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
+//		} else {
+//			return CATCHMENT_WORKSPACE_NAME + ":" + convertContextIdToXMLSafeName(modelId, contextId);
+//		}
+//	}
 	
-        public static String getFullCatchmentLayerPostgresName(int modelId, int contextId, boolean reusable) {
+        public static String getPostgresFullCatchmentLayerName(int modelId, int contextId, boolean reusable) {
 		if (reusable) {
-			return "postgres-ws" + ":" + "reuseable_catch_" + contextId;
+			return POSTGRES_CATCHMENT_REUSABLE_WORKSPACE_NAME + ":" + getCatchLayerName(contextId);//"postgres-ws" + ":" + "reuseable_catch_" + contextId;
 		} else {
-			return "postgres-ws" + ":" + "catch_" + contextId;
+			return POSTGRES_CATCHMENT_WORKSPACE_NAME + ":" + getCatchLayerName(contextId);//"postgres-ws" + ":" + "catch_" + contextId;
 		}
 	}
 	/**
@@ -112,14 +129,21 @@ public class NamingConventions {
 	 * @param reusable
 	 * @return 
 	 */
-	public static String getFlowlineNamespace(boolean reusable) {
+//	public static String getFlowlineNamespace(boolean reusable) {
+//		if (reusable) {
+//			return FLOWLINE_REUSABLE_NAMESPACE;
+//		} else {
+//			return FLOWLINE_NAMESPACE;
+//		}
+//	}
+        
+	public static String getPostgresFlowlineNamespace(boolean reusable) {
 		if (reusable) {
-			return FLOWLINE_REUSABLE_NAMESPACE;
+			return POSTGRES_FLOWLINE_REUSABLE_NAMESPACE;
 		} else {
-			return FLOWLINE_NAMESPACE;
+			return POSTGRES_FLOWLINE_NAMESPACE;
 		}
 	}
-	
 	/**
 	 * Returns the complete namespace (with the http://water.usgs.gov... prefix)
 	 * for catchment layers.  A different namespace is used if the layer is deemed
@@ -128,14 +152,20 @@ public class NamingConventions {
 	 * @param reusable
 	 * @return 
 	 */
-	public static String getCatchmentNamespace(boolean reusable) {
+//	public static String getCatchmentNamespace(boolean reusable) {
+//		if (reusable) {
+//			return CATCHMENT_REUSABLE_NAMESPACE;
+//		} else {
+//			return CATCHMENT_NAMESPACE;
+//		}
+//	}
+	public static String getPostgresCatchmentNamespace(boolean reusable) {
 		if (reusable) {
-			return CATCHMENT_REUSABLE_NAMESPACE;
+			return POSTGRES_CATCHMENT_REUSABLE_NAMESPACE;
 		} else {
-			return CATCHMENT_NAMESPACE;
+			return POSTGRES_CATCHMENT_NAMESPACE;
 		}
 	}
-	
 	/**
 	 * Returns the name of the GeoServer workspace for flowline layers.
 	 * A different namespace is used if the layer is deemed
@@ -144,14 +174,21 @@ public class NamingConventions {
 	 * @param reusable
 	 * @return 
 	 */
-	public static String getFlowlineWorkspaceName(boolean reusable) {
+//	public static String getFlowlineWorkspaceName(boolean reusable) {
+//		if (reusable) {
+//			return FLOWLINE_REUSABLE_WORKSPACE_NAME;
+//		} else {
+//			return FLOWLINE_WORKSPACE_NAME;
+//		}
+//	}
+	public static String getPostgresFlowlineWorkspaceName(boolean reusable) {
 		if (reusable) {
-			return FLOWLINE_REUSABLE_WORKSPACE_NAME;
+			return POSTGRES_FLOWLINE_REUSABLE_WORKSPACE_NAME;
 		} else {
-			return FLOWLINE_WORKSPACE_NAME;
+			return POSTGRES_FLOWLINE_WORKSPACE_NAME;
 		}
 	}
-	
+        
 	/**
 	 * Returns the name of the GeoServer workspace for catchment layers.
 	 * A different namespace is used if the layer is deemed
@@ -160,15 +197,33 @@ public class NamingConventions {
 	 * @param reusable
 	 * @return 
 	 */
-	public static String getCatchmentWorkspaceName(boolean reusable) {
+//	public static String getCatchmentWorkspaceName(boolean reusable) {
+//		if (reusable) {
+//			return CATCHMENT_REUSABLE_WORKSPACE_NAME;
+//		} else {
+//			return CATCHMENT_WORKSPACE_NAME;
+//		}
+//	}
+	public static String getPostgresCatchmentWorkspaceName(boolean reusable) {
 		if (reusable) {
-			return CATCHMENT_REUSABLE_WORKSPACE_NAME;
+			return POSTGRES_CATCHMENT_REUSABLE_WORKSPACE_NAME;
 		} else {
-			return CATCHMENT_WORKSPACE_NAME;
+			return POSTGRES_CATCHMENT_WORKSPACE_NAME;
 		}
-	}
+	}	
 	
+        
+        public static String getCatchLayerName(int contextId)
+        {
+            return "catch_" + contextId;
+        }// postgres example of a view/layer name:  catch_-721080852
 	
+        
+        public static String getFlowLayerName(int contextId)
+        {
+            return "flow_" + contextId;
+        }// postgres example of a view/layer name:  flow_-721080852        
+        
 	/**
 	 * Creates a name for the layer that does not start with a number, so that
 	 * is it safe to use an an XML element name.
@@ -177,17 +232,17 @@ public class NamingConventions {
 	 * @param contextId
 	 * @return 
 	 */
-	public static String convertContextIdToXMLSafeName(int modelId, int contextId) {
-		if (contextId >= 0) {
-			return Integer.toString(modelId) + "P" + Integer.toString(contextId);
-		} else {
-			return Integer.toString(modelId) + "N" + Integer.toString(Math.abs(contextId));
-		}
-	}
+//	public static String convertContextIdToXMLSafeName(int modelId, int contextId) {
+//		if (contextId >= 0) {
+//			return Integer.toString(modelId) + "P" + Integer.toString(contextId);
+//		} else {
+//			return Integer.toString(modelId) + "N" + Integer.toString(Math.abs(contextId));
+//		}
+//	}  // postgres example of a view/layer name:  catch_-721080852
 	
 	/**
 	 * Builds a regex string that can be used to match resources associated with
-	 * a particular model.
+	 * a particular model. This is used by the sweeper.
 	 * 
 	 * @param modelId
 	 * @return 
@@ -208,9 +263,10 @@ public class NamingConventions {
 	 * @return 
 	 */
 	public static String buildDefaultFlowlineStyleName(int modelId, int contextId) {
-		return convertContextIdToXMLSafeName(modelId, contextId) + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX;
+		//return convertContextIdToXMLSafeName(modelId, contextId) + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX;
+                return contextId + "-" + FLOWLINE_DEFAULT_STYLE_SUFFIX;
 	}
-	
+
 	/**
 	 * Returns the default style name for the catchment layer of a given context.
 	 * 
@@ -223,8 +279,9 @@ public class NamingConventions {
 	 * @return 
 	 */
 	public static String buildDefaultCatchmentStyleName(int modelId, int contextId) {
-		return convertContextIdToXMLSafeName(modelId, contextId) + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX;
-	}
+		//return convertContextIdToXMLSafeName(modelId, contextId) + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX;
+                return contextId + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX;
+	}// postgres example of a view/layer name:  catch_-721080852-catchment-default
 	
 	/**
 	 * Provides a quick filter for styles to determine if they follow the naming
@@ -235,9 +292,11 @@ public class NamingConventions {
 	 */
 	public static boolean isLikelyReusableStyleName(String styleName) {
 		return 
-			styleName.matches("\\d+[NP]\\d+-" + FLOWLINE_DEFAULT_STYLE_SUFFIX) ||
-			styleName.matches("\\d+[NP]\\d+-" + CATCHMENT_DEFAULT_STYLE_SUFFIX);
-	}
+                        styleName.matches("^-?\\d+-" + FLOWLINE_DEFAULT_STYLE_SUFFIX) ||
+			styleName.matches("^-?\\d+-" + CATCHMENT_DEFAULT_STYLE_SUFFIX);
+			//styleName.matches("\\d+[NP]\\d+-" + FLOWLINE_DEFAULT_STYLE_SUFFIX) ||
+			//styleName.matches("\\d+[NP]\\d+-" + CATCHMENT_DEFAULT_STYLE_SUFFIX);
+	} //\d+ is 1 or more digits.
 	
 	/**
 	 * Provides a more definitive filter to determine if a given style is (very)
@@ -262,15 +321,15 @@ public class NamingConventions {
 	 * @param encodedContextId encoded via convertContextIdToXMLSafeName
 	 * @return 
 	 */
-	public static int convertXMLSafeNameToContextId(String encodedContextId) throws NumberFormatException {
-		encodedContextId = encodedContextId.toUpperCase();
-		
-		if (encodedContextId.contains("P")) {
-			return Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("P") + 1));
-		} else if (encodedContextId.contains("N")) {
-			return (-1) * (Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("N") + 1)));
-		} else {
-			throw new NumberFormatException("Unable to read context ID encoded as '" + encodedContextId + "'");
-		}
-	}
+//	public static int convertXMLSafeNameToContextId(String encodedContextId) throws NumberFormatException {
+//		encodedContextId = encodedContextId.toUpperCase();
+//		
+//		if (encodedContextId.contains("P")) {
+//			return Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("P") + 1));
+//		} else if (encodedContextId.contains("N")) {
+//			return (-1) * (Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("N") + 1)));
+//		} else {
+//			throw new NumberFormatException("Unable to read context ID encoded as '" + encodedContextId + "'");
+//		}
+//	}
 }

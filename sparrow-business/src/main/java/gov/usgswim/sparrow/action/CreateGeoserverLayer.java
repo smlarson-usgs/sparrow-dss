@@ -151,7 +151,7 @@ public class CreateGeoserverLayer extends Action<String> {
 //	
 	@Override
 	public String doAction() throws Exception {
-    URL fakeUrl = new URL("http://fakeTestUrl.com/");    
+    URL fakeUrl = new URL("http://fakeTestUrl/dbfFile.dbf");    
 		String xmlReq = this.getTextWithParamSubstitution("template",
 				"contextId", context.getId().toString(), 
 				"modelId", context.getModelID().toString(),

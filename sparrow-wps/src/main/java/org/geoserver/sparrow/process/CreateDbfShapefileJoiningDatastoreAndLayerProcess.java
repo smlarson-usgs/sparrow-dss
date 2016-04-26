@@ -37,6 +37,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.jdbc.JDBCFeatureSource;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -49,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.geowebcache.filter.parameters.ParameterFilter;
 import org.geowebcache.filter.parameters.RegexParameterFilter;
 import org.geowebcache.filter.parameters.StringParameterFilter;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 		
 /**
@@ -240,14 +242,14 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		if (state.projectedSrs == null) state.projectedSrs = "EPSG:4326";
 		
 		
-		state.workspace = catalog.getWorkspaceByName(state.workspaceName); //may need to default it to the 'postgres-ws'
+		state.workspace = catalog.getWorkspaceByName(state.workspaceName); 
 		if (state.workspace == null) {
 			wrap.setMessage("The workspace " + state.workspaceName + " does not exist.");
 			wrap.setStatus(ServiceResponseStatus.FAIL);
 			return;
 		}
 		
-		state.namespace = catalog.getNamespaceByPrefix(state.workspace.getName());//may need to default it to the postgres: 'http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres'
+		state.namespace = catalog.getNamespaceByPrefix(state.workspace.getName());
 		if (state.namespace == null) {
 			wrap.setMessage("The namespace " + state.workspace.getName() + 
 					" associated with the workspace of the same name cannot be found.  Configuration error?");
@@ -269,6 +271,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 				return;
 			}
 		}
+                state.shapeFile = new File(state.shapeFilePath);// ug for debug, ill hard code it
 //                testCreateDataStore(state);
 		
 //		try {
@@ -282,7 +285,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 //			wrap.setError(e);
 //			wrap.setStatus(ServiceResponseStatus.FAIL);
 //		}
-		
+		state.dbfFile = new File(state.dbfFilePath);
 	//	try {
 //			state.dbfFile = new File(state.dbfFilePath);  // TODO SPDSSII-28
 //			if (! state.dbfFile.exists() || ! state.dbfFile.canRead()) {
@@ -379,90 +382,64 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 
 		LayerResponse resp = new LayerResponse();
 		
-		Map<String, Serializable> dsParams = new HashMap<>();
-		dsParams.put("shapefile", state.shapeFile.toURI().toURL()); // TODO SPDSSII-28 these are the connection parms?
-		dsParams.put("dbase_file", state.dbfFile.toURI().toURL());  // TODO SPDSSII-28
-		dsParams.put("namespace", state.namespace.getURI());
-		dsParams.put("dbase_field", state.idFieldInDbf);  // TODO SPDSSII-28  idFieldInDbf
-		dsParams.put("lastUsedMS", System.currentTimeMillis());		// Date for pruning process
-		
                 //params for the Postgres datastore 
                 // http://docs.geotools.org/stable/userguide/library/jdbc/datastore.html
-                Map map = new HashMap();
+                Map<String, Serializable>map = new HashMap<>();
                 map.put( "dbtype", "postgis");
-                map.put( "jndiReferenceName", "java:comp/env/jdbc/postgres");
-                
-                //map.put("namespace", state.namespace.getURI());
-                map.put("namespace", "http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres");
+                map.put( "jndiReferenceName", "java:comp/env/jdbc/postgres");  //in the tomcat context.xml
+                map.put("namespace", state.namespace.getURI());
                 map.put("schema", "sparrow_overlay");
-try{
-DataStore postgis =  DataStoreFinder.getDataStore(map); //i think this if you created it already 
-log.info("Layer name...: " + state.layerName);
+                map.put("loose bbox", true);
+                map.put("Expose primary keys", true);
+                map.put("lastUsedMS", System.currentTimeMillis());  // Date for pruning process
+               // map.put(PostgisDataStoreFactory.PREPARED_STATEMENTS, true );
+                try{
+                    DataStore postgis =  DataStoreFinder.getDataStore(map); //i think this if you created it already 
+                    // PostGISDataStore represents the database, while a FeatureSource represents a table in the database
+                    SimpleFeatureType schema = postgis.getSchema(state.layerName); // this is the view
+                    SimpleFeatureSource simSource = postgis.getFeatureSource(state.layerName);
 
-// PostGISDataStore represents the database, while a FeatureSource represents a table in the database
-//SimpleFeatureSource sf = postgis.getFeatureSource("table"); //string of the view name ??
-SimpleFeatureSource fsource = postgis.getFeatureSource(state.layerName);
+                    //JDBCFeatureSource fsource = (JDBCFeatureSource) postgis.getFeatureSource(state.layerName);
+                    //log.info("jdbc feature source (ie view): " + fsource.getName().toString());
 
-CatalogBuilder cb2 = new CatalogBuilder(catalog);
-ProjectionPolicy srsHandling2 = ProjectionPolicy.FORCE_DECLARED;
-FeatureTypeInfo fti2  = cb2.buildFeatureType(fsource);
+                    CatalogBuilder builder = new CatalogBuilder(catalog);
+                    ProjectionPolicy srsHandling2 = ProjectionPolicy.FORCE_DECLARED;
 
-fti2.setSRS(state.projectedSrs);
-fti2.setName(state.layerName);
-fti2.setTitle(state.layerName);
-fti2.setDescription(state.description);
-fti2.setAbstract(state.description);
-fti2.setProjectionPolicy(srsHandling2);
+                    DataStoreInfoImpl store = new DataStoreInfoImpl(catalog);
+                    store.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);
+                    store.setWorkspace(state.workspace);
+                    store.setEnabled(true);
+                    store.setName(state.layerName);//postgis.getNames().get(0).toString());//this is model_50n776208324
+                    log.info("name of store (ie view name):" + schema.getName());
+                    store.setConnectionParameters(map);
+                    //log.info("simSource LOCAL name: " + simSource.getName().getLocalPart());
 
-cb2.setupBounds(fti2, fsource);
-LayerInfo layerInfo = cb2.buildLayer(fti2);
-if (state.defaultStyle != null) {
-layerInfo.setDefaultStyle(state.defaultStyle);   
-}
-catalog.add(fti2);
-catalog.add(layerInfo);
+                    builder.setWorkspace(store.getWorkspace());
+                    builder.setStore(store);
 
-                
-                
-//		DataStoreInfoImpl info = new DataStoreInfoImpl(catalog);
-//		info.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);// TODO SPDSSII-28 POSTGRES_JOINED_VIEWS
-//		info.setWorkspace(state.workspace);
-//               // info.setWorkspace("postgres-ws");
-//		info.setEnabled(true);
-//		info.setName(state.layerName);
-//                info.setConnectionParameters(map);
-//		//info.setConnectionParameters(dsParams);
-//		
-//		CatalogBuilder cb = new CatalogBuilder(catalog);
-//		catalog.add(info);
-//		DataAccess<? extends FeatureType, ? extends Feature> dataStore = info.getDataStore(new NullProgressListener());//this is part of creating the datastore for a shp file
-		
-//        try {
-//			List<Name> names = dataStore.getNames();
-//			Name allData = names.get(0); 
-//
-//			ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
-//			
-//			//Create some cat builder thing for some purpose
-//			cb.setWorkspace(info.getWorkspace());
-//			cb.setStore(info);
-//			FeatureTypeInfo fti = cb.buildFeatureType(dataStore.getFeatureSource(allData));  //this creates the actual data store for each shape file
-//			fti.setSRS(state.projectedSrs);
-//			fti.setName(state.layerName);
-//			fti.setTitle(state.layerName);
-//			fti.setDescription(state.description);
-//			fti.setAbstract(state.description);
-//			fti.setProjectionPolicy(srsHandling);
-//			
-//			cb.setupBounds(fti);
-//			LayerInfo li = cb.buildLayer(fti);
-//			if (state.defaultStyle != null) {
-//				li.setDefaultStyle(state.defaultStyle);
-//			}
-//			
-//			catalog.add(fti);
-//			catalog.add(li);
-//			
+                    FeatureTypeInfo featureTypeInfo = builder.buildFeatureType(simSource);
+                    // ***
+                    builder.lookupSRS(featureTypeInfo, true);
+                    builder.setupBounds(featureTypeInfo);
+
+                    // *** set the featureTypeInfo 
+                    featureTypeInfo.setSRS(state.projectedSrs);  
+                    featureTypeInfo.setName(state.layerName);
+                    featureTypeInfo.setTitle(state.layerName); //may want to add the model nbr 
+                    featureTypeInfo.setDescription(state.description);
+                    featureTypeInfo.setAbstract(state.description);
+                    featureTypeInfo.setProjectionPolicy(srsHandling2);
+
+                    //build the layer and add the style 
+                    LayerInfo layerInfo = builder.buildLayer(featureTypeInfo);
+                    if (state.defaultStyle != null) {
+                        layerInfo.setDefaultStyle(state.defaultStyle);   
+                    }
+                    // add the features etc to the catalog
+                    catalog.add(store);
+                    catalog.add(featureTypeInfo);  
+                    catalog.add(layerInfo);
+                   
 			//Set tile cache options
 			if (state.parameterFilters.size() > 0) {
 				GeoServerTileLayer tileLayer = gwc.getTileLayer(layerInfo);// was li  
@@ -479,14 +456,14 @@ catalog.add(layerInfo);
 			resp.setlayerName(state.fullLayerName);
 			wrap.addEntity(resp);
 			
-        } catch (IOException e) {
+                } catch (IOException e) {
 			
 			//Message and error will be auto-logged from the wrapper
 			wrap.setMessage("Error obtaining new data store");
 			wrap.setError(e);
 			wrap.setStatus(ServiceResponseStatus.FAIL);
 
-            log.debug("Attempting to roll back layer creation changes after error...");
+                    log.debug("Attempting to roll back layer creation changes after error...");
             
             /**
              * Since we dont know exactly when the exception was thrown we will do the full layer removal
@@ -494,14 +471,13 @@ catalog.add(layerInfo);
              * possible that it wont get to something as a prerequisite for full removal might be what 
              * threw this exception.
              */
-            log.info("In Sweeper...must fix for postgres adjustment."); //#TODO# SPDSSI-28
+                    log.info("In Sweeper...must fix for postgres adjustment."); //#TODO# SPDSSI-28
 //			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.cascadeDeleteDataStore(catalog, info, state.dbfFile); //#TODO# fix to delete layer 
 //			if(! dsr.isDeleted) {
 //				log.error("Unable to fully remove all layer creation changes for datastore [" + info.getName() + "]");
 //			}
 			
-        }
-		
+                }
 	}
 	
 	/**
