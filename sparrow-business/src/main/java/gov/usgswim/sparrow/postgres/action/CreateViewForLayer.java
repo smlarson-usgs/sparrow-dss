@@ -4,7 +4,6 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -111,8 +110,7 @@ public class CreateViewForLayer extends Action<List> {
                 //LOGGER.info("Postgres insert sql: " + insertSqlps.toString());
                 insertSqlps.executeUpdate();
             }
-        }
-        else {
+        } else {
             LOGGER.info("Insert for model_output_id: " + this.model_output_id + " will not be performed. Already exists on model_output table.");
         }
     }
@@ -124,7 +122,7 @@ public class CreateViewForLayer extends Action<List> {
         //and therefore doesnt require an upsert
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("MODEL_OUTPUT_ID", this.model_output_id);
-        
+
         PreparedStatement sql = getPostgresPSFromPropertiesFile("SelectExists", null, paramMap);
         LOGGER.info("Check existence with: " + sql.toString());
         ResultSet rset = null;
@@ -147,31 +145,6 @@ public class CreateViewForLayer extends Action<List> {
         LOGGER.info("Quantity of model_id rows for this model output id before insert: " + quantity);
 
         return (quantity > 0);
-    }
-
-    // will want to use a transaction and insert all at once - many inserts for one dbf (roughly 12,000) if possible with sparrow persistence.
-    // Insert the rows into the model output table. 
-    // There will be many rows with the same model_output_id and model
-    //performance enhancement
-    private void performBatchInsert(PreparedStatement sql) throws SQLException {
-        int rowsInserted = 0;
-        try {
-            rowsInserted = sql.executeUpdate();
-        } finally {
-            //close the transaction?
-            LOGGER.info("Quantity of rows inserted in model_output: " + rowsInserted);
-        }
-        //PreparedStatement insertSqlps = getPostgresPSFromPropertiesFile("InsertModelOutputRow", null, paramMap);
-
-//        String query = "INSERT INTO table (id, name, value) VALUES (?, ?, ?)";
-//        PreparedStatement ps = connection.prepareStatement(query);            
-//        for (Record record : records) {
-//            ps.setInt(1, record.id);
-//            ps.setString(2, record.name);
-//            ps.setInt(3, record.value);
-//            ps.addBatch();
-//        }
-//            ps.executeBatch();
     }
 
     public List createViews() throws Exception {
@@ -212,8 +185,8 @@ public class CreateViewForLayer extends Action<List> {
 
     private String createView(Map paramMap) throws Exception {
         // Note: can not use a prepared statement for DDL queries
-        String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);
-        LOGGER.info("Postgres view created from: " + sql);
+        //String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);
+        //LOGGER.info("Postgres view created from: " + sql);
         Statement statement = getPostgresStatement();
         statement.executeUpdate(getPostgresSqlFromPropertiesFile("CreateView", null, paramMap));
         return (String) paramMap.get("VIEW_LAYER_NAME");

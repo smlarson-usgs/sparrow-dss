@@ -1,16 +1,12 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnIndex;
-import gov.usgs.cida.sparrow.service.util.NamingConventions;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
-import java.io.File;
-import java.nio.file.Files;
 import java.util.HashMap;
 
 /**
@@ -52,16 +48,9 @@ public class WriteDbfFileForContext extends Action<HashMap> {
 
 	@Override
 	protected void initFields() throws Exception {
-		//File dataDir = getDataDirectory();
-                    
-		//if (!dataDir.exists()) {
-		//	Files.createDirectories(dataDir.toPath());
-		//}
         
 		dataColumn = context.getDataColumn().getColumnData();
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
-		//outputFile = getDbfFile();
-		//outputFile.createNewFile();
 		
 		DataSeriesType type = context.getAnalysis().getDataSeries();
 		
@@ -96,32 +85,11 @@ public class WriteDbfFileForContext extends Action<HashMap> {
         
 	@Override
 	public HashMap doAction() throws Exception {
-		///WriteDbfFile writeAction = new WriteDbfFile(columnIndex, dataColumn, outputFile, ID_COLUMN_NAME, reachRowValueMap);
 		// Load DBF file into the postgres table 
                 GetModelOutputValues output = new GetModelOutputValues(columnIndex, dataColumn, reachRowValueMap);
                 return output.run();
-               /// return writeAction.run();
 	}
         
-//	protected File getDataDirectory() {
-//		File dDir;
-//
-//		if (this.dataDirectory != null) {
-//			dDir =  this.dataDirectory;
-//		} else {
-//			DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
-//			String fallbackDataDirectory = System.getProperty("user.home") 
-//					+ File.separatorChar 
-//					+ "sparrow"
-//					+ File.separatorChar
-//					+ "data";
-//			String sparrowDataDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackDataDirectory);
-//			dDir =  new File(sparrowDataDirectory);
-//			this.dataDirectory = dDir;
-//		}
-//
-//		return dDir;
-//	}
 	
 	@Override
 	public Long getModelId() {

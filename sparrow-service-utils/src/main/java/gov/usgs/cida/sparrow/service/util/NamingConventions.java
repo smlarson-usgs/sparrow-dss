@@ -24,7 +24,8 @@ public class NamingConventions {
         /** Base namespace for the entire postgres db, as used on GeoServer */
         public static final String POSTGRES_SPATIAL_NAMESPACE = APP_SPATIAL_NAMESPACE + "/" + "postgres";  //#TODO# verify this is needed
 
-    // **  geoserver allows for a single datastore that has many workspaces...should these be postgres schemas? geoserver schema is a table
+        // **  fyi: geoserver allows for a single datastore that has many workspaces when dealing with postgres. Prior file based 
+        //     system had a unique datastore for each dbf but did group logically on workspace.
         
 	/** Short Geoserver workspace name for flowline (reach) layers */
 	public static final String FLOWLINE_WORKSPACE_NAME = "sparrow-flowline";
@@ -315,21 +316,4 @@ public class NamingConventions {
 			styleName.matches(layerName + "-" + CATCHMENT_DEFAULT_STYLE_SUFFIX);
 	}
 	
-	/**
-	 * Converts an XML safe layer name back to its context ID.
-	 * 
-	 * @param encodedContextId encoded via convertContextIdToXMLSafeName
-	 * @return 
-	 */
-//	public static int convertXMLSafeNameToContextId(String encodedContextId) throws NumberFormatException {
-//		encodedContextId = encodedContextId.toUpperCase();
-//		
-//		if (encodedContextId.contains("P")) {
-//			return Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("P") + 1));
-//		} else if (encodedContextId.contains("N")) {
-//			return (-1) * (Integer.parseInt(encodedContextId.substring(encodedContextId.indexOf("N") + 1)));
-//		} else {
-//			throw new NumberFormatException("Unable to read context ID encoded as '" + encodedContextId + "'");
-//		}
-//	}
 }

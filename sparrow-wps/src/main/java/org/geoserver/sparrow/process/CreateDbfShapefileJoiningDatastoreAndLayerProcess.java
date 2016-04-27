@@ -8,7 +8,6 @@ import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,22 +28,13 @@ import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.layer.GeoServerTileLayer;
 import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
-import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
-import org.geoserver.sparrow.util.SweepResponse;
 import org.geoserver.wps.gs.GeoServerProcess;
-import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.ServiceInfo;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.jdbc.JDBCFeatureSource;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
-import org.geotools.util.NullProgressListener;
-import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.geowebcache.filter.parameters.ParameterFilter;
@@ -271,32 +261,9 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 				return;
 			}
 		}
-                state.shapeFile = new File(state.shapeFilePath);// ug for debug, ill hard code it
-//                testCreateDataStore(state);
-		
-//		try {
-//			state.shapeFile = new File(state.shapeFilePath);  // TODO SPDSSII-28
-//			if (! state.shapeFile.exists() || ! state.shapeFile.canRead()) {
-//				wrap.setMessage("The shapefile " + state.shapeFilePath + " does not exist or cannot be read.");
-//				wrap.setStatus(ServiceResponseStatus.FAIL);
-//			}
-//		} catch (Exception e) {
-//			wrap.setMessage("Unable to parse the shapefile path into a valid path on the GeoServer host machine: " + state.shapeFilePath);
-//			wrap.setError(e);
-//			wrap.setStatus(ServiceResponseStatus.FAIL);
-//		}
-		state.dbfFile = new File(state.dbfFilePath);
-	//	try {
-//			state.dbfFile = new File(state.dbfFilePath);  // TODO SPDSSII-28
-//			if (! state.dbfFile.exists() || ! state.dbfFile.canRead()) {
-//				wrap.setMessage("The dbf file " + state.dbfFilePath + " does not exist or cannot be read.");
-//				wrap.setStatus(ServiceResponseStatus.FAIL);
-//			}
-//		} catch (Exception e) {
-//			wrap.setMessage("Unable to parse the dbfFilePath into a valid path on the GeoServer host machine: " + state.dbfFilePath);
-//			wrap.setError(e);
-//			wrap.setStatus(ServiceResponseStatus.FAIL);
-//		}
+                state.shapeFile = new File(state.shapeFilePath); // to be removed SPDSSI-28
+		state.dbfFile = new File(state.dbfFilePath); // to be removed SPDSSI-28
+
 		
 		if (state.gwcParamFilters != null && state.gwcParamFilters.length > 0) {
 			if (state.gwcParamFilters.length % 4 != 0) {
@@ -353,25 +320,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		}
 	}
 	
-        private void testCreateDataStore(UserState state) throws Exception
-        {
-                Map map = new HashMap();
-                map.put( "dbtype", "postgis");
-                map.put( "jndiReferenceName", "java:comp/env/jdbc/postgres");  
-                
-                DataStoreInfoImpl info = new DataStoreInfoImpl(catalog);
-		info.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);// TODO SPDSSII-28 POSTGRES_JOINED_VIEWS
-		info.setWorkspace(state.workspace);
-		info.setEnabled(true);
-		info.setName(state.layerName);
-                info.setConnectionParameters(map);
-		//info.setConnectionParameters(dsParams);
-		
-		CatalogBuilder cb = new CatalogBuilder(catalog);
-		catalog.add(info);
-		DataAccess<? extends FeatureType, ? extends Feature> dataStore = info.getDataStore(new NullProgressListener());//th
-        }
-        
+   
 	/**
 	 * Actually creates the layer.
 	 * 

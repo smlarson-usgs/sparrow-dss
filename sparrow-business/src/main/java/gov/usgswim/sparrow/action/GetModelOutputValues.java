@@ -35,10 +35,8 @@ public class GetModelOutputValues extends Action<HashMap> {
 	/** The value column should have at least one decimal place to force the Double data type */
 	private static final int MIN_REQUIRED_DECIMAL_PLACES = 1;
 	
-	//private final String idColumnName;
 	private final ColumnIndex columnIndex;
 	private final ColumnData dataColumn;
-	//private final File outputFile;
 	private final ReachRowValueMap rowsToInclude;
 	
 	//self init
@@ -60,8 +58,6 @@ public class GetModelOutputValues extends Action<HashMap> {
 	public GetModelOutputValues(ColumnIndex columnIndex, ColumnData dataColumn, ReachRowValueMap rowsToInclude) {
 		this.columnIndex = columnIndex;
 		this.dataColumn = dataColumn;
-	//	this.outputFile = outputFile;
-	//	this.idColumnName = idColumnName;
 		this.rowsToInclude = rowsToInclude;
 	}
 
@@ -75,13 +71,6 @@ public class GetModelOutputValues extends Action<HashMap> {
 			addValidationError("The column index and data column must have the same number of rows");
 		}
 		
-//		if (outputFile == null) {
-//			addValidationError("The outputFile cannot be null");
-//		} else if (! outputFile.isFile()) {
-//			addValidationError("The outputFile must be a file, not a directory");
-//		} else if (! outputFile.canWrite()) {
-//			addValidationError("The outputFile must be writable");
-//		}
 	}
 
 	
@@ -89,41 +78,17 @@ public class GetModelOutputValues extends Action<HashMap> {
 	public HashMap doAction() throws Exception {
                 
                 HashMap outputMap = new HashMap();
-                
-	//	DbaseFileHeader header = new DbaseFileHeader();
-	//	header.addColumn(idColumnName, 'N', 9, 0);
-	//	
+                	
 		//Determine the number of digits & decimal places
 		int leftDigits = getRequiredDigitsLeftOfTheDecimal(
 						dataColumn.getMaxDouble(), dataColumn.getMinDouble(), REQUIRED_SIGNIFICANT_DIGITS);
 		int rightDigits = getRequiredDigitsRightOfTheDecimal(
 						leftDigits, REQUIRED_SIGNIFICANT_DIGITS, MIN_REQUIRED_DECIMAL_PLACES);
-		
-		
-	//	header.addColumn("VALUE", 'N', leftDigits + rightDigits, rightDigits);
-		
-		
+				
 		//Build the max value possible w/ this number of digits
 		maxValueInDbf = getMaxValueforDigits(leftDigits, rightDigits);
 		minValueInDbf = (-1d) * maxValueInDbf;
-
-		
-	//	if (rowsToInclude == null) {
-	//		header.setNumRecords(dataColumn.getRowCount());
-	//	} else {
-	//		header.setNumRecords(rowsToInclude.size());
-	//	}
-		
-
-	//	FileChannel foc = null;
-	//	FileOutputStream fos = null;
-	//	DbaseFileWriter dbfWriter = null;
-//		try {
-//			fos = new FileOutputStream(outputFile, false);
-//			foc = fos.getChannel();
-//			dbfWriter = new DbaseFileWriter(header, foc, Charset.forName("UTF-8"), null);
-		
-		
+				
 			//Keep reusing the same array for each row
 			Object[] oneRow = new Object[2]; // SPDSSII-28 #TODO# write out the dbf file to the postgres model_output table
 
@@ -159,37 +124,20 @@ public class GetModelOutputValues extends Action<HashMap> {
 					oneRow[0] = (int)id.intValue(); 
 					oneRow[1] = val;
 
-					//dbfWriter.write(oneRow);
                                         outputMap.put((int)id.intValue(), val);//this is an int to match the shapefile. See note above.
                                         //SPDSSII-28 load the hashmap with the values for this dbf file (river network, modelnbr, generatated hash for the name of the dbf file)
                                         
 				} else {
-					//Just leave this value out of the dbf file.
+					//Just leave this value out.
 					//We are mapping a delivery data series and this reach is not
 					//upstream of the target(s)
 				}
 			}
 			
-			//log.debug("Wrote " + dataColumn.getRowCount() + " rows to dbf file, " + outputFile.getAbsolutePath());
                         log.debug("Wrote " + dataColumn.getRowCount() + " rows to hash map. ");
 			//return outputFile; 
                         return outputMap;
-//		} finally {
-//			
-//			try {
-//				if (dbfWriter != null) {
-//					dbfWriter.close();
-//				}
-//				if (foc != null) {
-//					foc.close();
-//				}
-//				if (fos != null) {
-//					fos.close();
-//				}
-//			} catch (IOException iOException) {
-//				//Ignore - failure to close only
-//			}
-//		}
+
 	}
 
 	/**

@@ -38,7 +38,8 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	protected static final Logger log = org.geotools.util.logging.Logging.getLogger("org.geoserver.sparrow.util");
 	private static final Long DEFAULT_MAX_LAYER_AGE = 172800000L; // 2d in ms
 	private static final Long DEFAULT_RUN_EVER_MS = 3600000L; // 1h in ms
-	private static final String DEFAULT_PRUNED_WORKSPACES = "sparrow-catchment,sparrow-flowline";
+	//private static final String DEFAULT_PRUNED_WORKSPACES = "sparrow-catchment,sparrow-flowline";
+        private static final String DEFAULT_PRUNED_WORKSPACES = "postgres-sparrow-catchment,postgres-sparrow-flowline";
 	private static final String DBASE_KEY = "dbase_file";
 	private static final String DBASE_TIME_KEY = "lastUsedMS";
 	private Long maxAge;	//Age in miliseconds

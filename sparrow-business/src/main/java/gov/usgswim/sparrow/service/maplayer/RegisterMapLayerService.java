@@ -36,7 +36,7 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 
 		Map params = httpReq.getParameterMap();
 
-        Integer contextId = getInteger(params, "context-id");
+                Integer contextId = getInteger(params, "context-id");
 		String projectedSrs = getClean(params, "projected-srs");
 		
 		log.trace("Received a request to register a map layer for contextid: " + contextId + " projection: " + projectedSrs);
@@ -58,18 +58,11 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 				throw new Exception("The context for the id '" + contextId + "' cannot be found");
 			}
 			             
-			//Write the data column of the context  if it does not yet exist
+			//Write the data column of the context if it does not yet exist
 			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context); //TODO SPDSSII-28 write the row to the postgres table model_output
                         HashMap dbfValuesMap = writeDbfFile.run();
-//			File dbfFile = writeDbfFile.getDbfFile(); //remove after test
-//			if (!dbfFile.exists()) {
-//				dbfFile = writeDbfFile.run();
-//			}
-			
-                        // replacing the dbf joiner...
-                      // HashMap dbfValuesMap = getModelOutputValues(context);
-                       // HashMap dbfValuesMap = new HashMap();
-                        CreateViewForLayer cvlAction = new CreateViewForLayer(context, dbfValuesMap);  //this will need the name of the layers or view names returned for the CreateGeoserverLayer??                    
+
+                        CreateViewForLayer cvlAction = new CreateViewForLayer(context, dbfValuesMap);                    
                         List viewNames = cvlAction.run();
 
 

@@ -285,4 +285,15 @@
 		<jndi-name>jdbc/sparrow_dss_trans</jndi-name>
 		<res-type>javax.sql.DataSource</res-type>
 	</resource-ref>
+        
+        <!-- postgres is used to create the model output layers pub in geoserver (was dbf joiner code)
+             by joining the dbf output to the regional shape file as a view -->
+             <!-- This should match the database JNDI connection name in the container -->
+      <resource-ref>
+                <description>postgreSQL Datasource for sparrow_model_output</description>
+                <res-ref-name>jdbc/postgres</res-ref-name>
+                <jndi-name>jdbc/postgres</jndi-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+        </resource-ref>  
 </web-app>

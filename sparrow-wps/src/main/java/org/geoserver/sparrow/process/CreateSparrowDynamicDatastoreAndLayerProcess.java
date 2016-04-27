@@ -106,21 +106,6 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		this.jndiTemplate = jndiTemplate;
 		this.createStyleProcess = createStyleProcess;
 		this.createDbfShapefileJoiningDatastoreAndLayerProcess = createDbfShapefileJoiningDatastoreAndLayerProcess;
-		
-		//Check to see if we can access the base shapefile directory
-//		try {
-//			baseShapefileDir = getBaseShapefileDirectory();
-//			getPublicWmsPath();
-//		} catch (Exception e) {
-//			log.error("Configuration Error.", e);
-//			throw e;
-//		}
-//		
-//		if (baseShapefileDir == null || ! baseShapefileDir.exists() || ! baseShapefileDir.canRead()) {
-//			log.error("The baseShapefileDir does not exist or cannot be read - see previous error.");
-//		}
-	
-	
 	}
 	
 	/**
@@ -300,18 +285,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		//Check the file references
 		state.flowlineShapefile = getFlowlineShapefile(state.coverageName); //TODO SPDSSII-28 will no longer need the shapefile
 		
-//		if (state.flowlineShapefile == null || ! state.flowlineShapefile.exists() || ! state.flowlineShapefile.canRead()) {
-//			wrap.setStatus(ServiceResponseStatus.FAIL);
-//			wrap.setMessage("The flowline coverage '" + state.flowlineShapefile.getAbsolutePath() + "' does not exist or cannot be read.");
-//			return;
-//		}
-		
 		state.catchmentShapefile  = getCatchmentShapefile(state.coverageName);  //TODO SPDSSII-28 will no longer need the shape file
-//		if (state.catchmentShapefile == null || ! state.catchmentShapefile.exists() || ! state.catchmentShapefile.canRead()) {
-//			wrap.setStatus(ServiceResponseStatus.FAIL);
-//			wrap.setMessage("The catchment coverage '" + state.catchmentShapefile.getAbsolutePath() + "' does not exist or cannot be read.");
-//			return;
-//		}
+
 	}
         
 	private void createAll(UserState state, ServiceResponseWrapper wrap) throws Exception {
@@ -403,12 +378,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 		
 		//Set webcaching properties on these newly added layers
-		
-		
-		
 		SparrowDataLayerResponse resp = new SparrowDataLayerResponse();
-               
-             
+
 		resp.setFlowLayerName(state.fullFlowlineLayerName);
 		if (flowStyleName != null) {
 			//See bug noted above
@@ -433,12 +404,6 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 	 * @param coverageName
 	 * @return
 	 */
-//	protected File getFlowlineShapefile(String coverageName) {
-//		File coverageDir = new File(baseShapefileDir, coverageName);  // SPDSSII- will be the coveragename +"_flow"
-//		File shapeFile = new File(coverageDir, "flowline/coverage.shp");
-//		
-//		return shapeFile;
-//	}
         	protected String getFlowlineShapefile(String coverageName) {				
 		return coverageName + "_flow";// SPDSSII- will be the coveragename +"_flow"
 	}
@@ -448,68 +413,10 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 	 * @param coverageName
 	 * @return
 	 */
-	protected String getCatchmentShapefile(String coverageName) {
-		//File coverageDir = new File(baseShapefileDir, coverageName); 
-		//File shapeFile = new File(coverageDir, "catchment/coverage.shp");
-		
+	protected String getCatchmentShapefile(String coverageName) {		
 		return coverageName + "_catch";// SPDSSII- will be the coveragename +"_catch"
 	}
 	
-	/**
-	 * Finds the configured or default base directory for the base directory containing
-	 * all the shape files for the models.
-	 * 
-	 * The directory must exist or an exception will be thrown.  The configured
-	 * path will be interpreted as relative to the user home (tomcat user) if
-	 * the path is relative or begins with "~/" (nix)or "~\\" (Win).
-	 * Otherwise it will be interpreted as absolute.
-	 * 
-	 * @return
-	 * @throws Exception 
-	 */
-//	protected synchronized final File getBaseShapefileDirectory() throws Exception { // SPDSSII-28 this method wont be needed
-//		
-//		if (baseShapefileDir == null) {
-//
-//			File shapeFileDir = null;
-//
-//			try {
-//				String shapefileDirPath = (String)jndiTemplate.lookup(JNDI_KEY_FOR_SHAPEFILE_DIRECTORY);
-//
-//				shapeFileDir = getFileReference(shapefileDirPath);
-//
-//				if (! (shapeFileDir.exists() && shapeFileDir.canRead())) {
-//
-//					String msg = "The shapefile location '" + shapefileDirPath + 
-//							"' does not exist or is unreadable.";
-//					log.error(msg);
-//					throw new Exception(msg);
-//				} else {
-//					log.debug("Using the configured shapefile directory: " + shapeFileDir.getAbsolutePath());
-//				}
-//			} catch(NamingException exception) {
-//				//Try the default location
-//
-//				shapeFileDir = getFileReference(DEFAULT_SHAPEFILE_DIRECTORY);
-//
-//				if (! (shapeFileDir.exists() && shapeFileDir.canRead())) {
-//
-//					String msg = "The configuration parameter 'java:comp/env/shapefile-directory'"
-//							+ " is unset and the default location '" + DEFAULT_SHAPEFILE_DIRECTORY + 
-//							"' does not exist or is unreadable.";
-//
-//					log.error(msg);
-//					throw new Exception(msg, exception);
-//				} else {
-//					log.debug("Using the default shapefile directory: " + shapeFileDir.getAbsolutePath());
-//				}
-//			}
-//
-//			baseShapefileDir = shapeFileDir;
-//		}
-//		
-//		return baseShapefileDir;
-//	}
 	
 	/**
 	 * Interprets a file path, interpreting '~/' and relative paths as relative
