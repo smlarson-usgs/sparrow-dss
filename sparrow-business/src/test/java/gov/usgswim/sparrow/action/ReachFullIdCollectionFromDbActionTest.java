@@ -40,7 +40,7 @@ public class ReachFullIdCollectionFromDbActionTest extends JDBCTestCaseAdapter {
 		
 		ReachFullIdCollectionFromDbAction action = new ReachFullIdCollectionFromDbAction(clientIds);
 		
-		List<ReachFullId> fullIds = action.run(connection, connection);
+		List<ReachFullId> fullIds = action.run(connection, connection, connection);
 	
 		String actualSql = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
 		//ParameterSets actualParams = connection.getPreparedStatementResultSetHandler().getParametersForExecutedStatement(actualSql);
@@ -67,7 +67,7 @@ public class ReachFullIdCollectionFromDbActionTest extends JDBCTestCaseAdapter {
 		
 		ReachFullIdCollectionFromDbAction action = new ReachFullIdCollectionFromDbAction(clientIds);
 		
-		List<ReachFullId> fullIds = action.run(connection, connection);
+		List<ReachFullId> fullIds = action.run(connection, connection, connection);
 	
 		String actualSql = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
 		ParameterSets actualParams = connection.getPreparedStatementResultSetHandler().getParametersForExecutedStatement(actualSql);
@@ -89,7 +89,7 @@ public class ReachFullIdCollectionFromDbActionTest extends JDBCTestCaseAdapter {
 		
 		ReachFullIdCollectionFromDbAction action = new ReachFullIdCollectionFromDbAction(clientIds);
 		
-		List<ReachFullId> fullIds = action.run(connection, connection);
+		List<ReachFullId> fullIds = action.run(connection, connection, connection);
 	
 		String actualSql1 = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
 		String actualSql2 = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(1).toString();
@@ -118,7 +118,7 @@ public class ReachFullIdCollectionFromDbActionTest extends JDBCTestCaseAdapter {
 		
 		ReachFullIdCollectionFromDbAction action = new ReachFullIdCollectionFromDbAction(clientIds);
 		
-		List<ReachFullId> fullIds = action.run(connection, connection);
+		List<ReachFullId> fullIds = action.run(connection, connection, connection);
 	
 		String actualSql1 = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
 		String actualSql2 = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(1).toString();
@@ -147,7 +147,7 @@ public class ReachFullIdCollectionFromDbActionTest extends JDBCTestCaseAdapter {
 		
 		ReachFullIdCollectionFromDbAction action = new ReachFullIdCollectionFromDbAction(clientIds);
 		
-		List<ReachFullId> fullIds = action.run(connection, connection);
+		List<ReachFullId> fullIds = action.run(connection, connection, connection);
 	
 		String actualSql1 = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
 		String actualSql2 = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(1).toString();

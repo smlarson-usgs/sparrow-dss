@@ -79,7 +79,7 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		reachIds.add(model50PredictData.getIdForRow(1001));
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
-		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
+		ModelReachAreaDataTable reachAreas = action.run(connection, connection, connection);
 		
 		//Actual SQL string and params
 		String actualSql = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
@@ -134,7 +134,7 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		reachIds.add(9999999L);	//Doesnt exist
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
-		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
+		ModelReachAreaDataTable reachAreas = action.run(connection, connection, connection);
 		
 		//Actual SQL string and params
 		String actualSql = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
@@ -169,7 +169,7 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		}
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
-		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
+		ModelReachAreaDataTable reachAreas = action.run(connection, connection, connection);
 	
 		//Actual SQL string and params
 		String actualSql = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
@@ -218,7 +218,7 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		}
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
-		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
+		ModelReachAreaDataTable reachAreas = action.run(connection, connection, connection);
 		
 		//Should be 2 SQL statements run
 		assertEquals(2, connection.getPreparedStatementResultSetHandler().getExecutedStatements().size());
@@ -270,7 +270,7 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		}
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
-		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
+		ModelReachAreaDataTable reachAreas = action.run(connection, connection, connection);
 		
 		//Should be 2 SQL statements run
 		assertEquals(2, connection.getPreparedStatementResultSetHandler().getExecutedStatements().size());
