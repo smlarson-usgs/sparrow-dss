@@ -64,9 +64,9 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 
                         CreateViewForLayer cvlAction = new CreateViewForLayer(context, dbfValuesMap);                    
                         List viewNames = cvlAction.run();
+                        
 
-
-                File dbfFile = new File("Remove after ","dbf file writer test");  //fake remove
+ //               File dbfFile = new File("Remove after ","dbf file writer test");  //fake remove
 			//Register the data plus the shapefile w/ GeoServer as a layer
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, viewNames, projectedSrs);
 			String wpsResponse = cglAction.run();
