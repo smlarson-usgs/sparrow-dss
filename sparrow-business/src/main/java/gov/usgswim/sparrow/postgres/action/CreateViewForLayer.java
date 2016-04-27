@@ -46,6 +46,16 @@ public class CreateViewForLayer extends Action<List> {
         this.model_output_id = context.getId();  // 776208324  -no prefix, can be negative. Was the dbf ID.
 
     }
+    
+    @Override
+    protected void validate()
+    {
+        if(this.modelOutputValueMap.isEmpty()){
+            String msg = "The hashmap used to insert the model_output rows was empty. Without the values, the view and layer can not be created. model_output_id: " + this.model_output_id;
+            this.addValidationError(msg);
+        }
+
+    }
 
     //#TODO# add validate method - makes sure the map is not empty
     /**
@@ -118,7 +128,7 @@ public class CreateViewForLayer extends Action<List> {
     // if the quantity returned is greater than zero, return true 
     private boolean exists() throws Exception {
         //checks to see if the model_ouput has already been inserted for the first record
-        //assumption is that the dbf id would be different if any of the data in the rows was different
+        //assumption is that the model_output_id (previously dbf id) would be different if any of the data in the rows was different
         //and therefore doesnt require an upsert
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("MODEL_OUTPUT_ID", this.model_output_id);

@@ -23,14 +23,6 @@ public class WriteDbFileForContextTest {
 	public void testGetDefaultDataDirectoryWithoutSysprops() throws IOException {
 			System.out.println("testGetDefaultDataDirectoryWithoutSysprops");
 			WriteDbfFileForContext obj = new WriteDbfFileForContext();
-//			File result = obj.getDataDirectory();
-//			String  assertion = System.getProperty("user.home") 
-//												 + File.separatorChar 
-//												 + "sparrow"
-//												 + File.separatorChar
-//												 + "data";
-//			assertNotNull(result);
-//			assertEquals(result.getCanonicalPath(), assertion);
 	}
          
 	@Test
@@ -39,10 +31,6 @@ public class WriteDbFileForContextTest {
 			 String TEST_PATH = "/i/am/a/test/property/file/path";
 			 SharedApplication.getInstance().getConfiguration().setProperty("data-export-directory", TEST_PATH);
 			 WriteDbfFileForContext obj = new WriteDbfFileForContext();
-//			 File result = obj.getDataDirectory();
-//			 String  assertion = TEST_PATH;
-//			 assertNotNull(result);
-//			 assertEquals(result.getCanonicalPath(), assertion);
 	 }
 
 }

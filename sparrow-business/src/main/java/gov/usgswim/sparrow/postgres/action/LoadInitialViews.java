@@ -46,8 +46,10 @@ public class LoadInitialViews extends Action<List> {
     
     private void createCatchView(String tableName, Integer id) throws Exception
     {
-        // @RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
+        // VIEW_LAYER_NAME @RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
         Map<String, Object> paramMap = new HashMap<>();
+        String catchView = "catch_" + id;
+        paramMap.put("VIEW_LAYER_NAME", catchView);
         paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
         paramMap.put("DBF_ID", id);
         
@@ -59,8 +61,10 @@ public class LoadInitialViews extends Action<List> {
     
     private void createFlowView(String tableName, Integer id) throws Exception
     {
-        //@RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
+        //VIEW_LAYER_NAME @RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
         Map<String, Object> paramMap = new HashMap<>();
+        String flowView = "flow_" + id;
+        paramMap.put("VIEW_LAYER_NAME", flowView);
         paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
         paramMap.put("DBF_ID", id);
         
@@ -95,9 +99,12 @@ public class LoadInitialViews extends Action<List> {
                 rset.close();
             }
         }
-        LOGGER.info("Using catch table name: " + result.get(0) );
-        LOGGER.info(" and flow table name: " + result.get(1));
-        
+        if (result.size() > 0){
+            LOGGER.info("Using catch table name: " + result.get(0) );
+            LOGGER.info(" and flow table name: " + result.get(1));
+        }
+        else
+            log.debug("Unable to find region table for model id with this model_output_id:" + id);
         
         return result;
     }
@@ -105,16 +112,19 @@ public class LoadInitialViews extends Action<List> {
     private Set getUniqueModelIds() throws Exception {
         Set<Integer> result = new HashSet();
 
-        PreparedStatement sqlPs = getPostgresPSFromPropertiesFile("GetDistinctModelOutputIds", null, null);
-        LOGGER.info("Get distinct output IDs sql: " + sqlPs.toString());
+        //PreparedStatement sqlPs = getPostgresPSFromPropertiesFile("GetDistinctModelOutputIds", null, null);
+        String sql = getText("GetDistinctModelOutputIds", this.getClass());
+        LOGGER.info("Get distinct output IDs sql: " + sql.toString());
+        
         ResultSet rset = null;
-
+        Statement statement = getPostgresStatement();
+        
         try {
-            rset = sqlPs.executeQuery();
+            rset = statement.executeQuery(sql);
             addResultSetForAutoClose(rset);
 
             while (rset.next()) {
-                result.add(rset.getInt("model_output_id"));
+                result.add(rset.getInt(1));
             }
 
         } finally {
@@ -123,6 +133,7 @@ public class LoadInitialViews extends Action<List> {
                 rset.close();
             }
         }
+        
         LOGGER.info("Quantity of unique model output ids obtained: " + result.size());
         return result;
     }
@@ -130,20 +141,21 @@ public class LoadInitialViews extends Action<List> {
     private HashSet retrieveAllViewNames() throws Exception {
         HashSet<Integer> result = new HashSet();  //no duplicates allowed
 
-        PreparedStatement sqlPs = getPostgresPSFromPropertiesFile("RetrieveAllViews", null, null);
-        LOGGER.info("Get all view names in schema sparrow_overlay: " + sqlPs.toString());
-        ResultSet rset = null;
 
+        String sql = getText("RetrieveAllViews", this.getClass());
+        LOGGER.info("Retrieve all view names sql: " + sql.toString());
+        
+        ResultSet rset = null;
+        Statement statement = getPostgresStatement();
+        
         try {
-            rset = sqlPs.executeQuery();
+            rset = statement.executeQuery(sql);
             addResultSetForAutoClose(rset);
 
             while (rset.next()) {
-                String viewName = rset.getString("viewname");  //will look like catch_-897439434 or flow_343243243
-                Integer model_output_id = parseIdFromViewName(viewName);// #TODO# some parsed int from the view name catch or flow removed (only need one or the other)
-                if (model_output_id != 0){
-                    result.add(parseIdFromViewName(viewName)); //the set, by its nature, will eliminate the duplicate entries
-                }
+                Integer parsed = parseIdFromViewName(rset.getString(1));
+                if (parsed != 0)
+                    result.add(parseIdFromViewName(rset.getString(1)));
             }
 
         } finally {
@@ -152,21 +164,24 @@ public class LoadInitialViews extends Action<List> {
                 rset.close();
             }
         }
-        LOGGER.info("Quantity of modelIds from views: " + result.size());
+        LOGGER.info("Quantity of views found: " + result.size());
         return result;
     }
 
     // regex that makes sure the name matches the prefix, either the flow_ or the catch_, and then retrieves the int after that
     private Integer parseIdFromViewName(String viewName) {
-        if (viewName.matches("flow_" + "^-?\\d+") || viewName.matches("catch_" + "^-?\\d+")) {
-            //parse the numeric off of the string
+        if (viewName.matches("^(flow_|catch_)[-]?[0-9]{9}$")) { //|| viewName.matches("catch_" + "-?\\d+")) {
+            //parse the numeric off of the string that starts with either flow_ or catch_
+            
             String[] strings = viewName.split("_");
             String id = strings[1]; //second half of name anticipated to be the model_output_id
             if (isInteger(id)) //return it as a qualifying model output id
             {
+                // if the id exists, its included in the existing views set of ids
+                log.info("The model output id: " + id + " has a view representation already:" + viewName + " No additional views will be created for it.");
                 return new Integer(id);
             } else {
-                log.info("The portion of the view name that represents the model output id was not an Integer and won't be included in the set: " + id);
+                log.info("The portion of the view name that represents the model output id was not an Integer and won't be included in the set to create views : " + id);
             }
         }
         else {
@@ -190,8 +205,8 @@ public class LoadInitialViews extends Action<List> {
         HashSet<Integer> result = new HashSet();
         //Iterator it = rowIds.iterator();
 
-        for (Integer id : viewIds) {
-            if (rowIds.contains(id)) {
+        for (Integer id : rowIds) {
+            if (viewIds.contains(id)) {
                 //skip it
                 log.info("View already exists for model_output_id: " + id);
             } else {    

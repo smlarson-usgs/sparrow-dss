@@ -285,6 +285,7 @@ public class SharedApplication  {
 
                 log.info("Where is your PostgreSQL JDBC Driver? "
                     + "Include in your library path via maven!");
+                    
                 }
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;

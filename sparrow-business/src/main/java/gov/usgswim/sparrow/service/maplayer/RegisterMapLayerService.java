@@ -8,9 +8,9 @@ import gov.usgswim.sparrow.action.CreateGeoserverLayer;
 import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.postgres.action.CreateViewForLayer;
+import gov.usgswim.sparrow.postgres.action.LoadInitialViews;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.SharedApplication;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +57,13 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			if (context == null) {
 				throw new Exception("The context for the id '" + contextId + "' cannot be found");
 			}
-			             
+			// test of the LoadInitialViews script that will identify any model_output rows that should have views created and create them
+                        // part two is to expose the layers on geoserver via the cglAction below
+                        // part three would be to move it off into its own service/servlet at startup
+                        LoadInitialViews loadViews = new LoadInitialViews();
+                        loadViews.doAction();
+                        
+                        
 			//Write the data column of the context if it does not yet exist
 			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context); //TODO SPDSSII-28 write the row to the postgres table model_output
                         HashMap dbfValuesMap = writeDbfFile.run();
@@ -66,7 +72,6 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
                         List viewNames = cvlAction.run();
                         
 
- //               File dbfFile = new File("Remove after ","dbf file writer test");  //fake remove
 			//Register the data plus the shapefile w/ GeoServer as a layer
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, viewNames, projectedSrs);
 			String wpsResponse = cglAction.run();

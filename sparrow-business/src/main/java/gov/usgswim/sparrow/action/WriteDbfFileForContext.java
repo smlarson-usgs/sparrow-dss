@@ -26,16 +26,12 @@ import java.util.HashMap;
  */
 public class WriteDbfFileForContext extends Action<HashMap> {
 
-	//private static final String ID_COLUMN_NAME = "IDENTIFIER";
-	//private static final String DATA_EXPORT_DIRECTORY = "data-export-directory";
-	//private File dataDirectory;
 	//User config
 	private PredictionContext context;
 	
 	//Self initialized
 	private ColumnIndex columnIndex;
 	private ColumnData dataColumn;
-	//private File outputFile;
 	private ReachRowValueMap reachRowValueMap;
 	
 	public WriteDbfFileForContext(PredictionContext context) {
@@ -99,19 +95,5 @@ public class WriteDbfFileForContext extends Action<HashMap> {
 			return null;
 		}
 	}
-
-	/**
-	 * Provides a file pointer to the DBF file on disk. 
-	 * 
-	 * The DBF file may or may not exist. Callers of this function should use 
-	 * File object's exist() method to test whether it does. This function is used
-	 * primarily to allow callers to decide whether to write a new DBF file or 
-	 * skip 
-	 * 
-	 * @return a File pointer to the location of the DBF file on disk
-	 */
-//	public File getDbfFile() {
-//		return new File(getDataDirectory(), NamingConventions.convertContextIdToXMLSafeName(context.getModelID().intValue(), context.getId()) + ".dbf");
-//	}
 
 }

@@ -143,7 +143,7 @@ public class CreateGeoserverLayer extends Action<String> {
 //	
 	@Override
 	public String doAction() throws Exception {
-    URL fakeUrl = new URL("http://fakeTestUrl/dbfFile.dbf");    
+                URL fakeUrl = new URL("http://fakeTestUrl/dbfFile.dbf");  // provides backwards compatibility for clients that were already using the WPS prior to the addtion the postgres db that eliminated the dependency on the dbf  
 		String xmlReq = this.getTextWithParamSubstitution("template",
 				"contextId", context.getId().toString(), 
 				"modelId", context.getModelID().toString(),
