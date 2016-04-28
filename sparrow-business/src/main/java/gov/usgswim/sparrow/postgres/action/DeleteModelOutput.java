@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.postgres.action;
 
 import gov.usgswim.sparrow.action.Action;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ public class DeleteModelOutput extends Action<List> {
      *
      * @param modelOutputIds
      */
-    public DeleteModelOutput(List modelOutputIds) {
+    public DeleteModelOutput(List<Integer> modelOutputIds) {
         init(modelOutputIds);
     }
 
@@ -43,6 +44,7 @@ public class DeleteModelOutput extends Action<List> {
         List list = new ArrayList();
 
         for (Integer id : this.modelOutputIds) {
+            deleteViews(id);
             deleteRow(id);
         }
 
@@ -68,4 +70,17 @@ public class DeleteModelOutput extends Action<List> {
         }
        
     }
+    
+    private void deleteViews(Integer modelOutputId) throws Exception {
+        //hoping the one statement will drop both views.
+        Map<String, Object> paramMap = new HashMap<>();// this map is for sql parms
+        paramMap.put("MODEL_OUTPUT_ID", modelOutputId);
+        paramMap.put("MODEL_OUTPUT_ID", modelOutputId);
+
+        Statement statement = getPostgresStatement();
+        String sql = getPostgresSqlFromPropertiesFile("DropView", null, paramMap);
+        LOGGER.info("Postgres drop views: " + sql.toString()); 
+        statement.executeUpdate(sql);  
+    }
+    
 }

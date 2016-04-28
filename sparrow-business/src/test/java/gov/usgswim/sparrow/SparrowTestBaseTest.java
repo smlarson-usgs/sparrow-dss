@@ -14,7 +14,7 @@ import org.junit.Test;
  * This test just tests the self consistency of the predict results loaded
  * from the model 50 predict.txt file.
  * @author eeverman
- *
+ * 
  */
 public class SparrowTestBaseTest extends SparrowTestBase {
 
