@@ -71,16 +71,15 @@ public class NamingConventions {
 	 * that is, they contain little or no customization and have a high likelyhood
 	 * of being reused.
 	 * 
-	 * @param modelId
 	 * @param contextId
 	 * @param reusable If true, the reusable workspace name is used.
 	 * @return The layer name, prefixed with the appropriate workspace name.
 	 */
-        public static String getPostgresFullFlowlineLayerName(int modelId, int contextId, boolean reusable) {
+        public static String getPostgresFullFlowlineLayerName(int contextId, boolean reusable) {
 		if (reusable) {
-			return POSTGRES_FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + getFlowLayerName(contextId);//"postgres-ws" + ":" + "reusable_flow_" + contextId;
+			return POSTGRES_FLOWLINE_REUSABLE_WORKSPACE_NAME + ":" + getFlowLayerName(contextId);
 		} else {
-			return POSTGRES_FLOWLINE_WORKSPACE_NAME + ":" + getFlowLayerName(contextId);//"postgres-ws" + ":" + "flow_" + contextId;
+			return POSTGRES_FLOWLINE_WORKSPACE_NAME + ":" + getFlowLayerName(contextId);
 		}
 		
 	}

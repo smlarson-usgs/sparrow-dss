@@ -83,7 +83,12 @@
 			<artifactId>ojdbc6_g</artifactId>
 			<type>jar</type>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>  
+<dependency>
+	<groupId>org.postgresql</groupId>
+	<artifactId>postgresql</artifactId>
+	<version>9.4-1200-jdbc41</version>
+</dependency>
 		<dependency>
 			<!-- This is marked as provided b/c a base test class is in the src code (not test code) so it can be shared -->
 			<groupId>httpunit</groupId>

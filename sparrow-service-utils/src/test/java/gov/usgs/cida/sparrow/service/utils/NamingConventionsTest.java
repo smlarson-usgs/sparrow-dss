@@ -17,13 +17,13 @@ public class NamingConventionsTest {
 		//assertEquals("50P1234", NamingConventions.convertContextIdToXMLSafeName(50, 1234));
 		//assertEquals("50P0", NamingConventions.convertContextIdToXMLSafeName(50, 0));
                 assertEquals("postgres-sparrow-catchment-reusable:catch_123456789", NamingConventions.getPostgresFullCatchmentLayerName(123456789, true));
-		assertEquals("postgres-sparrow-flowline-reusable:flow_123456789", NamingConventions.getPostgresFullFlowlineLayerName(00, 123456789, true));
+		assertEquals("postgres-sparrow-flowline-reusable:flow_123456789", NamingConventions.getPostgresFullFlowlineLayerName(123456789, true));
 		//With workspace - non-reusable
 		//assertEquals(NamingConventions.FLOWLINE_WORKSPACE_NAME +  ":50N1234", NamingConventions.getFullFlowlineLayerName(50, -1234, false));
 		//assertEquals(NamingConventions.CATCHMENT_WORKSPACE_NAME + ":50P1234", NamingConventions.getFullCatchmentLayerName(50, 1234, false));
 		//assertEquals(NamingConventions.CATCHMENT_WORKSPACE_NAME + ":50P0", NamingConventions.getFullCatchmentLayerName(50, 0, false));
 		assertEquals("postgres-sparrow-catchment:catch_-123456789", NamingConventions.getPostgresFullCatchmentLayerName(-123456789, false));
-		assertEquals("postgres-sparrow-flowline:flow_-123456789", NamingConventions.getPostgresFullFlowlineLayerName(00, -123456789, false));
+		assertEquals("postgres-sparrow-flowline:flow_-123456789", NamingConventions.getPostgresFullFlowlineLayerName(-123456789, false));
                 
 		//With workspace - reusable
 		//assertEquals(NamingConventions.FLOWLINE_REUSABLE_WORKSPACE_NAME +  ":50N1234", NamingConventions.getFullFlowlineLayerName(50, -1234, true));

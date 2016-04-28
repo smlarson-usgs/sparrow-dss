@@ -135,7 +135,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
  		7) For each resource info object, remove the resource completely from the GeoServer Catalog
  		8) Clean up the GeoTools cache (DataAccess Object dispose() method)
  		9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
- 		10) Delete the dbf file
+ 		10) Delete the rows on the Postgres model_output table.
 	 * 
 	 */
 	public static SweepResponse.DataStoreResponse cascadeDeleteDataStore(Catalog dsCatalog, DataStoreInfo dsInfo, File dbfFile) {
@@ -194,7 +194,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 							}
 
 						} else {
-							response.addResource(layerLocalName, "Layer is not in catalog, even though listed with teh datastore.  Ignoring.");
+							response.addResource(layerLocalName, "Layer is not in catalog, even though listed with the datastore.  Ignoring.");
 						}
 					}
 					
@@ -232,7 +232,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 				List<DataStoreInfo> dsOfSameName = getDatastoresForName(dsCatalog, dsName);
 				
 				if (dsOfSameName.isEmpty()) {
-					FileUtils.deleteQuietly(dbfFile);
+					FileUtils.deleteQuietly(dbfFile); //SPDSSI-28 #TODO# call a action to delete the rows given the model_output id derived from the layer name.
 					response.isDbfDeleted = true;	//false by default
 				}
 										

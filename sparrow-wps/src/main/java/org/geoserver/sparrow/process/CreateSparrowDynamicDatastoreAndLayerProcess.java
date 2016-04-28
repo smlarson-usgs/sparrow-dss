@@ -217,8 +217,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		if (state.isReusable == null) state.isReusable = Boolean.FALSE;
 		
 		//Build complete names  //SPDSSI-28 may need to have this match the view
-		state.fullFlowlineLayerName = NamingConventions.getPostgresFullFlowlineLayerName(state.modelId, state.contextId, state.isReusable);
-		state.fullCatchmentLayerName = NamingConventions.getPostgresFullCatchmentLayerName(state.modelId, state.contextId, state.isReusable);
+		state.fullFlowlineLayerName = NamingConventions.getPostgresFullFlowlineLayerName(state.contextId, state.isReusable);
+		state.fullCatchmentLayerName = NamingConventions.getPostgresFullCatchmentLayerName(state.contextId, state.isReusable);
 		
 		
 		//Cleanup the SRS
@@ -344,13 +344,13 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 		
 		ServiceResponseWrapper flowLayerWrap = createDbfShapefileJoiningDatastoreAndLayerProcess.execute(
-				NamingConventions.getFlowLayerName(state.contextId),// gives the 50N12312312
+				NamingConventions.getFlowLayerName(state.contextId),// was 50N12312312, now flow_123123123
 				NamingConventions.getPostgresFlowlineWorkspaceName(state.isReusable),
-				"/fake/test/path/flowtest.shp",//state.flowlineShapefile.getAbsolutePath(), //SPDSSII-28 this will be the name of the table in postgres
+				"/fake/test/path/flowtest.shp",//left for backwards compat. of the WPS. state.flowlineShapefile.getAbsolutePath(), //SPDSSII-28 
 				state.dbfFilePath,
 				JOIN_COLUMN,
 				state.projectedSrs,
-				flowStyleName, // this one matters
+				flowStyleName, 
 				tileCacheFilters,
 				state.description,
 				state.overwrite);
@@ -361,9 +361,9 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		}
 		
 		ServiceResponseWrapper catchLayerWrap = createDbfShapefileJoiningDatastoreAndLayerProcess.execute(
-				NamingConventions.getCatchLayerName(state.contextId),//NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId),//layer name
+				NamingConventions.getCatchLayerName(state.contextId),//now catch_123123123. was NamingConventions.convertContextIdToXMLSafeName(state.modelId, state.contextId)
 				NamingConventions.getPostgresCatchmentWorkspaceName(state.isReusable), // workspace
-				"/fake/test/path/catchtest.shp",//state.catchmentShapefile.getAbsolutePath(), //SPDSSII-28 this will be the name of the table in postgres
+				"/fake/test/path/catchtest.shp",//left for backwards compat of the wps //SPDSSII-28 this will be the name of the table in postgres
 				state.dbfFilePath,
 				JOIN_COLUMN,
 				state.projectedSrs,
@@ -493,8 +493,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		Integer contextId;
 		Integer modelId;
 		String coverageName;
-		String dbfFilePath;  //List view names SPDSSI-28 which will be the layer name
-		String idFieldInDbf;
+		String dbfFilePath;  //left for backward compat. SPDSSI-28
+		String idFieldInDbf; //no longer needed
 		String projectedSrs;
 		Boolean isReusable;
 		String description;
@@ -505,8 +505,8 @@ public class CreateSparrowDynamicDatastoreAndLayerProcess implements SparrowWps,
 		//Self init for each invocation based on user params
 		String fullFlowlineLayerName;	//complete name (workspace:layerName) for the reach layer
 		String fullCatchmentLayerName;	//complete name (workspace:layerName) for the catch layer
-		String flowlineShapefile;  // SPDSSII-28 this is now a table in postgres (name of table). It was a File
-		String catchmentShapefile; // SPDSSII-28 this is now a table in postgres (name of table). It was a File
+		String flowlineShapefile;  // no longer needed. SPDSSII-28 this is now a table in postgres (name of table). It was a File
+		String catchmentShapefile; // no longer needed. SPDSSII-28 this is now a table in postgres (name of table). It was a File
 		URL flowlineStyleUrl;
 		URL catchStyleUrl;
 	}

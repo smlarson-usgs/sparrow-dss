@@ -7,7 +7,7 @@ import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import java.util.HashMap;
 
 /**
- * Creates a dbf file containing an ID column and a data column.
+ * Creates a hash map of model output values-containing an ID column and a data column, for a given context.
  * 
  * The columns are written in order as follows:
  * HashMap (ID,Value) where the ID is the key 
@@ -24,7 +24,7 @@ import java.util.HashMap;
  * Null and NaN values are OK to write, but NaN will be read back as Null.
  * Null ID are never allowed.
  * 
- * @author smlarson
+ * @author smlarson, eeverman
  *
  */
 public class GetModelOutputValues extends Action<HashMap> {
@@ -109,13 +109,13 @@ public class GetModelOutputValues extends Action<HashMap> {
 
 						if (val.doubleValue() > maxValueInDbf) {
 							val = maxValueInDbf;
-							log.warn("A + infinity value was writtin to the dbf file to be joined"
-											+ " to a shapefile for mapping, however, the max representable"
+							log.warn("A + infinity value was part of the model output prediction"
+											+ ", however, the max representable"
 											+ " value is " + maxValueInDbf + ", which was used instead.");
 						} else if (val.doubleValue() < minValueInDbf) {
 							val = minValueInDbf;
-							log.warn("A - infinity value was writtin to the dbf file to be joined"
-											+ " to a shapefile for mapping, however, the min representable"
+							log.warn("A - infinity value was part of the model output prediction"
+											+ ", however, the min representable"
 											+ " value is " + minValueInDbf + ", which was used instead.");
 						}
 					}
@@ -125,7 +125,7 @@ public class GetModelOutputValues extends Action<HashMap> {
 					oneRow[1] = val;
 
                                         outputMap.put((int)id.intValue(), val);//this is an int to match the shapefile. See note above.
-                                        //SPDSSII-28 load the hashmap with the values for this dbf file (river network, modelnbr, generatated hash for the name of the dbf file)
+                                        //SPDSSII-28 load the hashmap with the values for this model output for insert as rows into model_output later
                                         
 				} else {
 					//Just leave this value out.
@@ -135,7 +135,6 @@ public class GetModelOutputValues extends Action<HashMap> {
 			}
 			
                         log.debug("Wrote " + dataColumn.getRowCount() + " rows to hash map. ");
-			//return outputFile; 
                         return outputMap;
 
 	}

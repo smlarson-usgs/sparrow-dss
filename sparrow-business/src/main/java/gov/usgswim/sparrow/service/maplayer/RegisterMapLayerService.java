@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class RegisterMapLayerService extends AbstractSparrowServlet {
 
 	private static final long serialVersionUID = 1L;
+        private static boolean hasLoadedInitialViews = false;
 
 	@Override
 	protected void doActualGet(HttpServletRequest httpReq, HttpServletResponse resp)
@@ -57,16 +58,21 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			if (context == null) {
 				throw new Exception("The context for the id '" + contextId + "' cannot be found");
 			}
-			// test of the LoadInitialViews script that will identify any model_output rows that should have views created and create them
-                        // part two is to expose the layers on geoserver via the cglAction below
-                        // part three would be to move it off into its own service/servlet at startup
-                        LoadInitialViews loadViews = new LoadInitialViews();
-                        loadViews.doAction();
+			
+                        if (!hasLoadedInitialViews) {
+                        // LoadInitialViews script that will identify any model_output rows that should have views created and create them.
+                        // Typically, this will only be done when the application is bounced to bring in a new model. 
+                        // Requires that the model output rows have been inserted via a script (from a shape dbf file).
+                        // Part two is to expose the views as layers on geoserver via the cglAction below.
+                            LoadInitialViews loadViews = new LoadInitialViews();
+                            loadViews.doAction();
+                            hasLoadedInitialViews = true;
+                        }
                         
-                        
+          
 			//Write the data column of the context if it does not yet exist
-			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context); //TODO SPDSSII-28 write the row to the postgres table model_output
-                        HashMap dbfValuesMap = writeDbfFile.run();
+			WriteDbfFileForContext getOutputValues = new WriteDbfFileForContext(context); //TODO SPDSSII-28 write the row to the postgres table model_output
+                        HashMap dbfValuesMap = getOutputValues.run();
 
                         CreateViewForLayer cvlAction = new CreateViewForLayer(context, dbfValuesMap);                    
                         List viewNames = cvlAction.run();

@@ -32,7 +32,7 @@ public class CreateViewForLayer extends Action<List> {
     /**
      *
      * @param context
-     * @param map consists of the dbf_identifier as the key and a double as a
+     * @param map consists of the model_output hash, dbf_identifier, as the key and a double as a
      * value
      */
     public CreateViewForLayer(PredictionContext context, HashMap map) {

@@ -81,7 +81,7 @@ public class WriteDbfFileForContext extends Action<HashMap> {
         
 	@Override
 	public HashMap doAction() throws Exception {
-		// Load DBF file into the postgres table 
+		// Acquire model output values for load into the postgres table 
                 GetModelOutputValues output = new GetModelOutputValues(columnIndex, dataColumn, reachRowValueMap);
                 return output.run();
 	}

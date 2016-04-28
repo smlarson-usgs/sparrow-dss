@@ -44,26 +44,12 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 		
 /**
- * WPS to add a layer to GeoServer based on an export dbf file from the user's
- * prediction context and a shapefile.
+ * WPS to add a layer to GeoServer based on an export model_ouput from the user's
+ * prediction context as views created in Postgres. The view is exposed as a layer.
  * 
- * This WPS is expecting two shapefiles structured on the server as shown:
- * <pre>
-	|-sparrow_data (this directory is configured in jndi as 'shapefile-directory')
-		|-shapefile
-			|-MRB_1_NHD (this directory passed as 'shapeFilePath' execution arg)
-				|-flowline
-					|-coverage.shp
-					|-coverage.shp.xml
-					|- ... (other files associated w/ the shapefile)
-				|-catchment
-					|-coverage.shp (all shapefiles have the 'coverage' name)
-					|- ... (other files associated w/ the shapefile)
-	|-MRB_2_E2RF1...
- </pre>
  * 
- * This has been updated to retrieve the two shape files from Postgres during the 
- * effort to remove the dependency on the multi-dbf-datastore (see SPDSSII-28).
+ * This WPS has been updated to retrieve two views for each model output run from Postgres.  
+ * Done to remove the dependency on the multi-dbf-datastore (see SPDSSII-28) and war-overlays that prevented geoserver upgrades.
  * 
  * For a single execution, a flowline and catchment layer are registered, each
  * in a separate namespace. 
@@ -73,8 +59,8 @@ import org.opengis.feature.simple.SimpleFeatureType;
  * sparrow_overlay.mrb02_mrbe2rf1_catch, and sparrow_overlay.mrb02_mrbe2rf1_flow.
  * 
  * Workspace names: sparrow-calibration, sparrow-catchment, sparrow-catchment-reusable, sparrow-flowline, sparrow-flowline-reusable 
- * Stores: Currently, same as the layer name. This will change to a single store for Postgres.
- * Styles: layer name plus catchment or flowline plus default : 22N1220785281-catchment-default; spdssi-28 have view names match layer names?
+ * Stores: Was the same as the layer name. This will change to a single store for Postgres.
+ * Styles: layer name plus catchment or flowline plus default : 22N1220785281-catchment-default; spdssi-28 will need to match to the view/layer name.
  * Namespace: http://water.usgs.gov/nawqa/sparrow/dss/spatial/sparrow-flowline  
  * 
  * The response is an XML document:
@@ -95,7 +81,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements SparrowWps, GeoServerProcess {
 	Logger log = LoggerFactory.getLogger(CreateDbfShapefileJoiningDatastoreAndLayerProcess.class);
 	
-	public static String DBASE_SHAPEFILE_JOIN_DATASTORE_NAME = "Dbase Shapefile Joining Data Store";
+	//public static String DBASE_SHAPEFILE_JOIN_DATASTORE_NAME = "Dbase Shapefile Joining Data Store";
 	public static String POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME = "Postgres View Shapefile Joining Data Store";
         
 	//Set at construction
@@ -125,6 +111,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 	 * @param idFieldInDbf
 	 * @param projectedSrs
 	 * @param defaultStyleName
+         * @param gwcParamFilters
 	 * @param description
 	 * @param overwrite
 	 * @return
@@ -134,8 +121,8 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 	public ServiceResponseWrapper execute(
 			@DescribeParameter(name="layerName", description="The layer name to add, without the workspace name", min = 1) String layerName,
 			@DescribeParameter(name="workspaceName", description="Name of the workspace to use for the style, which must exist.  Null OK to put in the default namespace", min = 0, max = 1) String workspaceName,
-			@DescribeParameter(name="shapeFilePath", description="The complete path on the local machine to a shapefile that the dbf file should be linked to.  Must be parsable into a Java File path.", min = 1) String shapeFilePath,
-			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
+			@DescribeParameter(name="shapeFilePath", description="NO LONGER NEEDED. The complete path on the local machine to a shapefile that the dbf file should be linked to.  Must be parsable into a Java File path.", min = 1) String shapeFilePath,
+			@DescribeParameter(name="dbfFilePath", description="NO LONGER NEEDED. The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile (NO LONGER USED - ALWAYS IDENTIFIER)", min = 1) String idFieldInDbf,
 			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 0) String projectedSrs,
 			@DescribeParameter(name="defaultStyleName", description="The name of an existing style to use as the default style w/o the workspace designation  The style must exist in the global workspace or the workspace of the layer..", min = 0) String defaultStyleName,
@@ -343,7 +330,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                 map.put("lastUsedMS", System.currentTimeMillis());  // Date for pruning process
                // map.put(PostgisDataStoreFactory.PREPARED_STATEMENTS, true );
                 try{
-                    DataStore postgis =  DataStoreFinder.getDataStore(map); //i think this if you created it already 
+                    DataStore postgis =  DataStoreFinder.getDataStore(map); //Assumes you created it already - the postgres datastore. 
                     // PostGISDataStore represents the database, while a FeatureSource represents a table in the database
                     SimpleFeatureType schema = postgis.getSchema(state.layerName); // this is the view
                     SimpleFeatureSource simSource = postgis.getFeatureSource(state.layerName);
@@ -354,16 +341,16 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                     CatalogBuilder builder = new CatalogBuilder(catalog);
                     ProjectionPolicy srsHandling2 = ProjectionPolicy.FORCE_DECLARED;
 
-                    DataStoreInfoImpl store = new DataStoreInfoImpl(catalog);
+                    DataStoreInfoImpl store = new DataStoreInfoImpl(catalog); //this is so that you can register the store for a particular layer
                     store.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);
                     store.setWorkspace(state.workspace);
                     store.setEnabled(true);
-                    store.setName(state.layerName);//postgis.getNames().get(0).toString());//this is model_50n776208324
+                    store.setName(state.layerName);//Sweeper uses this convention. This is just a Name but it will look like it has a store per layer in the ui. postgis.getNames().get(0).toString());//catch_-789789789 or flow_-789789789 for example
                     log.info("name of store (ie view name):" + schema.getName());
                     store.setConnectionParameters(map);
                     //log.info("simSource LOCAL name: " + simSource.getName().getLocalPart());
 
-                    builder.setWorkspace(store.getWorkspace());
+                    builder.setWorkspace(store.getWorkspace());// is this redundant with the store info
                     builder.setStore(store);
 
                     FeatureTypeInfo featureTypeInfo = builder.buildFeatureType(simSource);
@@ -374,8 +361,8 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                     // *** set the featureTypeInfo 
                     featureTypeInfo.setSRS(state.projectedSrs);  
                     featureTypeInfo.setName(state.layerName);
-                    featureTypeInfo.setTitle(state.layerName); //may want to add the model nbr 
-                    featureTypeInfo.setDescription(state.description);
+                    featureTypeInfo.setTitle(state.layerName); 
+                    featureTypeInfo.setDescription(state.description);//model nbr is mentioned here
                     featureTypeInfo.setAbstract(state.description);
                     featureTypeInfo.setProjectionPolicy(srsHandling2);
 
@@ -391,7 +378,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                    
 			//Set tile cache options
 			if (state.parameterFilters.size() > 0) {
-				GeoServerTileLayer tileLayer = gwc.getTileLayer(layerInfo);// was li  
+				GeoServerTileLayer tileLayer = gwc.getTileLayer(layerInfo);
 				GeoServerTileLayerInfo tileLayerInfo = tileLayer.getInfo();
 				
 				for (ParameterFilter filter : state.parameterFilters) {
@@ -439,7 +426,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		private String workspaceName;
 		private String shapeFilePath;
 		private String dbfFilePath;
-		private String idFieldInDbf;
+		private String idFieldInDbf; // NO LONGER NEEDED (previous change before SPDSSI-28
 		private String projectedSrs;
 		private String defaultStyleName;
 		private String[] gwcParamFilters;
@@ -449,8 +436,8 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		//Self Init based on user params
 		private String fullLayerName;
 		private WorkspaceInfo workspace;
-		private File shapeFile; // TODO SPDSSII-28
-		private File dbfFile; // TODO SPDSSII-28
+		private File shapeFile; // NO LONGER NEEDED- SPDSSI-28
+		private File dbfFile; // NO LONGER NEEDED- SPDSSI-28
 		private NamespaceInfo namespace;
 		private StyleInfo defaultStyle;
 		private List<ParameterFilter> parameterFilters;

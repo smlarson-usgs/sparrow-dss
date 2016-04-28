@@ -12,6 +12,8 @@ import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileWriter;
 
 /**
+ * Replaced with GetModelOutputValues as part of the multi dbf replacement with Postgres.
+ * NO LONGER NEEDED. To be removed from the code base.
  * Creates a dbf file containing an ID column and a data column.
  * 
  * The columns are written in order as follows:

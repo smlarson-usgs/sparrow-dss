@@ -148,7 +148,7 @@ public class CreateGeoserverLayer extends Action<String> {
 				"contextId", context.getId().toString(), 
 				"modelId", context.getModelID().toString(),
 				"coverageName", shapefileFileName, 
-				"dbfFilePath", fakeUrl,//dbfFile.getAbsolutePath(), // #TODO# remove and replace with postgres ref SPDSSII-28, will require front end testing 
+				"dbfFilePath", fakeUrl,// SPDSSII-28, will require front end change, leave for backward compat.
 				"idFieldInDbf", idFieldInShapeFileAndDbfFile,
 				"projectedSrs", (projectedSrs == null)?"":projectedSrs,
 				"isReusable", Boolean.toString(isReusable),
