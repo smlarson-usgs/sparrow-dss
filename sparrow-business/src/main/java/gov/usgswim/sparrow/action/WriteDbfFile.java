@@ -33,6 +33,7 @@ import org.geotools.data.shapefile.dbf.DbaseFileWriter;
  * @author eeverman
  *
  */
+@Deprecated
 public class WriteDbfFile extends Action<File> {
 
 	/** Ensures a minimum of 6 digits of precision for all numbers. */

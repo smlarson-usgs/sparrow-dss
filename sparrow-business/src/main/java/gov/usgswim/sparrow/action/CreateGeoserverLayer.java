@@ -60,7 +60,6 @@ public class CreateGeoserverLayer extends Action<String> {
 	 * 
 	 * @param context A prediction context to construct the map layer for
          * @param viewNames - list with both the catch and flow view name 
-	// * @param dbfFile Reference to a DBF file that contains ID and value columns.
 	 * @param projectedSrs A fully qualified name of an SRS to project to.  If unspecified, GeoServer will default to.
 	 */
 	public CreateGeoserverLayer(PredictionContext context, List viewNames, String projectedSrs) {
@@ -76,7 +75,7 @@ public class CreateGeoserverLayer extends Action<String> {
 		ModelRequestCacheKey mrk = new ModelRequestCacheKey(context.getModelID(), false, false, false);
 		SparrowModel model = SharedApplication.getInstance().getModelMetadata(mrk).get(0);
 		shapefileFileName = model.getThemeName();
-		idFieldInShapeFileAndDbfFile = model.getEnhNetworkIdColumn();  //example: 
+		idFieldInShapeFileAndDbfFile = model.getEnhNetworkIdColumn();  
 		isReusable = context.isLikelyReusable();
 		
 		if (isReusable) {

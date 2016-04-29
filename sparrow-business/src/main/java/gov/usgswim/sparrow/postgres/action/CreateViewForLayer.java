@@ -136,14 +136,14 @@ public class CreateViewForLayer extends Action<List> {
         PreparedStatement sql = getPostgresPSFromPropertiesFile("SelectExists", null, paramMap);
         LOGGER.info("Check existence with: " + sql.toString());
         ResultSet rset = null;
-        int quantity = 0;
+        boolean exists = false;
 
         try {
             rset = sql.executeQuery();
             addResultSetForAutoClose(rset);
 
             while (rset.next()) {
-                quantity = rset.getInt(1);
+                exists = rset.getBoolean(1);
             }
 
         } finally {
@@ -152,9 +152,9 @@ public class CreateViewForLayer extends Action<List> {
                 rset.close();
             }
         }
-        LOGGER.info("Quantity of model_id rows for this model output id before insert: " + quantity);
+        LOGGER.info("Model output id exists: " + exists);
 
-        return (quantity > 0);
+        return exists;
     }
 
     public List createViews() throws Exception {

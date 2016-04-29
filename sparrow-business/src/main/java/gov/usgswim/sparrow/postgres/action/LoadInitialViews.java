@@ -69,7 +69,7 @@ public class LoadInitialViews extends Action<List> {
         paramMap.put("DBF_ID", id);
         
         String sql = getPostgresSqlFromPropertiesFile("CreateFlowView", null, paramMap);
-        LOGGER.info("Postgres catch view created from: " + sql);
+        LOGGER.info("Postgres flow view created from: " + sql);
         Statement statement = getPostgresStatement();
         statement.executeUpdate(sql);
     }

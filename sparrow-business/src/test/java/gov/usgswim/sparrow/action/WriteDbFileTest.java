@@ -21,6 +21,7 @@ import org.junit.Test;
  *
  * @author eeverman
  */
+@Deprecated 
 public class WriteDbFileTest {
 
 	private final static double comp_err = .001d;

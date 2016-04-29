@@ -32,6 +32,8 @@ import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.jdbc.JDBCFeatureSource;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -334,9 +336,6 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                     // PostGISDataStore represents the database, while a FeatureSource represents a table in the database
                     SimpleFeatureType schema = postgis.getSchema(state.layerName); // this is the view
                     SimpleFeatureSource simSource = postgis.getFeatureSource(state.layerName);
-
-                    //JDBCFeatureSource fsource = (JDBCFeatureSource) postgis.getFeatureSource(state.layerName);
-                    //log.info("jdbc feature source (ie view): " + fsource.getName().toString());
 
                     CatalogBuilder builder = new CatalogBuilder(catalog);
                     ProjectionPolicy srsHandling2 = ProjectionPolicy.FORCE_DECLARED;

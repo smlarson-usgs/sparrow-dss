@@ -8,10 +8,12 @@ import gov.usgswim.sparrow.action.CreateGeoserverLayer;
 import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.postgres.action.CreateViewForLayer;
+import gov.usgswim.sparrow.postgres.action.DeleteModelOutput;
 import gov.usgswim.sparrow.postgres.action.LoadInitialViews;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +70,6 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
                             loadViews.doAction();
                             hasLoadedInitialViews = true;
                         }
-                        
           
 			//Write the data column of the context if it does not yet exist
 			WriteDbfFileForContext getOutputValues = new WriteDbfFileForContext(context); //TODO SPDSSII-28 write the row to the postgres table model_output
