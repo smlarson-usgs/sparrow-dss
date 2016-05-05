@@ -125,7 +125,6 @@ public class CreateViewForLayer extends Action<List> {
         }
     }
 
-    // if the quantity returned is greater than zero, return true 
     private boolean exists() throws Exception {
         //checks to see if the model_ouput has already been inserted for the first record
         //assumption is that the model_output_id (previously dbf id) would be different if any of the data in the rows was different

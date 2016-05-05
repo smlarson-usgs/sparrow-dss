@@ -18,6 +18,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -28,12 +29,12 @@ import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.layer.GeoServerTileLayer;
 import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
+import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
+import org.geoserver.sparrow.util.SweepResponse;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.jdbc.JDBCDataStore;
-import org.geotools.jdbc.JDBCFeatureSource;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -166,7 +167,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 		try {
 			//Check if the layer exists
 			LayerInfo layer = catalog.getLayerByName(state.fullLayerName);
-
+                        
 			if (layer != null) {
 				wrap.setStatus(ServiceResponseStatus.OK_ALREADY_EXISTS);
 				LayerResponse resp = new LayerResponse();
@@ -319,6 +320,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 	private void createLayer(UserState state, ServiceResponseWrapper wrap) throws Exception {
 
 		LayerResponse resp = new LayerResponse();
+                DataStoreInfo dsInfo = null;
 		
                 //params for the Postgres datastore 
                 // http://docs.geotools.org/stable/userguide/library/jdbc/datastore.html
@@ -339,23 +341,37 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 
                     CatalogBuilder builder = new CatalogBuilder(catalog);
                     ProjectionPolicy srsHandling2 = ProjectionPolicy.FORCE_DECLARED;
-
-                    DataStoreInfoImpl store = new DataStoreInfoImpl(catalog); //this is so that you can register the store for a particular layer
-                    store.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);
-                    store.setWorkspace(state.workspace);
-                    store.setEnabled(true);
-                    store.setName(state.layerName);//Sweeper uses this convention. This is just a Name but it will look like it has a store per layer in the ui. postgis.getNames().get(0).toString());//catch_-789789789 or flow_-789789789 for example
-                    log.info("name of store (ie view name):" + schema.getName());
-                    store.setConnectionParameters(map);
-                    //log.info("simSource LOCAL name: " + simSource.getName().getLocalPart());
-
-                    builder.setWorkspace(store.getWorkspace());// is this redundant with the store info
-                    builder.setStore(store);
+                    
+                    //check to see if the store exists already and dont recreate the wheel if it does
+                    //the datastore is the DB. The store is the view or table.
+                    dsInfo = catalog.getDataStoreByName(state.workspace, state.layerName); //datastore and layer name are the same
+                    
+                    if (dsInfo == null){  //create a new store for this layer
+                        
+                        DataStoreInfoImpl store = new DataStoreInfoImpl(catalog); //this is so that you can register the new store for a particular layer
+                        store.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);
+                        store.setWorkspace(state.workspace);
+                        store.setEnabled(true);
+                        store.setName(state.layerName);//Sweeper uses this convention. This is just a Name but it will look like it has a store per layer in the ui. postgis.getNames().get(0).toString());//catch_-789789789 or flow_-789789789 for example
+                        log.info("Created new store with name (ie view name):" + schema.getName());
+                        store.setConnectionParameters(map);
+                        //log.info("simSource LOCAL name: " + simSource.getName().getLocalPart());
+                        builder.setStore(dsInfo);
+                        builder.setWorkspace(store.getWorkspace());
+                        log.info("Adding new store to catalog:" + schema.getName());
+                        catalog.add(store);
+                    }
+                    else {
+                        log.info("Data store already exists for " + dsInfo.getName() + " so there's no need to recreate it.");
+                        builder.setStore(dsInfo);
+                        builder.setWorkspace(dsInfo.getWorkspace()); //the workspace will match the workspace of the store
+                    }                   
 
                     FeatureTypeInfo featureTypeInfo = builder.buildFeatureType(simSource);
                     // ***
                     builder.lookupSRS(featureTypeInfo, true);
-                    builder.setupBounds(featureTypeInfo);
+                    log.info("About to set up Bounds for layer feature type.");
+                    builder.setupBounds(featureTypeInfo); 
 
                     // *** set the featureTypeInfo 
                     featureTypeInfo.setSRS(state.projectedSrs);  
@@ -371,7 +387,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                         layerInfo.setDefaultStyle(state.defaultStyle);   
                     }
                     // add the features etc to the catalog
-                    catalog.add(store);
+                    
                     catalog.add(featureTypeInfo);  
                     catalog.add(layerInfo);
                    
@@ -406,11 +422,11 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
              * possible that it wont get to something as a prerequisite for full removal might be what 
              * threw this exception.
              */
-                    log.info("In Sweeper...must fix for postgres adjustment."); //#TODO# SPDSSI-28
-//			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.cascadeDeleteDataStore(catalog, info, state.dbfFile); //#TODO# fix to delete layer 
-//			if(! dsr.isDeleted) {
-//				log.error("Unable to fully remove all layer creation changes for datastore [" + info.getName() + "]");
-//			}
+                    log.info("An exception occurred during the creation of the layer that now requires clean-up via the Sweeper. " + state.layerName); //#TODO# SPDSSI-28
+			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.cascadeDeleteDataStore(catalog, dsInfo); // This appears to attempt to delete whatever it can
+			if(! dsr.isDeleted) {
+				log.error("Unable to fully remove all layer creation changes for datastore [" + dsInfo.getName() + "]");
+			}
 			
                 }
 	}

@@ -26,7 +26,7 @@ public class LoadInitialViews extends Action<List> {
         //init() NA
         //validate() NA
         Set uModelOutputIds = getUniqueModelIds();// get all the unique model_output_ids 
-        Set retrieveAllViewIds = retrieveAllViewNames();// get all the views and parse the name down to the id
+        HashSet retrieveAllViewIds = retrieveAllViewNames();// get all the views and parse the name down to the id
         HashSet viewsNeeded = determineModelOutputIdsWithoutViews(uModelOutputIds,retrieveAllViewIds);//all the model_output_ids that did not have view 
         createViews(viewsNeeded); 
 
@@ -203,19 +203,12 @@ public class LoadInitialViews extends Action<List> {
     private HashSet determineModelOutputIdsWithoutViews(Set<Integer> rowIds, Set<Integer> viewIds) {
         //remove all ids from the rowIds where the viewId exists already
         HashSet<Integer> result = new HashSet();
-        //Iterator it = rowIds.iterator();
 
-        for (Integer id : rowIds) {
-            if (viewIds.contains(id)) {
-                //skip it
-                log.info("View already exists for model_output_id: " + id);
-            } else {    
-                result.add(id);
-                log.info("Will create two views for each model_output_id: " + id);
-            }
-        }
-        log.info("Found: " + result.size()+ " model_output_ids that will require views to be created.");
-
+        rowIds.removeAll(viewIds); // one line of code
+        log.info("Views that will need to be created for these model output ids: " + rowIds);
+        
+        result.addAll(rowIds);
+        
         return result;
     }
 }

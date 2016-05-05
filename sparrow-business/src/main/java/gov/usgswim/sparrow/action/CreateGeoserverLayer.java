@@ -64,7 +64,6 @@ public class CreateGeoserverLayer extends Action<String> {
 	 */
 	public CreateGeoserverLayer(PredictionContext context, List viewNames, String projectedSrs) {
 		this.context = context;
-		//this.dbfFile = dbfFile;
                 this.viewNames = viewNames;
 		this.projectedSrs = projectedSrs;
 	}

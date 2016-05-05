@@ -4,7 +4,6 @@ import gov.usgs.cida.sparrow.service.util.NamingConventions;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,7 +31,6 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.JDBCFeatureSource;
-import org.geotools.util.DefaultProgressListener;
 import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -68,6 +66,15 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	 */
 	private static final Object DELETE_LOCK = new Object();
 
+        /**
+         * The sweeper can be invoked either via the demo/WPS function on the GeoServer UI or based off of time (parms in context.xml).
+         * There are two major components involved: the Geoserver catalog and the Postgres database.
+         * Components are first removed from the catalog and then the database. 
+         * The UI presents options to delete everything in a common workspace (based off of time), or off a regex (and time) or based off a modelId.
+         * Both the catch and flow view will be removed if the request for either one is included via the workspace name, 
+         * as will the underlying model_output rows that they join to. Also, the layer, store, 
+         * @param catalog 
+         */
 	public GeoServerSparrowLayerSweeper(Catalog catalog) {
 		this.catalog = catalog;
 		
@@ -124,14 +131,12 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	
 	/**
 	 * 
-	 * @param cBuilder
-	 * @param da
+         * @param dsCatalog
 	 * @param dsInfo
-	 * @param dbfFile
 	 * @return
 	 * 
 	 *
-	 * The logic for removing everything associated with this dbf file is as follows:
+	 * The logic for removing everything associated with this model output is as follows:
  
  		1) Get all resource names associated with this store (all layer names)
  		2) For each layer dsName, get the layer info object
@@ -142,7 +147,8 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
  		7) For each resource info object, remove the resource completely from the GeoServer Catalog
  		8) Clean up the GeoTools cache (DataAccess Object dispose() method)
  		9) Delete the datastore itself (cBuilder.removeStore(dsInfo, false);)
- 		10) Delete the rows on the Postgres model_output table.
+                10) Delete both views from the Postgres model_output table based on the model output id.
+ 		11) Delete the rows on the Postgres model_output table based on the model output id.
 	 * 
 	 */
 	public static SweepResponse.DataStoreResponse cascadeDeleteDataStore(Catalog dsCatalog, DataStoreInfo dsInfo) {
@@ -179,11 +185,12 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 						
 						if (layer != null) {
 							
-							//
-							//delete layer
+							//delete layer from catalog
 							response.addResource(deleteLayer(dsCatalog, layer));
 							
-							//
+							//delete model_output views and rows from Postgres
+                                                        deleteModelOutputFromPostgres(dsInfo, layerName);
+                                                        
 							//delete associated style, maybe
 							StyleInfo style = layer.getDefaultStyle();
 
@@ -213,7 +220,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 				for (ResourceInfo resource : dsCatalog.getResourcesByStore(dsInfo, ResourceInfo.class)) {
 					response.addResource(deleteResource(dsCatalog, dsInfo, resource));
 				}
-
+                                 
 				//Now remove the datastore itself
 				try {
 					dsCatalog.detach(dsInfo);
@@ -239,9 +246,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 				List<DataStoreInfo> dsOfSameName = getDatastoresForName(dsCatalog, dsName);
 				
 				if (dsOfSameName.isEmpty()) {
-					deleteModelOutputFromPostgres(dsOfSameName.get(0), dsName);
-                                        //FileUtils.deleteQuietly(dbfFile); //SPDSSI-28 #TODO# call a action to delete the rows given the model_output id derived from the layer name.
-					response.isDbfDeleted = true;	//false by default
+                                    log.log(Level.WARNING, "Datastore detected with same name is sweeper.{0}", dsOfSameName.toString());
 				}
 										
 				response.isDeleted = true;	//false by default
@@ -256,61 +261,95 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	}
 	
         //will need to delete two views and the rows from model_output
-        private static void deleteModelOutputFromPostgres(DataStoreInfo storeInfo, String layerName) throws IOException, SQLException
-        {   //string will be in the form of catch_ or flow_  followed by the id
-            Integer parsedModelId = getIntFromName(layerName);
+        private static SweepResponse.Resource deleteModelOutputFromPostgres(DataStoreInfo storeInfo, Name layerName) throws IOException//, SQLException
+        {   
+            //String will be in the form of catch_ or flow_  followed by the id, its the datastore name or the layer name (they are the same)
+            String viewName = layerName.getLocalPart();
+            SweepResponse.DataStoreResponse response = new SweepResponse.DataStoreResponse(storeInfo.getWorkspace().getName(), viewName);
+            
+            if (viewName.matches("^(flow_|catch_)[-]?[0-9]{9}$")) {  //If there are other views in the database (probably from tests), don't consider them.
+               
+                Integer parsedModelId = getIntFromName(viewName);
+                if (parsedModelId > 0){
                         
-            //use the storeInfo object to get a connection to postgres
-            DataAccess<? extends FeatureType, ? extends Feature> postgis = storeInfo.getDataStore(new NullProgressListener());
+                //use the storeInfo object to get a connection to postgres
+                DataAccess<? extends FeatureType, ? extends Feature> postgis = storeInfo.getDataStore(new NullProgressListener());
            
-            List<Name> names = postgis.getNames();  // this is the layerName
-            Name viewName = names.get(0);  //the datastore name 
-            
-            if (names.get(0).equals(layerName)){
-                log.info("View to be removed:" + viewName);
+ 
+                JDBCDataStore jdbcStore = null;
+                if (postgis instanceof JDBCDataStore){
+                    try{        
+                        JDBCFeatureSource dbSource = (JDBCFeatureSource) postgis.getFeatureSource(layerName);  //view and layer are synonomous
+                        jdbcStore= dbSource.getDataStore();
+                        Connection connection = jdbcStore.getConnection(Transaction.AUTO_COMMIT);
+                        Statement statement = connection.createStatement();
+                        String dbSchema = jdbcStore.getDatabaseSchema();
+                    
+                        response.addResource(deleteViews(statement, parsedModelId, dbSchema));
+                    
+                        //delete rows from model output 
+                        int qty = statement.executeUpdate("DELETE FROM sparrow_overlay.model_output WHERE model_output_id = " + parsedModelId);
+                        response.addMessage("Deleted:" + qty + " rows from Postgres model output.");
+                
+                    }   catch (SQLException ex) {        
+                        Logger.getLogger(GeoServerSparrowLayerSweeper.class.getName()).log(Level.SEVERE, "Error while removing layers from Postgres. ", ex);
+                    }   finally {        
+                        jdbcStore.dispose();
+                    }
+                }
+                else {
+                    log.log(Level.INFO, "Data store not instance of JDBC. Unable to delete from Postgres: {0}", layerName);
+                    response.addMessage("Could not connect to Postgres as a JDBC data store.");
+                 
+                    return new SweepResponse.Resource(viewName, "Could not connect as a JDBC data store.  Unable to remove fiews and model_output rows from Postgres.");
+                }
+            } // >0
+            } else {//regex
+            log.info("View name did not match catch_ or flow_ prefix and is not included in the set.: " + viewName);
             }
-            
-            if (postgis instanceof JDBCDataStore){
-                    
-            JDBCFeatureSource dbSource = (JDBCFeatureSource) postgis.getFeatureSource(viewName);
-                    JDBCDataStore jdbcStore= dbSource.getDataStore();
-                    Connection connection = jdbcStore.getConnection(Transaction.AUTO_COMMIT);
-                    connection.commit();
-                    Statement statement = connection.createStatement();
-                    
-                    statement.executeUpdate("DROP VIEW IF EXISTS " + jdbcStore.getDatabaseSchema() + "." + viewName );
-                    connection.commit();
-                    
-                    statement.executeUpdate("DELETE FROM sparrow_overlay.model_output WHERE model_output_id = " + parsedModelId);
-                    
-                    jdbcStore.dispose();
-            }
-            else {
-                    log.info("Data store not instance of JDBC. Unable to delete from Postgres: " + layerName);
-            }
-            //delete views 
-            //delete store
+            return new SweepResponse.Resource(viewName, "Deleted layer. ");
         }
 	
-        private static Integer getIntFromName(String viewName){
-              if (viewName.matches("^(flow_|catch_)[-]?[0-9]{9}$")) { //|| viewName.matches("catch_" + "-?\\d+")) {
-            //parse the numeric off of the string that starts with either flow_ or catch_
+        private static SweepResponse.Resource deleteViews(Statement statement, Integer modelOutputId, String dbSchemaName) throws SQLException
+        {
+            List<String> viewNames = getViewNames(modelOutputId);
+            StringBuilder message = new StringBuilder();
             
+            for (String viewName : viewNames){
+            statement.executeUpdate("DROP VIEW IF EXISTS " + dbSchemaName + "." + viewName);  // need to take care of the remaining view pair
+            message.append("Dropped Postgres view :");
+            message.append(viewName);
+            message.append("   ");
+            }
+            return new SweepResponse.Resource(statement.toString(), message.toString());
+        }
+        
+        private static List getViewNames(Integer modelId)
+        {
+            List<String> result = new ArrayList();
+            if (modelId == null)
+                log.log(Level.WARNING, "Unable to delete Postgres views without modelId. modelId was null.");
+            else {
+                result.add("flow_" + modelId); //flow
+                result.add("catch_" + modelId); //catch
+            }
+            return result;
+        }
+        
+        private static Integer getIntFromName(String viewName){
+            //parse the numeric off of the string that starts with either flow_ or catch_
             String[] strings = viewName.split("_");
             String id = strings[1]; //second half of name anticipated to be the model_output_id
             if (isInteger(id)) //return it as a qualifying model output id
             {
                 // if the id exists, its included in the existing views set of ids
-                log.info("The model output id: " + id + " has a view representation:" + viewName + " These will be deleted from Postgres.");
+                log.log(Level.INFO, "The model output id: {0} has a view representation:{1} These will be deleted from Postgres.", new Object[]{id, viewName});
                 return new Integer(id);
             } else {
-                log.info("The portion of the view name that represents the model output id was not an Integer and will not be deleted from Postgres : " + id);
+                log.log(Level.INFO, "The portion of the view name that represents the model output id was not an Integer and will not be deleted from Postgres : {0}", id);
             }
-        }
-        else {
-            log.info("View name did not match catch_ or flow_ prefix and is not included in the set.: " + viewName);
-        }
-              return 0;
+
+            return 0;
         }
            
         
@@ -459,6 +498,7 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 	
 	/**
 	 * Runs a sweep with default values
+         * @throws java.lang.Exception
 	 */
 	public SweepResponse runSweep() throws Exception {
 		return runSweep(this.catalog, this.prunedWorkspaces, (String)null, this.maxAge);
@@ -528,6 +568,9 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 						
 						if (namePattern == null || dsName.matches(namePattern)) {
 
+                                                    //use the storeInfo object to get a connection to postgres
+                                                    DataAccess<? extends FeatureType, ? extends Feature> postgis = dsInfo.getDataStore(new NullProgressListener());
+                                                    
 							/**
 							 * Lets get the dbf filename for this specific datastore
 							 */
@@ -537,38 +580,36 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 								response.kept.add(logSweepError(wsInfo, dsInfo, "There are no connection parameters for this datastore"));
 								continue;
 							}
-
-							Object dbaseLocationObj = connectionParams.get(DBASE_KEY);
-							if(dbaseLocationObj == null) {
-								response.kept.add(logSweepError(wsInfo, dsInfo, "There is no " + DBASE_KEY + " connection parameter for this datastore"));
-								continue;
-							}								
-                                                        // will need to replace with the call to the action to delete the rows from the table model_output
+//
+//							Object dbaseLocationObj = connectionParams.get(DBASE_KEY);  //change this to postgres store lookup
+//							if(dbaseLocationObj == null) {
+//								response.kept.add(logSweepError(wsInfo, dsInfo, "There is no " + DBASE_KEY + " connection parameter for this datastore"));
+//								continue;
+//							}								
+//                                                        // will need to replace with the call to the action to delete the rows from the table model_output
                                                         // by calling the method with the model_output_id
                                                         log.info("ModelOutputId candidate for sweeper deletion :" + dsName);
-                  // ArrayList<Integer> list = new ArrayList();
-                  // list.add(45678923); //45678923
-                  // DeleteModelOutput del = new DeleteModelOutput(list);
-                  // del.doAction();
-							String dbaseLocation = null;								
-							if(dbaseLocationObj instanceof URL) {
-								dbaseLocation = ((URL)dbaseLocationObj).toString();
-							} else if(dbaseLocationObj instanceof String) {
-								dbaseLocation = (String)dbaseLocationObj;
-							}
-                                                        
-							if((dbaseLocation != null) && (!dbaseLocation.equals(""))) {
-								dbaseLocation = dbaseLocation.replace("file:", "");
-							} else {
-								response.kept.add(logSweepError(wsInfo, dsInfo, "The " + DBASE_KEY + " connection parameter must be either a string or a url and cannot be empty"));
-								continue;
-							}
+
+//							String dbaseLocation = null;								
+//							if(dbaseLocationObj instanceof URL) {
+//								dbaseLocation = ((URL)dbaseLocationObj).toString();
+//							} else if(dbaseLocationObj instanceof String) {
+//								dbaseLocation = (String)dbaseLocationObj;
+//							}
+//                                                        
+//							if((dbaseLocation != null) && (!dbaseLocation.equals(""))) {
+//								dbaseLocation = dbaseLocation.replace("file:", "");
+//							} else {
+//								response.kept.add(logSweepError(wsInfo, dsInfo, "The " + DBASE_KEY + " connection parameter must be either a string or a url and cannot be empty"));
+//								continue;
+//							}
 
 							/**
 							 * Lets get the age of this dbf file which is embedded in an 
 							 * attribute for the datastore "lastUsedMS"
 							 */
 							Long fileAge = 0L;
+                                                       
 							Object ageObject = connectionParams.get(DBASE_TIME_KEY);
 
 							if(ageObject == null) {
@@ -576,8 +617,8 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 										wsInfo.getName() + "] workspace that does not have the age flag \"" + DBASE_TIME_KEY +
 										"\" associated with it.  Using the dbf file's last modified time for the age calculation...");
 
-								File tmpFile = new File(dbaseLocation);
-								fileAge = tmpFile.lastModified();
+								//File tmpFile = new File(dbaseLocation);  //change to get the timestamp off the row on model_output
+								//fileAge = tmpFile.lastModified();
 							} else {
 								if(ageObject instanceof Long) {
 									fileAge = (Long)ageObject;
@@ -590,8 +631,8 @@ public class GeoServerSparrowLayerSweeper implements InitializingBean, Disposabl
 												"\" that cannot be converted to a long value [" + ageObject.toString() + "]. " +
 												"Using the dbf file's last modified time for the age calculation...");
 
-										File tmpFile = new File(dbaseLocation);
-										fileAge = tmpFile.lastModified();
+										//File tmpFile = new File(dbaseLocation);
+										//fileAge = tmpFile.lastModified();
 									}
 								}
 							}
