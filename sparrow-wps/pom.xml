@@ -35,7 +35,30 @@
 			<artifactId>gwc</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+            <!-- postgres additions for geoserver since removed dependency on glri war overlay below.
+                 This should create a jar that is deployed into the lib directory of geoserver   -->
+            <!--    <dependency>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                        <version>3.8.1</version>
+                        <scope>test</scope>
+                        </dependency>
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-process</artifactId>
+                    <version>${gt.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-process-geometry</artifactId>
+                    <version>${gt.version}</version>
+                </dependency>  -->
+            <!-- postgres additions for geoserver since removed dependency on glri war overlay above-->    
+		<!-- <dependency>
+ -			<groupId>gov.usgs.cida.glri</groupId>
+ -			<artifactId>multi-dbf-datastore</artifactId>
+ -		</dependency> -->
+                <dependency>
 			<!-- This version does not match the parent pom,
 			but is the version the GeoServer is using -->
 			<groupId>org.slf4j</groupId>

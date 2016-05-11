@@ -19,33 +19,35 @@
 			<artifactId>sparrow-wps</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
+                <dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sparrow-sld</artifactId>
 			<version>${project.version}</version>
-        </dependency>
+                </dependency>
+               
+               <!-- geoserver war overlay dependency -->
 		<dependency>
 			<groupId>gov.usgs.cida.geoserver</groupId>
 			<artifactId>geoserver</artifactId>
 			<version>${gs.version}-1</version>
 			<type>war</type>
 		</dependency>
-		<dependency>
-			<groupId>org.geoserver.extension</groupId>
-			<artifactId>oracle</artifactId>
-			<version>${gs.version}</version>
-		</dependency>
+              <!--  <dependency>
+ -			<groupId>gov.usgs.cida.glri</groupId>
+ -			<artifactId>multi-dbf-datastore</artifactId>
+ -		</dependency> -->
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>querylayer</artifactId>
-			<version>${gs.version}</version>
-		 <exclusions>
-		  <exclusion>
-		   <groupId>org.geoserver</groupId>
-		   <artifactId>main</artifactId>
-		  </exclusion>
-		 </exclusions>
-		</dependency>
+			<version>${gs.version}</version>            
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.geoserver</groupId>
+                            <artifactId>main</artifactId>
+                        </exclusion>
+                    </exclusions>
+		</dependency> 
+                  
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-shapefile-old</artifactId>
@@ -55,8 +57,8 @@
 	
 	<build>
 		<finalName>sparrowgeoserver</finalName>
-		<plugins>
-			<plugin>
+		 <plugins>
+			<plugin> <!-- war overlay -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.4</version>
@@ -93,7 +95,7 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
-		</plugins>
+		</plugins> 
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
