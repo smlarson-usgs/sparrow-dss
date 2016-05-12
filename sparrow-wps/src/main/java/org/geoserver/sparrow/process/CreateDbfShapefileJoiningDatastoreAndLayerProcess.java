@@ -333,8 +333,9 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                 map.put("Expose primary keys", true);
                 map.put("lastUsedMS", System.currentTimeMillis());  // Date for pruning process
                // map.put(PostgisDataStoreFactory.PREPARED_STATEMENTS, true );
+                DataStore postgis = null;
                 try{
-                    DataStore postgis =  DataStoreFinder.getDataStore(map); //Assumes you created it already - the postgres datastore. 
+                    postgis =  DataStoreFinder.getDataStore(map); //Assumes you created it already - the postgres datastore. 
                     // PostGISDataStore represents the database, while a FeatureSource represents a table in the database
                     SimpleFeatureType schema = postgis.getSchema(state.layerName); // this is the view
                     SimpleFeatureSource simSource = postgis.getFeatureSource(state.layerName);
@@ -356,18 +357,28 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                         log.info("Created new store with name (ie view name):" + schema.getName());
                         store.setConnectionParameters(map);
                         //log.info("simSource LOCAL name: " + simSource.getName().getLocalPart());
-                        builder.setStore(dsInfo);
+                        try{
+                            builder.setStore(dsInfo);  
+                        }catch (IllegalStateException ex) {
+                            log.error("Exception caught while trying to set store in geo catalog " + dsInfo.getName());
+                        }
+                       
                         builder.setWorkspace(store.getWorkspace());
                         log.info("Adding new store to catalog:" + schema.getName());
                         catalog.add(store);
+                        
                     }
                     else {
                         log.info("Data store already exists for " + dsInfo.getName() + " so there's no need to recreate it.");
                         builder.setStore(dsInfo);
                         builder.setWorkspace(dsInfo.getWorkspace()); //the workspace will match the workspace of the store
-                    }                   
-
-                    FeatureTypeInfo featureTypeInfo = builder.buildFeatureType(simSource);
+                    }
+                    FeatureTypeInfo featureTypeInfo = null;
+                    try{
+                        featureTypeInfo = builder.buildFeatureType(simSource); //this requires a try 
+                    }catch (IllegalStateException ex) {
+                       log.error("Exception caught while trying to create/build featureSource " + simSource.getName());
+                    }
                     // ***
                     builder.lookupSRS(featureTypeInfo, true);
                     log.info("About to set up Bounds for layer feature type.");
@@ -408,7 +419,6 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			wrap.addEntity(resp);
 			
                 } catch (IOException e) {
-			
 			//Message and error will be auto-logged from the wrapper
 			wrap.setMessage("Error obtaining new data store");
 			wrap.setError(e);
@@ -429,6 +439,10 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			}
 			
                 }
+                finally 
+                        {
+                            postgis.dispose();  //this should probably move to the sweeper
+                        }
 	}
 	
 	/**
