@@ -309,89 +309,66 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			state.parameterFilters = Collections.emptyList();
 		}
 	}
-	
-   
-	/**
+        
+ 	/**
 	 * Actually creates the layer.
 	 * 
 	 * @param wrap
+         * @param state
 	 * @throws Exception 
-	 */
-	private void createLayer(UserState state, ServiceResponseWrapper wrap) throws Exception {
+	 */       
+        private void createLayer(UserState state, ServiceResponseWrapper wrap) throws Exception {
 
 		LayerResponse resp = new LayerResponse();
+                
                 DataStoreInfo dsInfo = null;
-		
-                //params for the Postgres datastore 
-                // http://docs.geotools.org/stable/userguide/library/jdbc/datastore.html
-                Map<String, Serializable>map = new HashMap<>();
-                map.put( "dbtype", "postgis");
-                map.put( "jndiReferenceName", "java:comp/env/jdbc/postgres");  //in the tomcat context.xml
-                map.put("namespace", state.namespace.getURI());
-                map.put("schema", "sparrow_overlay");
-                map.put("loose bbox", true);
-                map.put("Expose primary keys", true);
-                map.put("lastUsedMS", System.currentTimeMillis());  // Date for pruning process
-               // map.put(PostgisDataStoreFactory.PREPARED_STATEMENTS, true );
                 DataStore postgis = null;
                 try{
-                    postgis =  DataStoreFinder.getDataStore(map); //Assumes you created it already - the postgres datastore. 
+                    postgis =  DataStoreFinder.getDataStore(getPostgresParms(state)); //Assumes you created it already - the postgres datastore. 
                     // PostGISDataStore represents the database, while a FeatureSource represents a table in the database
                     SimpleFeatureType schema = postgis.getSchema(state.layerName); // this is the view
                     SimpleFeatureSource simSource = postgis.getFeatureSource(state.layerName);
-
+          
                     CatalogBuilder builder = new CatalogBuilder(catalog);
-                    ProjectionPolicy srsHandling2 = ProjectionPolicy.FORCE_DECLARED;
                     
                     //check to see if the store exists already and dont recreate the wheel if it does
                     //the datastore is the DB. The store is the view or table.
                     dsInfo = catalog.getDataStoreByName(state.workspace, state.layerName); //datastore and layer name are the same
                     
-                    if (dsInfo == null){  //create a new store for this layer
-                        
-                        DataStoreInfoImpl store = new DataStoreInfoImpl(catalog); //this is so that you can register the new store for a particular layer
-                        store.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);
-                        store.setWorkspace(state.workspace);
-                        store.setEnabled(true);
-                        store.setName(state.layerName);//Sweeper uses this convention. This is just a Name but it will look like it has a store per layer in the ui. postgis.getNames().get(0).toString());//catch_-789789789 or flow_-789789789 for example
-                        log.info("Created new store with name (ie view name):" + schema.getName());
-                        store.setConnectionParameters(map);
-                        //log.info("simSource LOCAL name: " + simSource.getName().getLocalPart());
+                    if (dsInfo == null){
+                        //create a datastore info object for the layer (its postgres but has a name that matches the layer name
                         try{
-                            builder.setStore(dsInfo);  
+                            DataStoreInfoImpl store = createStoreForLayer(state);
+
+                            builder.setStore(store); 
+                            builder.setWorkspace(store.getWorkspace()); //it looks like geoserver wants a builder for each workspace
+                            
+                            catalog.add(store);  //this should add the new store to the geoserver catalog
                         }catch (IllegalStateException ex) {
-                            log.error("Exception caught while trying to set store in geo catalog " + dsInfo.getName());
+                            log.error("Exception caught while trying to set the new store in the geo catalog builder ");
                         }
-                       
-                        builder.setWorkspace(store.getWorkspace());
-                        log.info("Adding new store to catalog:" + schema.getName());
-                        catalog.add(store);
-                        
-                    }
-                    else {
+                    }else {
                         log.info("Data store already exists for " + dsInfo.getName() + " so there's no need to recreate it.");
                         builder.setStore(dsInfo);
-                        builder.setWorkspace(dsInfo.getWorkspace()); //the workspace will match the workspace of the store
+                        builder.setWorkspace(dsInfo.getWorkspace());
                     }
+
                     FeatureTypeInfo featureTypeInfo = null;
                     try{
-                        featureTypeInfo = builder.buildFeatureType(simSource); //this requires a try 
+                        featureTypeInfo = builder.buildFeatureType(simSource); 
+                        featureTypeInfo = setFeatureTypeInfo(featureTypeInfo, state); 
+                        
                     }catch (IllegalStateException ex) {
-                       log.error("Exception caught while trying to create/build featureSource " + simSource.getName());
+                       log.error("Exception caught while trying to create/build featureSource " + simSource.getName()); //http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres-sparrow-flowline-reusable:flow_-721080852
+                       log.error("Illegal state exception:" + ex.getMessage());
                     }
-                    // ***
-                    builder.lookupSRS(featureTypeInfo, true);
+                    
+                    builder.lookupSRS(featureTypeInfo, true);  //if permissions on Postgres tables are not granted to sparrow_model_output_user...
+                    //GRANT ALL ON TABLE public.spatial_ref_sys TO sparrow_model_output_user;
+                    //GRANT SELECT ON TABLE public.geometry_columns TO sparrow_model_output_user;
                     log.info("About to set up Bounds for layer feature type.");
-                    builder.setupBounds(featureTypeInfo); 
-
-                    // *** set the featureTypeInfo 
-                    featureTypeInfo.setSRS(state.projectedSrs);  
-                    featureTypeInfo.setName(state.layerName);
-                    featureTypeInfo.setTitle(state.layerName); 
-                    featureTypeInfo.setDescription(state.description);//model nbr is mentioned here
-                    featureTypeInfo.setAbstract(state.description);
-                    featureTypeInfo.setProjectionPolicy(srsHandling2);
-
+                    builder.setupBounds(featureTypeInfo);
+                    
                     //build the layer and add the style 
                     LayerInfo layerInfo = builder.buildLayer(featureTypeInfo);
                     if (state.defaultStyle != null) {
@@ -402,29 +379,41 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                     catalog.add(featureTypeInfo);  
                     catalog.add(layerInfo);
                    
-			//Set tile cache options
-			if (state.parameterFilters.size() > 0) {
-				GeoServerTileLayer tileLayer = gwc.getTileLayer(layerInfo);
-				GeoServerTileLayerInfo tileLayerInfo = tileLayer.getInfo();
-				
-				for (ParameterFilter filter : state.parameterFilters) {
-					tileLayerInfo.addParameterFilter(filter);
-				}
-				
-				gwc.save(tileLayer);
-			}
+                    setTileLayers(state, layerInfo);
 			
-			//The response object and its wrapper
-			resp.setlayerName(state.fullLayerName);
-			wrap.addEntity(resp);
-			
-                } catch (IOException e) {
-			//Message and error will be auto-logged from the wrapper
-			wrap.setMessage("Error obtaining new data store");
-			wrap.setError(e);
-			wrap.setStatus(ServiceResponseStatus.FAIL);
+                    //The response object and its wrapper
+                    resp.setlayerName(state.fullLayerName);
+                    wrap.addEntity(resp);
 
-                    log.debug("Attempting to roll back layer creation changes after error...");
+                } catch (IOException e){
+                    //Message and error will be auto-logged from the wrapper
+                    wrap.setMessage("Error obtaining new data store");
+                    wrap.setError(e);
+                    wrap.setStatus(ServiceResponseStatus.FAIL);
+                    //call the sweeper to clean up the mess
+                    sweepMess(dsInfo, state);
+                }
+                finally 
+                {
+                    postgis.dispose();  
+                }
+        } 	
+        
+        private void setTileLayers(UserState state, LayerInfo layerInfo){
+                //Set tile cache options
+                if (state.parameterFilters.size() > 0) {
+                    GeoServerTileLayer tileLayer = gwc.getTileLayer(layerInfo);
+                    GeoServerTileLayerInfo tileLayerInfo = tileLayer.getInfo();
+				
+                    for (ParameterFilter filter : state.parameterFilters) {
+                        tileLayerInfo.addParameterFilter(filter);
+                    }				
+                        gwc.save(tileLayer);
+                    }  
+        }
+        
+        private void sweepMess(DataStoreInfo dsInfo, UserState state){
+                log.debug("Attempting to roll back layer creation changes after error...");
             
             /**
              * Since we dont know exactly when the exception was thrown we will do the full layer removal
@@ -432,19 +421,52 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
              * possible that it wont get to something as a prerequisite for full removal might be what 
              * threw this exception.
              */
-                    log.info("An exception occurred during the creation of the layer that now requires clean-up via the Sweeper. " + state.layerName); //#TODO# SPDSSI-28
-			SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.cascadeDeleteDataStore(catalog, dsInfo); // This appears to attempt to delete whatever it can
-			if(! dsr.isDeleted) {
-				log.error("Unable to fully remove all layer creation changes for datastore [" + dsInfo.getName() + "]");
-			}
-			
-                }
-                finally 
-                        {
-                            postgis.dispose();  //this should probably move to the sweeper
-                        }
-	}
-	
+            log.info("An exception occurred during the creation of the layer that now requires clean-up via the Sweeper. " + state.layerName); //#TODO# SPDSSI-28
+            SweepResponse.DataStoreResponse dsr = GeoServerSparrowLayerSweeper.cascadeDeleteDataStore(catalog, dsInfo); // This appears to attempt to delete whatever it can
+            if(! dsr.isDeleted) {
+		log.error("Unable to fully remove all layer creation changes for datastore [" + dsInfo.getName() + "]");
+            }
+        }
+        
+        private FeatureTypeInfo setFeatureTypeInfo(FeatureTypeInfo featureTypeInfo, UserState state){
+                               
+                featureTypeInfo.setSRS(state.projectedSrs);  
+                featureTypeInfo.setName(state.layerName);
+                featureTypeInfo.setTitle(state.layerName); 
+                featureTypeInfo.setDescription(state.description);//model nbr is mentioned here
+                featureTypeInfo.setAbstract(state.description);
+                featureTypeInfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+                    
+                return featureTypeInfo;
+        }
+                 
+        private HashMap getPostgresParms(UserState state)
+        {
+            // http://docs.geotools.org/stable/userguide/library/jdbc/datastore.html
+            HashMap<String, Serializable>map = new HashMap<>();
+                map.put( "dbtype", "postgis");
+                map.put( "jndiReferenceName", "java:comp/env/jdbc/postgres");  //in the tomcat context.xml
+                map.put("namespace", state.namespace.getURI());
+                map.put("schema", "sparrow_overlay");
+                map.put("loose bbox", true);
+                map.put("Expose primary keys", true);
+                map.put("lastUsedMS", System.currentTimeMillis());  // Date for pruning process in sweeper
+            return map;
+        }
+        
+        
+	private DataStoreInfoImpl createStoreForLayer(UserState state)
+        {
+            DataStoreInfoImpl store = new DataStoreInfoImpl(catalog); //this is so that you can register the new store for a particular layer
+                store.setType(POSTGRES_SHAPEFILE_JOIN_DATASTORE_NAME);
+                store.setWorkspace(state.workspace);
+                store.setEnabled(true);
+                store.setName(state.layerName);//Sweeper uses this convention. This is just a Name but it will look like it has a store per layer in the ui. postgis.getNames().get(0).toString());//catch_-789789789 or flow_-789789789 for example
+                log.info("Created new store with name (ie view name):" + state.layerName.toString());
+                store.setConnectionParameters(getPostgresParms(state));
+            return store;
+        }
+   
 	/**
 	 * The WPS is single instance, so a state class for each user request holds
 	 * all info for a single execution.
