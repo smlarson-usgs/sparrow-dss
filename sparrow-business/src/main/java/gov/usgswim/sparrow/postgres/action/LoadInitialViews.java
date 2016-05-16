@@ -48,8 +48,8 @@ public class LoadInitialViews extends Action<List> {
     {
         // VIEW_LAYER_NAME @RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
         Map<String, Object> paramMap = new HashMap<>();
-        String catchView = "catch_" + id;
-        paramMap.put("VIEW_LAYER_NAME", catchView);
+      
+        paramMap.put("VIEW_LAYER_NAME", "\"catch_" + id + "\"");
         paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
         paramMap.put("DBF_ID", id);
         
@@ -63,8 +63,8 @@ public class LoadInitialViews extends Action<List> {
     {
         //VIEW_LAYER_NAME @RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
         Map<String, Object> paramMap = new HashMap<>();
-        String flowView = "flow_" + id;
-        paramMap.put("VIEW_LAYER_NAME", flowView);
+        
+        paramMap.put("VIEW_LAYER_NAME", "\"flow_" + id + "\"");
         paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
         paramMap.put("DBF_ID", id);
         
