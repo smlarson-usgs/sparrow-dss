@@ -395,24 +395,12 @@
 				<version>${gs.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-				<exclusions>
-					<exclusion>
-						<artifactId>gt-shapefile</artifactId>
-						<groupId>org.geotools</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<!-- duplicates the geoserver dependency, but is sometimes used by itself -->
 				<groupId>org.geoserver</groupId>
 				<artifactId>rest</artifactId>
 				<version>${gs.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>gt-shapefile</artifactId>
-						<groupId>org.geotools</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<!-- duplicates the geoserver dependency, but is sometimes used by itself -->
@@ -420,12 +408,6 @@
 				<artifactId>main</artifactId>
 				<classifier>tests</classifier>
 				<version>${gs.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>gt-shapefile</artifactId>
-						<groupId>org.geotools</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -433,49 +415,28 @@
 				<version>${gt.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-				<exclusions>
-					<exclusion>
-						<artifactId>gt-shapefile</artifactId>
-						<groupId>org.geotools</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<!-- <dependency>
-				<groupId>gov.usgs.cida.glri</groupId>
-				<artifactId>multi-dbf-datastore</artifactId>
-				<version>1.1.0.0</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>gt-shapefile</artifactId>
-						<groupId>org.geotools</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-                        -->
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt-shapefile-old</artifactId>
-				<type>jar</type>
-				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geoserver.extension</groupId>
 				<artifactId>wps-core</artifactId>
 				<version>${gs.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>gt-shapefile</artifactId>
-						<groupId>org.geotools</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
-			
+			<dependency>
+				<groupId>org.geoserver.extension</groupId>
+				<artifactId>web-wps</artifactId>
+				<version>${gs.version}</version>
+			</dependency>
 			<!-- Code Dependencies -->
 			<dependency>
 				<groupId>cglib</groupId>
 				<artifactId>cglib-nodep</artifactId>
 				<version>2.1_3</version>
 			</dependency>
+                        <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>9.4-1200-jdbc41</version>
+                        </dependency>
 			<dependency>
 				<groupId>com.oracle</groupId>
 				<artifactId>ojdbc6_g</artifactId>

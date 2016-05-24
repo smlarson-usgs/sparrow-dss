@@ -162,7 +162,11 @@ public class CreateViewForLayer extends Action<List> {
 
         viewNames.add(createView(getCatchViewParams(tables.get(0).toString()))); //catchment
         viewNames.add(createView(getFlowViewParams(tables.get(1).toString()))); //flow or reach
-
+        
+        if (viewNames.isEmpty() || viewNames.size()<2 )
+        {
+                    addValidationError("Unable to create views in Postgres. Quantity of view names returned:" + viewNames.size());
+        }
         return viewNames;
     }
 
@@ -175,7 +179,7 @@ public class CreateViewForLayer extends Action<List> {
         paramMap.put("VIEW_LAYER_NAME", "\"catch_" + this.model_output_id + "\"");
         paramMap.put("GEOMTYPE", catchGeom);
         paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
-        paramMap.put("DBF_ID", this.model_output_id); //this.model_output_id);
+        paramMap.put("DBF_ID", this.model_output_id);
 
         return paramMap;
     }
@@ -195,7 +199,7 @@ public class CreateViewForLayer extends Action<List> {
     private String createView(Map paramMap) throws Exception {
         // Note: can not use a prepared statement for DDL queries
         //String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);
-        //LOGGER.info("Postgres view created from: " + sql);
+        LOGGER.info("About to create Postgres view: " + paramMap.get("VIEW_LAYER_NAME"));
         Statement statement = getPostgresStatement();
         statement.executeUpdate(getPostgresSqlFromPropertiesFile("CreateView", null, paramMap));
         return (String) paramMap.get("VIEW_LAYER_NAME");
@@ -224,6 +228,9 @@ public class CreateViewForLayer extends Action<List> {
                 result.add(0, rset.getString("catch_table_name"));
                 result.add(1, rset.getString("flow_table_name"));
             }
+            if (rset.wasNull()){
+                addValidationError("Unable to select table names from Postgres for model number:" + modelNbr);
+            }
 
         } finally {
             // rset can be null if there is an sql error. 
@@ -233,7 +240,7 @@ public class CreateViewForLayer extends Action<List> {
         }
         LOGGER.info("Using catch table name: " + result.get(0) + " for model:" + modelNbr);
         LOGGER.info(" and flow table name: " + result.get(1));
-
+               
         return result;
     }
 

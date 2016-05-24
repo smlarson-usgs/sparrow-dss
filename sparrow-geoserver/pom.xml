@@ -12,7 +12,11 @@
 	<packaging>war</packaging>
 
 	<name>Sparrow Geoserver</name>
-
+        <properties>
+    		<!-- GeoServer and GeoTools Version Numbers -->
+		<gs.version>2.4.5</gs.version>
+		<gt.version>10.5</gt.version>
+        </properties>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -24,18 +28,33 @@
 			<artifactId>sparrow-sld</artifactId>
 			<version>${project.version}</version>
                 </dependency>
-               
-               <!-- geoserver war overlay dependency -->
-		<dependency>
-			<groupId>gov.usgs.cida.geoserver</groupId>
+                <dependency>
+			<groupId>org.geoserver</groupId>
 			<artifactId>geoserver</artifactId>
-			<version>${gs.version}-1</version>
-			<type>war</type>
+			<version>${gs.version}</version>
+                        <type>war</type>
 		</dependency>
-              <!--  <dependency>
- -			<groupId>gov.usgs.cida.glri</groupId>
- -			<artifactId>multi-dbf-datastore</artifactId>
- -		</dependency> -->
+                <dependency>
+                        <groupId>com.thetransactioncompany</groupId>
+                        <artifactId>cors-filter</artifactId>
+                        <version>1.3.2</version>
+                </dependency>
+                <dependency>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                    <version>2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+               <!-- geoserver war overlay dependency -->
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>querylayer</artifactId>
@@ -45,109 +64,98 @@
                             <groupId>org.geoserver</groupId>
                             <artifactId>main</artifactId>
                         </exclusion>
-                    </exclusions>
+                    </exclusions> 
 		</dependency> 
-                  
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-shapefile-old</artifactId>
-			<type>jar</type>
-		</dependency>
+                <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                </dependency>
 	</dependencies>
-	
-	<build>
-		<finalName>sparrowgeoserver</finalName>
-		 <plugins>
-			<plugin> <!-- war overlay -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<overlays>
-						<overlay>
-							<groupId>gov.usgs.cida.geoserver</groupId>
-							<artifactId>geoserver</artifactId>
-							<excludes>
-								<exclude>**/workspaces/upload/</exclude>
-								<exclude>**/workspaces/draw/</exclude>
-								<exclude>**/workspaces/sample/</exclude>
-								<exclude>META-INF/context.xml</exclude>
-								<exclude>WEB-INF/lib/gt-shapefile-10.5.jar</exclude>
-							</excludes>
-						</overlay>
-					</overlays>
-					<webResources> 
-						<webResource> 
-							<directory>${basedir}/src/main/webapp/data/www</directory> 
-							<includes> 
-								<include>version.txt</include>
-							</includes> 
-							<targetPath>data/www</targetPath> 
-							<filtering>true</filtering> 
-						</webResource> 
-					</webResources> 
-					<warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
-					<packagingExcludes>
-						**/workspaces/upload,
-						**/workspaces/draw,
-						**/workspaces/sample
-					</packagingExcludes>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins> 
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.jacoco</groupId>
-										<artifactId>
-											jacoco-maven-plugin
-										</artifactId>
-										<versionRange>
-											[0.7.0.201403182114,)
-										</versionRange>
-										<goals>
-											<goal>prepare-agent</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-war-plugin
-										</artifactId>
-										<versionRange>
-											[2.4,)
-										</versionRange>
-										<goals>
-											<goal>war</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-
+<build>
+        <finalName>sparrowgeoserver</finalName> <!-- ${project.artifactId} -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.geoserver</groupId>
+                            <artifactId>geoserver</artifactId>
+                            <excludes>
+                                <exclude>WEB-INF/lib/servlet-api-2.5.jar</exclude>
+                                <exclude>WEB-INF/lib/slf4j-api-1.5.8.jar</exclude>
+                                <exclude>WEB-INF/lib/slf4j-log4j12-1.4.2.jar</exclude>
+                                <exclude>WEB-INF/lib/log4j12-1.2.14.jar</exclude>
+                                <exclude>WEB-INF/lib/log4j-1.2.14.jar</exclude>
+                                <exclude>WEB-INF/lib/jdom-1.0.jar</exclude>
+                                <!--<exclude>WEB-INF/lib/je-4.1.10.jar</exclude>-->
+                                <!-- we use WEB-INF/web.xml as source for transform below,
+                                     don't allow copy as it will overwrite transformed result -->
+                                <exclude>WEB-INF/web.xml</exclude>
+                            </excludes>
+                        </overlay>
+                    </overlays>
+                   <warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
+                   <packagingExcludes>META-INF/context.xml</packagingExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformationSets>
+                        <transformationSet>
+                            <dir>target/war/work/org.geoserver/geoserver/WEB-INF</dir>
+                            <includes>
+                                <include>web.xml</include>
+                            </includes>
+                            <stylesheet>src/main/xsl/merge.xsl</stylesheet>
+                            <parameters>
+                                <parameter>
+                                    <name>includeFile</name>
+                                    <value>${basedir}/src/main/webapp/WEB-INF/web.xml</value>
+                                </parameter>
+                            </parameters>
+                            <outputDir>target/${project.build.finalName}/WEB-INF</outputDir>
+                        </transformationSet>
+                    </transformationSets>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.saxon</groupId>
+                        <artifactId>saxon</artifactId>
+                        <version>8.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>	
 </project>

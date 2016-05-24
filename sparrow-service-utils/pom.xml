@@ -41,12 +41,12 @@
 			<artifactId>wps-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+                <dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt-shapefile-old</artifactId>
+			<artifactId>gt-shapefile</artifactId>
 			<type>jar</type>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
