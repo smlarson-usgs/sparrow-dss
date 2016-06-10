@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +33,10 @@ import org.geoserver.sparrow.util.SweepResponse;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.postgis.PostGISDialect;
+import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.jdbc.SQLDialect;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -309,7 +311,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 			state.parameterFilters = Collections.emptyList();
 		}
 	}
-        
+                
  	/**
 	 * Actually creates the layer.
 	 * 
@@ -320,15 +322,23 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
         private void createLayer(UserState state, ServiceResponseWrapper wrap) throws Exception {
 
 		LayerResponse resp = new LayerResponse();
+                resp.setlayerName(state.layerName);
                 
                 DataStoreInfo dsInfo = null;
-                DataStore postgis = null;
-                try{
-                    postgis =  DataStoreFinder.getDataStore(getPostgresParms(state)); //Assumes you created it already - the postgres datastore. 
+               // DataStore postgis1 = null;
+                
+                JDBCDataStore jdbcPostgis = null;
+ 
+                    try{        
+                       // postgis1 =  DataStoreFinder.getDataStore(getPostgresParms(state)); //Assumes you created it already - the postgres datastore, in the context.xml and have the driver in the lib
+                        
+                        // new jdbc store....
+                        jdbcPostgis = createJDBCStoreForLayer(state, wrap); 
+                        
                     // PostGISDataStore represents the database, while a FeatureSource represents a table in the database
-                    SimpleFeatureType schema = postgis.getSchema(state.layerName); // this is the view
-                    SimpleFeatureSource simSource = postgis.getFeatureSource(state.layerName);
-          
+                    SimpleFeatureType schema = jdbcPostgis.getSchema(state.layerName); // this is the view
+                    SimpleFeatureSource simSource = jdbcPostgis.getFeatureSource(state.layerName);
+                           
                     CatalogBuilder builder = new CatalogBuilder(catalog);
                     
                     //check to see if the store exists already and dont recreate the wheel if it does
@@ -342,10 +352,11 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 
                             builder.setStore(store); 
                             builder.setWorkspace(store.getWorkspace()); //it looks like geoserver wants a builder for each workspace
-                            
+                                                 
                             catalog.add(store);  //this should add the new store to the geoserver catalog
                         }catch (IllegalStateException ex) {
-                            log.error("Exception caught while trying to set the new store in the geo catalog builder ");
+                            log.error("Exception caught while trying to set the new store in the geo catalog builder "); 
+                            wrap.setError(ex);
                         }
                     }else {
                         log.info("Data store already exists for " + dsInfo.getName() + " so there's no need to recreate it.");
@@ -361,9 +372,10 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                     }catch (IllegalStateException ex) {
                        log.error("Exception caught while trying to create/build featureSource " + simSource.getName()); //http://water.usgs.gov/nawqa/sparrow/dss/spatial/postgres-sparrow-flowline-reusable:flow_-721080852
                        log.error("Illegal state exception:" + ex.getMessage());
+                       wrap.setError(ex);
                     }
-                    
-                    builder.lookupSRS(featureTypeInfo, true);  //if permissions on Postgres tables are not granted to sparrow_model_output_user...
+                                       
+                    builder.lookupSRS(featureTypeInfo, true);  //if permissions on Postgres tables are not granted to sparrow_model_output_user by postgres user, you will get an exception...
                     //GRANT ALL ON TABLE public.spatial_ref_sys TO sparrow_model_output_user;
                     //GRANT SELECT ON TABLE public.geometry_columns TO sparrow_model_output_user;
                     log.info("About to set up Bounds for layer feature type.");
@@ -387,7 +399,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
 
                 } catch (IOException e){
                     //Message and error will be auto-logged from the wrapper
-                    wrap.setMessage("Error obtaining new data store");
+                    wrap.setMessage("Error obtaining new data store. ");
                     wrap.setError(e);
                     wrap.setStatus(ServiceResponseStatus.FAIL);
                     //call the sweeper to clean up the mess
@@ -395,7 +407,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                 }
                 finally 
                 {
-                    postgis.dispose();  
+                    jdbcPostgis.dispose();  
                 }
         } 	
         
@@ -443,17 +455,54 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
         private HashMap getPostgresParms(UserState state)
         {
             // http://docs.geotools.org/stable/userguide/library/jdbc/datastore.html
-            HashMap<String, Serializable>map = new HashMap<>();
-                map.put( "dbtype", "postgis");
-                map.put( "jndiReferenceName", "java:comp/env/jdbc/postgres");  //in the tomcat context.xml
-                map.put("namespace", state.namespace.getURI());
+            HashMap<String, Serializable>map = new HashMap<String, Serializable>();
+                map.put("dbtype", "postgis");
+                map.put("jndiReferenceName", "java:comp/env/jdbc/postgres");  //in the tomcat context.xml
+             //   map.put("loose bbox", true); //PostgisDataStoreFactory.LOOSEBBOX    does not work in this version of gt
+             //   map.put("preparedStatements", true); //this does work but it will change your dialect and its more restrictive. Return to this if there's perf issues.
+                map.put("namespace", state.namespace.getURI());  //<-- not listed as an option /library/jdbc/postgis.html
                 map.put("schema", "sparrow_overlay");
-                map.put("loose bbox", true);
                 map.put("Expose primary keys", true);
                 map.put("lastUsedMS", System.currentTimeMillis());  // Date for pruning process in sweeper
             return map;
         }
         
+        // since we are working with an oder version of gs, it requires an older version of gt. The comments are based on what was functional with the gt version (not in synch with the current gt doc)
+        private JDBCDataStore createJDBCStoreForLayer(UserState state, ServiceResponseWrapper wrap)
+        {
+            JDBCDataStore jdbcStore = null;
+            DataStore dataStore = null;
+            try {
+                try {
+                    dataStore = DataStoreFinder.getDataStore(getPostgresParms(state));
+                } catch (IOException ex) {
+                    log.error(ex.getMessage());
+                    wrap.setError(ex);
+                }
+                if (dataStore instanceof JDBCDataStore) {
+                    jdbcStore = (JDBCDataStore)dataStore;  
+                    log.info("Successfully created and cast the JDBC store for layer.");
+                    SQLDialect dialect= jdbcStore.getSQLDialect(); //PostGISDialect is expected
+                    log.info("Dialect type: " + dialect.toString()); //PostGISPSDialect - postgis prepared statement dialect occurs when map.put("preparedStatements", true);
+                 
+                if (dialect instanceof PostGISDialect)  //none of these settings work in geotools v 10.5, geoserver v2.4.5
+                    ((PostGISDialect) jdbcStore.getSQLDialect()).setEstimatedExtentsEnabled(true);//  I shouldnt need to do this if the parms worked. Prepared statements does work in the map and expose primary keys. 
+                    //((PostGISDialect) jdbcStore.getSQLDialect()).setLooseBBOXEnabled(true); 
+                    //((PostGISDialect) jdbcStore.getSQLDialect()).setFunctionEncodingEnabled(true);
+                    log.info("Dialect type has set to enabled: Estimated ext "); //, Loose BBox, Func Encoding. ");
+                }
+            }catch (Exception ex) {
+                log.info("Caught exception creating postgres datastore " + ex.getMessage()); 
+                wrap.setError(ex);
+                wrap.setStatus(ServiceResponseStatus.FAIL);
+                if (dataStore != null)
+                    dataStore.dispose();
+                if (jdbcStore != null)
+                    jdbcStore.dispose(); 
+            }
+            
+            return jdbcStore;
+        }
         
 	private DataStoreInfoImpl createStoreForLayer(UserState state)
         {
@@ -462,7 +511,7 @@ public class CreateDbfShapefileJoiningDatastoreAndLayerProcess implements Sparro
                 store.setWorkspace(state.workspace);
                 store.setEnabled(true);
                 store.setName(state.layerName);//Sweeper uses this convention. This is just a Name but it will look like it has a store per layer in the ui. postgis.getNames().get(0).toString());//catch_-789789789 or flow_-789789789 for example
-                log.info("Created new store with name (ie view name):" + state.layerName.toString());
+                log.info("Created new datastore info with name (ie view name):" + state.layerName.toString());
                 store.setConnectionParameters(getPostgresParms(state));
             return store;
         }

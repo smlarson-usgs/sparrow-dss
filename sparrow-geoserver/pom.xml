@@ -14,8 +14,10 @@
 	<name>Sparrow Geoserver</name>
         <properties>
     		<!-- GeoServer and GeoTools Version Numbers -->
-		<gs.version>2.4.5</gs.version>
-		<gt.version>10.5</gt.version>
+                <gs.version>2.9.0</gs.version>  <!--2.4.5  -->
+		<gt.version>15.0</gt.version>  <!-- 10.5 -->
+                <gwc.version>1.9.0</gwc.version>
+                <wms.version>1.1.1</wms.version>  <!-- read about diff versions http://docs.geoserver.org/stable/en/user/services/wms/basics.html  --> 
         </properties>
 	<dependencies>
 		<dependency>
@@ -29,8 +31,8 @@
 			<version>${project.version}</version>
                 </dependency>
                 <dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>geoserver</artifactId>
+			<groupId>org.geoserver.web</groupId> <!--org.geoserver -->
+			<artifactId>gs-web-app</artifactId> <!--geoserver -->
 			<version>${gs.version}</version>
                         <type>war</type>
 		</dependency>
@@ -53,23 +55,30 @@
                     <artifactId>junit</artifactId>
                     <scope>test</scope>
                 </dependency>
-
-               <!-- geoserver war overlay dependency -->
-		<dependency>
-			<groupId>org.geoserver.extension</groupId>
-			<artifactId>querylayer</artifactId>
-			<version>${gs.version}</version>            
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.geoserver</groupId>
-                            <artifactId>main</artifactId>
-                        </exclusion>
-                    </exclusions> 
-		</dependency> 
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-jdbc</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.geotools.jdbc</groupId>
+                    <artifactId>gt-jdbc-postgis</artifactId>
+                </dependency>
                 <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                 </dependency>
+               <!-- geoserver war overlay dependency -->
+		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>gs-querylayer</artifactId>
+			<version>${gs.version}</version>            
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.geoserver</groupId>
+                            <artifactId>gs-main</artifactId>
+                        </exclusion>
+                    </exclusions> 
+		</dependency> 
 	</dependencies>
 <build>
         <finalName>sparrowgeoserver</finalName> <!-- ${project.artifactId} -->
@@ -79,8 +88,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source> <!--was 1.6 -->
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -96,11 +105,24 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <webResources> 
+ -			<webResource> 
+ -                          <directory>${basedir}/src/main/webapp/data/www</directory> 
+ -                          <includes> 
+ -				<include>version.txt</include>
+ -                          </includes> 
+ -                          <targetPath>data/www</targetPath> 
+ -				<filtering>true</filtering> 
+ -			</webResource> 
+ -                  </webResources> 
                     <overlays>
                         <overlay>
-                            <groupId>org.geoserver</groupId>
-                            <artifactId>geoserver</artifactId>
+                            <groupId>org.geoserver.web</groupId> <!-- org.geoserver-->
+                            <artifactId>gs-web-app</artifactId><!-- geoserver-->
                             <excludes>
+                                <exclude>**/workspaces/upload/</exclude>
+ -				<exclude>**/workspaces/draw/</exclude>
+ -				<exclude>**/workspaces/sample/</exclude>
                                 <exclude>WEB-INF/lib/servlet-api-2.5.jar</exclude>
                                 <exclude>WEB-INF/lib/slf4j-api-1.5.8.jar</exclude>
                                 <exclude>WEB-INF/lib/slf4j-log4j12-1.4.2.jar</exclude>
@@ -115,7 +137,11 @@
                         </overlay>
                     </overlays>
                    <warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
-                   <packagingExcludes>META-INF/context.xml</packagingExcludes>
+                   <packagingExcludes>META-INF/context.xml,
+                                      **/workspaces/upload,
+ -                                    **/workspaces/draw,
+ -                                    **/workspaces/sample
+                   </packagingExcludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -133,7 +159,7 @@
                 <configuration>
                     <transformationSets>
                         <transformationSet>
-                            <dir>target/war/work/org.geoserver/geoserver/WEB-INF</dir>
+                            <dir>target/war/work/org.geoserver.web/gs-web-app/WEB-INF</dir>
                             <includes>
                                 <include>web.xml</include>
                             </includes>

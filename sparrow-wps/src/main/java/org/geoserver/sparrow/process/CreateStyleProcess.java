@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import org.apache.commons.io.FileUtils;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.ValidationResult;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.config.GeoServerDataDirectory;
@@ -260,9 +261,12 @@ public class CreateStyleProcess implements SparrowWps, GeoServerProcess {
 		FileUtils.copyInputStreamToFile(stream, styleSldFile);
 
 		//Check for errors in the setup of the new style
-		List<RuntimeException> errors = catalog.validate(newStyleInfo, true);
-		
-		if (errors.size() > 0) {
+		//List<RuntimeException> errors = catalog.validate(newStyleInfo, true);  //change due ot upgrade from gs 2.4.5 to 2.9.0
+		ValidationResult result = catalog.validate(newStyleInfo, true);
+               
+                
+		//if (errors.size() > 0) {  //upgrade change
+                if (!result.isValid()) {
 			
 			if (existingStyle != null) {
 				String msg = "Request to create style " + state.styleName + " in workspace " + state.workspaceName + " FAILED.  Unfortunately, there was an existing style of the same name, which was deleted and the new one could not be created.";

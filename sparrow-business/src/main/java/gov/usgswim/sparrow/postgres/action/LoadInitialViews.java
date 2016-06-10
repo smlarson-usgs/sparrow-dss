@@ -170,7 +170,7 @@ public class LoadInitialViews extends Action<List> {
 
     // regex that makes sure the name matches the prefix, either the flow_ or the catch_, and then retrieves the int after that
     private Integer parseIdFromViewName(String viewName) {
-        if (viewName.matches("^(flow_|catch_)[-]?[0-9]{9}$")) { //|| viewName.matches("catch_" + "-?\\d+")) {
+        if (viewName.matches("^(flow_|catch_)[-]?[0-9]{1,12}$")) { //|| viewName.matches("catch_" + "-?\\d+")) {
             //parse the numeric off of the string that starts with either flow_ or catch_
             
             String[] strings = viewName.split("_");

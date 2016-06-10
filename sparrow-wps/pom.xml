@@ -15,9 +15,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>gov.usgs.cida</groupId>
-			<artifactId>sparrow-service-utils</artifactId>
-			<version>${project.version}</version>
+                    <groupId>gov.usgs.cida</groupId>
+                    <artifactId>sparrow-service-utils</artifactId>
+                    <version>${project.version}</version>
 		</dependency>
 		<dependency>
                     <groupId>commons-io</groupId>
@@ -28,18 +28,89 @@
 			<artifactId>xercesImpl</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>gwc</artifactId>
-			<scope>provided</scope>
-		</dependency>
-            <!-- postgres additions for geoserver since removed dependency on glri war overlay below.
-                 This should create a jar that is deployed into the lib directory of geoserver   -->
+                
+                <!-- geoserver WPS dependencies -->
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-process</artifactId>
+               <!--     <version>${gt.version}</version>  -->
+                </dependency>
+                <dependency>
+                    <groupId>org.geoserver.extension</groupId>
+                    <artifactId>gs-wps-core</artifactId>
+                <!--    <scope>provided</scope>  -->
+                </dependency>
                 <dependency>
                     <groupId>org.geoserver</groupId>
-                    <artifactId>main</artifactId>
-		</dependency>
+                    <artifactId>gs-main</artifactId>
+                    <classifier>tests</classifier>
+                    <scope>test</scope>
+              <!--      <version>${gs.version}</version>  -->
+		</dependency> 
                 <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>4.11</version>
+                    <scope>test</scope>
+                </dependency>
+     
+                <dependency>
+                    <groupId>com.mockrunner</groupId>
+                    <artifactId>mockrunner</artifactId>
+                 <!--   <version>0.3.6</version>  -->
+                    <scope>test</scope> 
+                </dependency> 
+                <!-- end geoserver WPS dependencies -->  
+                       
+                <!-- geoserver web cache tile server, was gs-gwc -->
+		<dependency>
+			<groupId>org.geoserver</groupId> 
+			<artifactId>gs-gwc</artifactId>  
+                    <!--    <version>${gwc.version}</version>  -->
+			<scope>provided</scope>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>net.sf.json-lib</groupId>
+                                <artifactId>json-lib</artifactId>
+                            </exclusion>
+                        </exclusions>
+		</dependency>
+                <!-- wps stuff below -->
+                <dependency>
+                    <groupId>org.geoserver.extension</groupId>
+                    <artifactId>gs-web-wps</artifactId>
+                    <version>${gs.version}</version>
+                </dependency> 
+                <dependency>
+                    <groupId>org.geotools.xsd</groupId>
+                    <artifactId>gt-xsd-wps</artifactId>
+                    <version>${gt.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.geotools.xsd</groupId>
+                    <artifactId>gt-xsd</artifactId>
+                    <version>${gt.version}</version>
+                </dependency>  
+                <dependency>
+                    <groupId>org.geotools.ogc</groupId>
+                    <artifactId>net.opengis.wps</artifactId>
+                    <version>${gt.version}</version>
+                </dependency> 
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-process-geometry</artifactId>
+                    <version>${gt.version}</version>
+                </dependency>
+                <!-- http://mvnrepository.com/artifact/xalan/serializer -->
+                <dependency>
+                    <groupId>xalan</groupId>
+                    <artifactId>serializer</artifactId>
+                    <version>2.7.1</version>
+                </dependency>
+ 
+                <!-- end wps stuff above -->
+           <!-- I have no idea where these are needed, for now, I'll comment them out and see if exceptions are kicked out during testing. -->                  
+            <!--    <dependency>
                     <groupId>org.geotools</groupId>
                     <artifactId>gt-api</artifactId>
                 </dependency>
@@ -58,18 +129,28 @@
                 <dependency>
                     <groupId>org.geotools</groupId>
                     <artifactId>gt-shapefile</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.geoserver.extension</groupId>
-                    <artifactId>wps-core</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
+                </dependency>  -->
+
+        <!--        <dependency>
                     <groupId>org.geoserver.extension</groupId>
                     <artifactId>web-wps</artifactId>
                     <scope>runtime</scope>
+                </dependency>  -->
+                
+             <!-- postgres additions for geoserver: provides the ability to access the views that represent the layer based on the model output -->    
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-jdbc</artifactId>
                 </dependency>
-            <!-- postgres additions for geoserver since removed dependency on glri war overlay above-->    
+                <dependency>
+                    <groupId>org.geotools.jdbc</groupId>
+                    <artifactId>gt-jdbc-postgis</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </dependency>	
+               
                 <dependency>
 			<!-- This version does not match the parent pom,
 			but is the version the GeoServer is using -->
@@ -92,23 +173,22 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
-			<version>1.2.14</version>
+			<version>1.2.17</version> <!-- 1.2.14-->
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-                <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                </dependency>		
+	
 		<!-- These next ones are really for reference -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>wms</artifactId>
-			<scope>provided</scope>
-		</dependency>
+			<artifactId>gs-wms</artifactId>
+                        <version>${wms.version}</version>
+			<scope>provided</scope> 
+		</dependency>  -->
+                
 	</dependencies>
 
 </project>

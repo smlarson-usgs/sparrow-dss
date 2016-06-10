@@ -205,9 +205,12 @@
 		<sparrow.build.profile>production</sparrow.build.profile>
 		
 		<!-- GeoServer and GeoTools Version Numbers -->
-		<gs.version>2.4.5</gs.version>
-		<gt.version>10.5</gt.version>
+		<gs.version>2.9.0</gs.version>  <!--2.4.5  -->
+		<gt.version>15.0</gt.version>  <!-- 10.5 -->
 
+                <gwc.version>1.9.0</gwc.version>
+                <wms.version>1.1.1</wms.version>  <!-- read about diff versions http://docs.geoserver.org/stable/en/user/services/wms/basics.html  --> 
+      
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -241,31 +244,51 @@
 			<id>cida-public</id>
 			<name>CIDA Public Nexus</name>
 			<url>${cida.maven.url}/cida-public</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
 		</repository>
 		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
 			<url>${cida.maven.url.internal}/content/repositories/cida-sparrow-dss-thirdparty</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
 		</repository>
 		<repository>
 			<id>cida-internal-thirdparty</id>
 			<url>${cida.maven.url.internal}/content/repositories/cida-thirdparty</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
 		</repository>
 		<repository>
 			<id>cida-internal-releases</id>
 			<url>${cida.maven.url.internal}/content/repositories/cida-releases</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
 		</repository>
 		<repository>
 			<id>cida-opengeo</id>
 			<url>${cida.maven.url.internal}/content/repositories/opengeo/</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
 		</repository>
-		<repository>
+                <repository>
+			<id>boundless</id>
+			<url>http://repo.boundlessgeo.com/release/</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+		</repository>
+	<!--	<repository>
 			<id>boundless</id>
 			<url>http://repo.boundlessgeo.com/main/</url>
-		</repository>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+		</repository> -->
 		<repository>
 			<id>osgeo</id>
 			<name>Open Source Geospatial Foundation Repository</name>
-			<url>http://download.osgeo.org/webdav/geotools/</url>  
+			<url>http://download.osgeo.org/webdav/geotools/</url>
+                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>  
 		</repository>
 
 	</repositories>
@@ -295,8 +318,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.3</version>
 					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>1.8</source> <!-- 1.7 -->
+						<target>1.8</target>
 						<fork>true</fork>
 						<maxmem>512m</maxmem>
 					</configuration>
@@ -390,8 +413,8 @@
 			
 			<!-- Geoserver related -->
 			<dependency>
-				<groupId>org.geoserver</groupId>
-				<artifactId>geoserver</artifactId>
+				<groupId>org.geoserver.web</groupId> <!-- geoserver.org-->
+				<artifactId>gs-web-app</artifactId> <!-- geoserver.org-->
 				<version>${gs.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -399,13 +422,13 @@
 			<dependency>
 				<!-- duplicates the geoserver dependency, but is sometimes used by itself -->
 				<groupId>org.geoserver</groupId>
-				<artifactId>rest</artifactId>
+				<artifactId>gs-rest</artifactId>
 				<version>${gs.version}</version>
 			</dependency>
 			<dependency>
 				<!-- duplicates the geoserver dependency, but is sometimes used by itself -->
 				<groupId>org.geoserver</groupId>
-				<artifactId>main</artifactId>
+				<artifactId>gs-main</artifactId>
 				<classifier>tests</classifier>
 				<version>${gs.version}</version>
 			</dependency>
@@ -416,16 +439,49 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+                        <dependency>
+                            <groupId>org.geotools</groupId>
+                            <artifactId>gt-jdbc</artifactId>
+                            <version>${gt.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.geotools.jdbc</groupId>
+                            <artifactId>gt-jdbc-postgis</artifactId>
+                            <version>${gt.version}</version>
+                        </dependency>
 			<dependency>
 				<groupId>org.geoserver.extension</groupId>
-				<artifactId>wps-core</artifactId>
+				<artifactId>gs-wps-core</artifactId>
 				<version>${gs.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.geoserver.extension</groupId>
-				<artifactId>web-wps</artifactId>
-				<version>${gs.version}</version>
-			</dependency>
+                <dependency>
+                    <groupId>org.geoserver.extension</groupId>
+                    <artifactId>gs-web-wps</artifactId>
+                    <version>${gs.version}</version>
+                </dependency> 
+                <dependency>
+                    <groupId>org.geotools.xsd</groupId>
+                    <artifactId>gt-xsd-wps</artifactId>
+                    <version>${gt.version}</version>
+                </dependency> 
+                <dependency>
+                    <groupId>org.geotools.ogc</groupId>
+                    <artifactId>net.opengis.wps</artifactId>
+                    <version>${gt.version}</version>
+                </dependency> 
+                <dependency>
+                    <groupId>org.geotools</groupId>
+                    <artifactId>gt-process-geometry</artifactId>
+                    <version>${gt.version}</version>
+                </dependency>
+                
+                <!-- http://mvnrepository.com/artifact/xalan/serializer -->
+                <dependency>
+                    <groupId>xalan</groupId>
+                    <artifactId>serializer</artifactId>
+                    <version>2.7.1</version>
+                </dependency>
+
 			<!-- Code Dependencies -->
 			<dependency>
 				<groupId>cglib</groupId>
@@ -547,8 +603,8 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.3.1</version>
-			</dependency>
+				<version>1.4.7</version> <!-- 1.3.1 -->
+			</dependency>  
 			<dependency>
 				<!-- Required for xstream to deserialize JSON -->
 				<groupId>org.codehaus.jettison</groupId>
@@ -570,7 +626,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>3.1.4.RELEASE</version>
+				<version>4.2.5.RELEASE</version> <!-- was 3.1.4.RELEASE--> 
 			</dependency>
 			
 
@@ -578,13 +634,18 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.12</version>
+				<version>4.11</version> <!-- was 4.12-->
 			</dependency>
 			<dependency>
 				<groupId>httpunit</groupId>
 				<artifactId>httpunit</artifactId>
 				<version>1.7</version>
 			</dependency>
+                        <dependency>
+                                <groupId>com.mockrunner</groupId>
+                                <artifactId>mockrunner</artifactId>
+                                <version>0.3.6</version>
+                        </dependency>
 			<dependency>
 				<!-- this is an optional dep of httpunit, but we need it for the tests -->
 				<groupId>rhino</groupId>

@@ -38,7 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
-			<artifactId>wps-core</artifactId>
+			<artifactId>gs-wps-core</artifactId>                  
 			<scope>provided</scope>
 		</dependency>
                 <dependency>
@@ -53,11 +53,11 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<build>
+    <!--	<build>
 		<pluginManagement>
-			<plugins>
+			<plugins>  -->
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
+			<!--	<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
@@ -87,5 +87,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-	</build>
+	</build>  -->
 </project>
