@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.postgres.action;
 
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.domain.PredictionContext;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -9,6 +10,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -184,9 +186,18 @@ public class CreateViewForLayer extends Action<List> {
         return paramMap;
     }
 
-    private Map getFlowViewParams(String tableName) {
+    private Map getFlowViewParams(String tableName) throws Exception {
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        String flowGeom = "net.geom ::geometry(MultiLineString, 4326)";
+        String flowGeom = "net.geom ::geometry(MultiLineString, 4326)"; 
+        
+        HashSet<String> multiZnetwork = new HashSet(); 
+        multiZnetwork.add("mrb01_nhd_flow");
+        multiZnetwork.add("chesa_nhd_flow");
+        
+        if (getMultiZnetworks().contains(tableName))  //it has 4 dim thus needs the ZM
+        {
+            flowGeom = "net.geom ::geometry(MultiLineStringZM, 4326)";
+        }
 
         paramMap.put("VIEW_LAYER_NAME", "\"flow_" + this.model_output_id + "\"");
         paramMap.put("GEOMTYPE", flowGeom);
@@ -196,6 +207,39 @@ public class CreateViewForLayer extends Action<List> {
         return paramMap;
     }
 
+    private HashSet getMultiZnetworks() throws Exception
+    { //currently only flows
+        //dynamic retrieval is select distinct f_table_name from public.geometry_columns where f_table_schema = 'sparrow_overlay' and coord_dimension = 4;
+        //note that this is not checking for 3 dim
+        HashSet<String> multiZnetwork = new HashSet();
+        multiZnetwork.add("mrb01_nhd_flow");
+        multiZnetwork.add("chesa_nhd_flow");
+        
+        String sql = getText("Select4DimTables", this.getClass());
+        LOGGER.info("getMultiZ table names sql: " + sql);
+        
+        ResultSet rset = null;
+        Statement statement = getPostgresStatement();
+        
+        try {
+            rset = statement.executeQuery(sql);
+            addResultSetForAutoClose(rset);
+
+            while (rset.next()) {
+                String tableName = rset.getString(1);
+                multiZnetwork.add(tableName);
+            }
+
+        } finally {
+            // rset can be null if there is an sql error. 
+            if (rset != null) {
+                rset.close();
+            }
+        }
+        LOGGER.info("Quantity of tables with 4Dim found: " + multiZnetwork.size()); 
+        return multiZnetwork;        
+    }
+    
     private String createView(Map paramMap) throws Exception {
         // Note: can not use a prepared statement for DDL queries
         //String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);

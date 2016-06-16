@@ -23,7 +23,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+    <!--        <version>4.11</version>  -->
             <scope>test</scope>
         </dependency>
         <!-- Old version of MockRunner. Managed version (0.3.6) not found and 

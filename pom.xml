@@ -196,7 +196,7 @@
 		<war.dir>src/main/webapp</war.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<cargo.containerId>tomcat6x</cargo.containerId>
+		<cargo.containerId>tomcat7x</cargo.containerId>  <!--tomcat6x -->
 		<cida.maven.url>http://cida.usgs.gov/maven</cida.maven.url>
 		<cida.maven.url.internal>http://internal.cida.usgs.gov/maven</cida.maven.url.internal>
 		<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
@@ -210,7 +210,16 @@
 
                 <gwc.version>1.9.0</gwc.version>
                 <wms.version>1.1.1</wms.version>  <!-- read about diff versions http://docs.geoserver.org/stable/en/user/services/wms/basics.html  --> 
-      
+                
+                <gf.version>3.2.0</gf.version>
+                <xstream.version>1.4.7</xstream.version>
+                <spring.version>4.2.5.RELEASE</spring.version>
+                <spring.security.version>4.0.4.RELEASE</spring.security.version> 
+                <servlet-api.version>3.0.1</servlet-api.version>
+                <slf4j.version>1.6.4</slf4j.version>   
+                <log4j.version>1.2.17</log4j.version>
+                <ehcache.version>2.3.2</ehcache.version>
+                
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -277,12 +286,6 @@
                         <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
                         <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
 		</repository>
-	<!--	<repository>
-			<id>boundless</id>
-			<url>http://repo.boundlessgeo.com/main/</url>
-                        <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
-                        <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
-		</repository> -->
 		<repository>
 			<id>osgeo</id>
 			<name>Open Source Geospatial Foundation Repository</name>
@@ -341,7 +344,7 @@
 										<version>3.3</version>
 									</requireMavenVersion>
 									<requireJavaVersion>
-										<version>1.7</version>
+										<version>1.8</version>
 									</requireJavaVersion>
 								</rules>
 							</configuration>
@@ -551,23 +554,23 @@
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.17</version>
+				<version>${log4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>apache-log4j-extras</artifactId>
-				<version>1.1</version>
+				<version>1.1</version> <!-- 1.1 -->
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.6.6</version>
+				<version>${slf4j.version}</version> <!-- 1.6.6  -->
 			</dependency>
 			<dependency>
 				<!-- Send all slf4j logging to log4j -->
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.6</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>woodstox</groupId>
@@ -587,7 +590,7 @@
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
 				<artifactId>ehcache</artifactId>
-				<version>2.3.2</version>
+				<version>${ehcache.version}</version>
 				<type>pom</type>
 				<exclusions>
 					<exclusion>
@@ -603,7 +606,7 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.4.7</version> <!-- 1.3.1 -->
+				<version>${xstream.version}</version> <!-- 1.3.1 -->
 			</dependency>  
 			<dependency>
 				<!-- Required for xstream to deserialize JSON -->
@@ -626,7 +629,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>4.2.5.RELEASE</version> <!-- was 3.1.4.RELEASE--> 
+				<version>${spring.version}</version> <!-- was 3.1.4.RELEASE--> 
 			</dependency>
 			
 
@@ -655,7 +658,7 @@
 			<dependency>
 				<groupId>xmlunit</groupId>
 				<artifactId>xmlunit</artifactId>
-				<version>1.3</version>
+				<version>1.3</version>                                
 			</dependency>
 			<dependency>
 				<!-- Required by XMLUnit to support out-of-order element comparison -->

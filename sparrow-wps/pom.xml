@@ -135,6 +135,12 @@
                 </dependency>
                 
                 <dependency>
+                    <groupId>org.geoserver.extension</groupId>
+                    <artifactId>gs-web-wps</artifactId>
+                    <version>${gs.version}</version>
+                </dependency>                 
+                                                                
+                <dependency>
                     <groupId>org.geoserver</groupId>
                     <artifactId>gs-main</artifactId>
                     <version>${gs.version}</version>  
@@ -261,12 +267,7 @@
 			<scope>provided</scope>
 			<version>1.2.17</version> <!-- 1.2.14-->
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-                        <version>${junit.version}</version>
-		</dependency>
+
 	
 		<!-- These next ones are really for reference -->
 		<!-- <dependency>
