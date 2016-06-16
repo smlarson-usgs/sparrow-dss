@@ -34,22 +34,94 @@ public class LoadInitialViews extends Action<List> {
     }
 
     //takes the model output IDs and joins to the approp river region determined by join to lookup table
+    //# Parms : VIEW_LAYER_NAME, GEOMTYPE, RIVER_NETWORK_TABLE_NAME, DBF_ID
     private void createViews(HashSet<Integer> model_output_ids) throws Exception
     {
        // loop thru the list of unique model output ids and create two views (catch and flow)
         for (Integer model_id : model_output_ids) {
             ArrayList<String> tables = GetRegionTableNames(model_id);
-            createCatchView(tables.get(0), model_id);
-            createFlowView(tables.get(1), model_id);
+          //create two views: one catch one flow
+          createView(getCatchViewParams(tables.get(0), model_id)); //catchment
+          createView(getFlowViewParams(tables.get(1), model_id)); //flow or reach
         }
     }
+    
+    // Parms : VIEW_LAYER_NAME, GEOMTYPE, RIVER_NETWORK_TABLE_NAME, DBF_ID
+    // Build filtering parameters and retrieve the queries from properties
+    private Map getCatchViewParams(String tableName, Integer model_output_id) {
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        String catchGeom = "net.geom ::geometry(MultiPolygon, 4326)";
+
+        paramMap.put("VIEW_LAYER_NAME", "\"catch_" + model_output_id + "\"");
+        paramMap.put("GEOMTYPE", catchGeom);
+        paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
+        paramMap.put("DBF_ID", model_output_id);
+
+        return paramMap;
+    }
+
+    private Map getFlowViewParams(String tableName, Integer model_output_id) throws Exception {
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        String flowGeom = "net.geom ::geometry(MultiLineString, 4326)"; 
+        
+        HashSet<String> multiZnetwork = new HashSet(); 
+        multiZnetwork.add("mrb01_nhd_flow");
+        multiZnetwork.add("chesa_nhd_flow");
+        
+        if (getMultiZnetworks().contains(tableName))  //it has 4 dim thus needs the ZM
+        {
+            flowGeom = "net.geom ::geometry(MultiLineStringZM, 4326)";
+        }
+
+        paramMap.put("VIEW_LAYER_NAME", "\"flow_" + model_output_id + "\"");
+        paramMap.put("GEOMTYPE", flowGeom);
+        paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName); //tables.get(1));
+        paramMap.put("DBF_ID", model_output_id);
+
+        return paramMap;
+    }    
+    
+    private HashSet getMultiZnetworks() throws Exception
+    { //currently only flows
+        //dynamic retrieval is select distinct f_table_name from public.geometry_columns where f_table_schema = 'sparrow_overlay' and coord_dimension = 4;
+        //note that this is not checking for 3 dim
+        HashSet<String> multiZnetwork = new HashSet();
+       // multiZnetwork.add("mrb01_nhd_flow");  //as of June 2016, only these two flows have the 4 dimension
+       // multiZnetwork.add("chesa_nhd_flow");
+
+        String sql = getText("Select4DimTables", this.getClass());
+        LOGGER.info("getMultiZ table names sql: " + sql.toString());
+        
+        ResultSet rset = null;
+        Statement statement = getPostgresStatement();
+        
+        try {
+            rset = statement.executeQuery(sql);
+            addResultSetForAutoClose(rset);
+
+            while (rset.next()) {
+                String tableName = rset.getString(1);
+                multiZnetwork.add(tableName);
+            }
+
+        } finally {
+            // rset can be null if there is an sql error. 
+            if (rset != null) {
+                rset.close();
+            }
+        }
+        LOGGER.info("Quantity of tables with 4Dim found: " + multiZnetwork.size()); 
+        return multiZnetwork;
+    }    
     
     private void createCatchView(String tableName, Integer id) throws Exception
     {
         // VIEW_LAYER_NAME @RIVER_NETWORK_TABLE_NAME@, @DBF_ID@
         Map<String, Object> paramMap = new HashMap<>();
-      
+        String catchGeom = "net.geom ::geometry(MultiPolygon, 4326)";
+        
         paramMap.put("VIEW_LAYER_NAME", "\"catch_" + id + "\"");
+        paramMap.put("GEOMTYPE", catchGeom);
         paramMap.put("RIVER_NETWORK_TABLE_NAME", tableName);
         paramMap.put("DBF_ID", id);
         
@@ -72,6 +144,16 @@ public class LoadInitialViews extends Action<List> {
         LOGGER.info("Postgres flow view created from: " + sql);
         Statement statement = getPostgresStatement();
         statement.executeUpdate(sql);
+    }
+    
+    private String createView(Map paramMap) throws Exception 
+    {
+        // Note: can not use a prepared statement for DDL queries
+        //String sql = getPostgresSqlFromPropertiesFile("CreateView", null, paramMap);
+        LOGGER.info("About to create Postgres view in LoadInitViews: " + paramMap.get("VIEW_LAYER_NAME"));
+        Statement statement = getPostgresStatement();
+        statement.executeUpdate(getPostgresSqlFromPropertiesFile("CreateView", null, paramMap));
+        return (String) paramMap.get("VIEW_LAYER_NAME");
     }
     
     private ArrayList GetRegionTableNames(Integer id) throws Exception{
@@ -170,7 +252,7 @@ public class LoadInitialViews extends Action<List> {
 
     // regex that makes sure the name matches the prefix, either the flow_ or the catch_, and then retrieves the int after that
     private Integer parseIdFromViewName(String viewName) {
-        if (viewName.matches("^(flow_|catch_)[-]?[0-9]{9}$")) { //|| viewName.matches("catch_" + "-?\\d+")) {
+        if (viewName.matches("^(flow_|catch_)[-]?[0-9]{1,12}$")) { //|| viewName.matches("catch_" + "-?\\d+")) {
             //parse the numeric off of the string that starts with either flow_ or catch_
             
             String[] strings = viewName.split("_");
